@@ -88,20 +88,19 @@
       function update(move_number) {
 	  apply_move(board, moves[move_number], false);
 	  undo_list.push(moves[move_number]);
-	  if (moves[move_number].verb == "win") {
-	      move_list.innerHTML = "";
-	  } else {
-	      phase++;
-	      if (phase == 3) {
-		  phase = 1;
-		  player++;
-		  if (player == 3) {
-		      player = 1;
-		      turn++;
-		  }
+	  phase++;
+	  if (phase == 3) {
+	      phase = 1;
+	      player++;
+	      if (player == 3) {
+		  player = 1;
+		  turn++;
 	      }
-	      setup_turn();
 	  }
+	  setup_turn();
+          if (undo_list[undo_list.length-1].verb == "win") {
+              move_list.innerHTML = "Game Over";
+          }
       }
       setup_turn();
     </script>
