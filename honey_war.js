@@ -92,13 +92,11 @@ function draw_board(svg, board, pieces) {
 	if (board[k].piece.player != 0 || board[k].piece.piece == "tower") {
 	    var lab = "";
 	    var x = board[k].cx - 10;
-	    if (board[k].piece.player == 0) {
-		x += 5;
-	    } else {
+	    if (!board[k].piece.player == 0) {
 		lab += board[k].piece.player;
 	    }
 	    lab += symbols[board[k].piece.piece];
-	    s += '<text x="' + x + '" y="' + (board[k].cy+5) + '">' + lab + '</text>';
+	    s += '<image x="' + (x - 15.5) + '" y="' + (board[k].cy - 22) + '" href="imgs/' + lab + '.svg" width="50" />';
 	}
     }
     svg.innerHTML = s;
