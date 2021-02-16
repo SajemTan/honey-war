@@ -4,15 +4,20 @@
 		<script src="honey_war.js"></script>
 		<style>
 			#legend td img { width: 50px; }
+			.flex-container {
+				display: flex;
+			}
 		</style>
 	</head>
 	<body>
-		<h1 id="turn"></h1>
-		<svg id="board" width="500" height="500"/>
-		<div style="display: inline-block">
-			<h3>Possible Moves</h3>
-			<button onclick="undo();">UNDO</button>
-			<div id="moves"></div>
+	<h1 id="turn"></h1>
+		<div class="flex-container">
+			<svg id="board" width="500" height="500"/>
+			<div style="display: inline-block">
+				<h3>Possible Moves</h3>
+				<button onclick="undo();">UNDO</button>
+				<div id="moves"></div>
+			</div>
 		</div>
 		<h3>Legend of Pieces</h3>
 		<table id="legend">
