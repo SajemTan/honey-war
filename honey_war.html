@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>blah</title>
+    <script src="honey_war.js"></script>
+  </head>
+  <body>
+    <h1 id="turn"></h1>
+    <svg id="board" width="500" height="500"/>
+    <div style="display: inline-block">
+      <h3>Possible Moves</h3>
+      <button onclick="undo();">UNDO</button>
+      <div id="moves"></div>
+    </div>
+    <script>
+      var board_el = document.getElementById('board');
+      var board = make_board();
+      var header_el = document.getElementById('turn');
+      var move_list = document.getElementById('moves');
+      var turn = 1;
+      var player = 1;
+      var phase = 2;
+      var moves = [];
+      var undo_list = [];
+      function setup_turn() {
+	  draw_board(board_el, board);
+	  header_el.innerHTML = "Turn " + turn + " player " + player + " phase " + phase;
+	  moves = list_possible_moves(board, player, (phase==2));
+	  display_moves(board, moves, move_list);
+      }
+      function undo() {
+	  if (turn == 1 && player == 1 && phase == 2) {
+	      return;
+	  } else if (phase == 2) {
+	      phase = 1;
+	  } else if (player == 2) {
+	      player = 1;
+	      phase = 2;
+	  } else {
+	      turn--;
+	      player = 2;
+	      phase = 2;
+	  }
+	  apply_move(board, undo_list[undo_list.length-1], true);
+	  undo_list.pop();
+	  setup_turn();
+      }
+      function update(move_number) {
+	  apply_move(board, moves[move_number], false);
+	  undo_list.push(moves[move_number]);
+	  if (moves[move_number].verb == "win") {
+	      move_list.innerHTML = "";
+	  } else {
+	      phase++;
+	      if (phase == 3) {
+		  phase = 1;
+		  player++;
+		  if (player == 3) {
+		      player = 1;
+		      turn++;
+		  }
+	      }
+	      setup_turn();
+	  }
+      }
+      setup_turn();
+    </script>
+  </body>
+</html>
