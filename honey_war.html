@@ -1,108 +1,108 @@
 <html>
-  <head>
-    <title>Honey War simulator</title>
-    <script src="honey_war.js"></script>
-    <style>
-        #legend td img { width: 50px; }
-    </style>
-  </head>
-  <body>
-    <h1 id="turn"></h1>
-    <svg id="board" width="500" height="500"/>
-    <div style="display: inline-block">
-      <h3>Possible Moves</h3>
-      <button onclick="undo();">UNDO</button>
-      <div id="moves"></div>
-    </div>
-    <h3>Legend of Pieces</h3>
-    <table id="legend">
-      <tr>
-        <td><img src="imgs/1F.svg"></td>
-        <td><img src="imgs/2F.svg"></td>
-        <td>Footsoldier</td>
-      </tr>
-      <tr>
-        <td><img src="imgs/1I.svg"></td>
-        <td><img src="imgs/2I.svg"></td>
-        <td>Infantry</td>
-      </tr>
-      <tr>
-        <td><img src="imgs/1K.svg"></td>
-        <td><img src="imgs/2K.svg"></td>
-        <td>Cavalry</td>
-      </tr>
-      <tr>
-        <td><img src="imgs/1H.svg"></td>
-        <td><img src="imgs/2H.svg"></td>
-        <td>Chariot</td>
-      </tr>
-      <tr>
-        <td><img src="imgs/1B.svg"></td>
-        <td><img src="imgs/2B.svg"></td>
-        <td>Trebuchet</td>
-      </tr>
-      <tr>
-        <td><img src="imgs/1C.svg"></td>
-        <td><img src="imgs/2C.svg"></td>
-        <td>Castle</td>
-      </tr>
-      <tr>
-        <td><img src="imgs/1G.svg"></td>
-        <td><img src="imgs/2G.svg"></td>
-        <td>Tower/Garrison</td>
-      </tr>
-    </table>
-    <script>
-      var board_el = document.getElementById('board');
-      var board = make_board();
-      var header_el = document.getElementById('turn');
-      var move_list = document.getElementById('moves');
-      var turn = 1;
-      var player = 1;
-      var phase = 2;
-      var moves = [];
-      var undo_list = [];
-      function setup_turn() {
-	  draw_board(board_el, board);
-	  header_el.innerHTML = "Turn " + turn + " player " + player + " phase " + phase;
-	  moves = list_possible_moves(board, player, (phase==2));
-	  display_moves(board, moves, move_list);
-      }
-      function undo() {
-	  if (turn == 1 && player == 1 && phase == 2) {
-	      return;
-	  } else if (phase == 2) {
-	      phase = 1;
-	  } else if (player == 2) {
-	      player = 1;
-	      phase = 2;
-	  } else {
-	      turn--;
-	      player = 2;
-	      phase = 2;
-	  }
-	  apply_move(board, undo_list[undo_list.length-1], true);
-	  undo_list.pop();
-	  setup_turn();
-      }
-      function update(move_number) {
-	  apply_move(board, moves[move_number], false);
-	  undo_list.push(moves[move_number]);
-	  phase++;
-	  if (phase == 3) {
-	      phase = 1;
-	      player++;
-	      if (player == 3) {
-		  player = 1;
-		  turn++;
-	      }
-	  }
-	  setup_turn();
-          if (undo_list[undo_list.length-1].verb == "win") {
-              move_list.innerHTML = "Game Over";
-          }
-      }
-      setup_turn();
-    </script>
-  </body>
+	<head>
+		<title>Honey War simulator</title>
+		<script src="honey_war.js"></script>
+		<style>
+			#legend td img { width: 50px; }
+		</style>
+	</head>
+	<body>
+		<h1 id="turn"></h1>
+		<svg id="board" width="500" height="500"/>
+		<div style="display: inline-block;vertical-align: top;">
+			<h3>Possible Moves</h3>
+			<button onclick="undo();">UNDO</button>
+			<div id="moves"></div>
+		</div>
+		<h3>Legend of Pieces</h3>
+		<table id="legend">
+			<tr>
+				<td><img src="imgs/1F.svg"></td>
+				<td><img src="imgs/2F.svg"></td>
+				<td>Footsoldier</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1I.svg"></td>
+				<td><img src="imgs/2I.svg"></td>
+				<td>Infantry</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1K.svg"></td>
+				<td><img src="imgs/2K.svg"></td>
+				<td>Cavalry</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1H.svg"></td>
+				<td><img src="imgs/2H.svg"></td>
+				<td>Chariot</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1B.svg"></td>
+				<td><img src="imgs/2B.svg"></td>
+				<td>Trebuchet</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1C.svg"></td>
+				<td><img src="imgs/2C.svg"></td>
+				<td>Castle</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1G.svg"></td>
+				<td><img src="imgs/2G.svg"></td>
+				<td>Tower/Garrison</td>
+			</tr>
+		</table>
+		<script>
+			var board_el = document.getElementById('board');
+			var board = make_board();
+			var header_el = document.getElementById('turn');
+			var move_list = document.getElementById('moves');
+			var turn = 1;
+			var player = 1;
+			var phase = 2;
+			var moves = [];
+			var undo_list = [];
+			function setup_turn() {
+				draw_board(board_el, board);
+				header_el.innerHTML = "Turn " + turn + " player " + player + " phase " + phase;
+				moves = list_possible_moves(board, player, (phase==2));
+				display_moves(board, moves, move_list);
+			}
+			function undo() {
+				if (turn == 1 && player == 1 && phase == 2) {
+					return;
+				} else if (phase == 2) {
+					phase = 1;
+				} else if (player == 2) {
+					player = 1;
+					phase = 2;
+				} else {
+					turn--;
+					player = 2;
+					phase = 2;
+				}
+				apply_move(board, undo_list[undo_list.length-1], true);
+				undo_list.pop();
+				setup_turn();
+			}
+			function update(move_number) {
+				apply_move(board, moves[move_number], false);
+				undo_list.push(moves[move_number]);
+				phase++;
+				if (phase == 3) {
+					phase = 1;
+					player++;
+					if (player == 3) {
+						player = 1;
+						turn++;
+					}
+				}
+				setup_turn();
+				if (undo_list[undo_list.length-1].verb == "win") {
+					move_list.innerHTML = "Game Over";
+				}
+			}
+			setup_turn();
+		</script>
+	</body>
 </html>
