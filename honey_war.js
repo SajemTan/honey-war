@@ -313,9 +313,9 @@ function list_possible_moves(board, player, is_phase_2) {
 		} else if (is_phase_2 && enemy(board, x1, y1, player)) {
 		    var step2 = cavalry_moves(board, x1, y1, player);
 		    for (var j = 0; j < step2.length; j++) {
-			if (empty(board, step2[i][0], step2[i][1]) ||
-			    (step2[i][0] == x && step2[i][1] == y)) {
-			    moves.push(make_attack(board, pos, step2[i],
+			if (empty(board, step2[j][0], step2[j][1]) ||
+			    (step2[j][0] == x && step2[j][1] == y)) {
+			    moves.push(make_attack(board, pos, step2[j],
 						   step1[i]));
 			}
 		    }
