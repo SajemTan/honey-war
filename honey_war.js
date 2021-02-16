@@ -180,13 +180,13 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 		source: ret.source,
 		attack: {
 		    loc: attack_pos,
-		    was: ret.attack.was,
+		    was: copy_piece(ret.attack.was),
 		    is: {player: 0, piece: ""}
 		}
 	    };
 	} else {
 	    delete ret.dest;
-	    ret.attack.is = ret.attack.was;
+	    ret.attack.is = copy_piece(ret.attack.was);
 	    ret.attack.is.health = 1;
 	}
     } else if (ret.attack.was.piece == "garrison") {
@@ -272,7 +272,7 @@ function list_possible_moves(board, player, is_phase_2) {
 		    var dy = dirs[i][1];
 		    if (enemy(board, x+dx, y+dy, player) &&
 			empty(board, x+(2*dx), y+(2*dy))) {
-			moves.push(make_attack(board, pos, [x+(2*dx), y+(2*dy)]
+			moves.push(make_attack(board, pos, [x+(2*dx), y+(2*dy)],
 					       [x+dx, y+dy]));
 		    } else if (empty(board, x+dx, y+dy) &&
 			       enemy(board, x+(2*dx), y+(2*dy), player) &&
@@ -369,7 +369,7 @@ function highlight_spaces(ids) {
 }
 
 function display_moves(board, moves, list) {
-    var s = "<ol>";
+    var s = "<ol onmouseout='highlight_spaces([]);'>";
     for (var i = 0; i < moves.length; i++) {
 	var mv = moves[i];
 	var locs = [];
@@ -381,7 +381,15 @@ function display_moves(board, moves, list) {
 	s += "<li onmouseover='highlight_spaces(" + JSON.stringify(locs) + ");' onclick='update(" + i + ");'>" + mv.verb;
 	if (mv.verb == "move") {
 	    s += " " + mv.source.was.piece + " from " + mv.source.loc + " to " + mv.dest.loc;
-	}
+	} else if (mv.verb == "attack") {
+            s += " " + mv.attack.was.piece + " at " + mv.attack.loc;
+            s += " with " + mv.source.was.piece + " at " + mv.source.loc;
+            if (mv.hasOwnProperty("dest")) {
+                s += " landing at " + mv.dest.loc;
+            }
+        } else if (mv.verb == "garrison") {
+            s += " " + mv.source.was.piece + " from " + mv.source.loc + " to " + mv.dest.loc;
+        }
 	s += '</li>';
     }
     s += '</ol>';
