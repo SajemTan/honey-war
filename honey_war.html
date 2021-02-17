@@ -15,13 +15,9 @@
 			.move-item {
 				/*! color: blue; */
 			}
-			.move-item:hover {
+			.move-item:hover, .move-item:active {
 				text-decoration: underline;
-				color:blue;
-			}
-			.move-item:active {
-				text-decoration: underline;
-				color:blue;
+				color: blue;
 			}
 			.verb {
 				text-transform: capitalize;
@@ -29,6 +25,10 @@
 			.piece {
 				text-transform: capitalize;
 				font-weight: bold;
+			}
+			.inline-icon {
+				height: 1.2em;
+				vertical-align: top;
 			}
 		</style>
 	</head>
@@ -84,6 +84,18 @@
 			const board = make_board();
 			const header_el = document.getElementById('turn');
 			const move_list = document.getElementById('moves');
+			const symbols = {
+				tower: "T",
+				footsoldier: "F",
+				infantry: "I",
+				trebuchet: "B",
+				castle: "C",
+				cavalry: "K",
+				chariot: "H",
+				garrison: "G",
+				tower_infantry: "TI",
+				tower_cavalry: "TC"
+			};
 			var turn = 1;
 			var player = 1;
 			var phase = 2;

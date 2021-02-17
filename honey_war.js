@@ -75,18 +75,6 @@ function make_board() {
 }
 
 function draw_board(svg, board) {
-	const symbols = {
-		tower: "T",
-		footsoldier: "F",
-		infantry: "I",
-		trebuchet: "B",
-		castle: "C",
-		cavalry: "K",
-		chariot: "H",
-		garrison: "G",
-		tower_infantry: "TI",
-		tower_cavalry: "TC"
-	};
 	let s = "";
 	for (const k in board) {
 		s += '<circle class="space" cx="' + board[k].cx + '" cy="' + board[k].cy + '" fill="' + board[k].color + '" id="' + board[k].id + '" r="20"/>';
@@ -373,16 +361,17 @@ function format_verb(str) {
 	return "<span class='verb'>" + str + "</span>";
 }
 
-function format_piece(str) {
-//	if (player != 0 || piece == "tower") {
-//		var lab = "";
-//		if (!player == 0) {
-//			lab += player;
-//		}
-//		lab += piece;
-//		'<image href="imgs/' + lab + '.svg" width="50" />';
-//	}
-	return "<span class='piece'>" + str + "</span>";
+function format_piece(piece) {
+	let s = "";
+	if (piece.player != 0 || piece.piece == "tower") {
+		var lab = "";
+		if (!piece.player == 0) {
+			lab += piece.player;
+		}
+		lab += symbols[piece.piece];
+		s = '<img class="inline-icon" src="imgs/' + lab + '.svg" />';
+	}
+	return s + "<span class='piece'>" + piece.piece + "</span>";
 }
 
 function display_moves(board, moves, list) {
@@ -398,15 +387,15 @@ function display_moves(board, moves, list) {
 		s += "<li><a class='move-item' onmouseover='highlight_spaces(" + JSON.stringify(locs) + ");' onclick='update(" + i + ");'>";
 		s += format_verb(mv.verb);
 		if (mv.verb == "move") {
-			s += " " + format_piece(mv.source.was.piece) + " from " + mv.source.loc + " to " + mv.dest.loc;
+			s += format_piece(mv.source.was) + " from " + mv.source.loc + " to " + mv.dest.loc;
 		} else if (mv.verb == "attack") {
-			s += " " + format_piece(mv.attack.was.piece) + " at " + mv.attack.loc;
-			s += " with " + format_piece(mv.source.was.piece) + " at " + mv.source.loc;
+			s += format_piece(mv.attack.was) + " at " + mv.attack.loc;
+			s += " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
 			if (mv.hasOwnProperty("dest")) {
 				s += " landing at " + mv.dest.loc;
 			}
 		} else if (mv.verb == "garrison") {
-			s += " " + format_piece(mv.source.was.piece) + " from " + mv.source.loc + " to " + mv.dest.loc;
+			s += format_piece(mv.source.was) + " from " + mv.source.loc + " to " + mv.dest.loc;
 		}
 		s += '</a></li>';
 	}
