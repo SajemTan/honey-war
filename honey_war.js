@@ -114,6 +114,10 @@ function exists(board, pos) {
 	return board.hasOwnProperty(pos);
 }
 
+function are_same_coords(a, b) {
+	return a[0] == b[0] && a[1] == b[1];
+}
+
 function empty(board, pos) {
 	return exists(board, pos) &&
 		board[pos].piece.player == 0 &&
@@ -141,7 +145,7 @@ function copy_piece(pc) {
 }
 
 function make_move(board, from_pos, to_pos) {
-	if (from_pos == to_pos) {
+	if (are_same_coords(from_pos, to_pos)) {
 		return {
 			verb: "move",
 			source: {
@@ -223,13 +227,13 @@ function cavalry_moves(board, pos0, player) {
 	for (const pos1 of list_adjacent(pos0, player)) {
 		if (friendly(board, pos1, player)) {
 			for (const pos2 of list_adjacent(pos1, player)) {
-				if (pos0 == pos2 || !exists(board, pos2) ||
+				if (are_same_coords(pos0, pos2) || !exists(board, pos2) ||
 				    board[pos2].color != board[pos0].color) {
 					continue;
 				}
 				let already = false;
 				for (const l of locs) {
-					if (l == pos2) {
+					if (are_same_coords(l, pos2)) {
 						already = true;
 						break;
 					}
@@ -340,10 +344,9 @@ function list_possible_moves(board, player, is_phase_2) {
 						// don't show fictitious landing positions if attacking castle
 						moves.push(make_attack(board, pos, pos, step1));
 					} else {
-						;
 						for (const step2 of cavalry_moves(board, step1, player)) {
 							if (empty(board, step2) ||
-								(step2[0] == x && step2[1] == y)) {
+								are_same_coords(step1, step2)) {
 								moves.push(make_attack(board, pos, step2, step1));
 							}
 						}
@@ -391,7 +394,7 @@ function highlight_spaces(ids) {
 	}
 	for (const id of ids) {
 		let el = document.getElementById(id);
-		el.setAttribute("href", el.getAttribute("href").replace(".svg", "-hl.svg"));
+		el.setAttribute("href", el.getAttribute("href").replace(/(?<!hl).svg/, "-hl.svg"));
 	}
 }
 
