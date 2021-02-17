@@ -38,7 +38,7 @@ function make_board() {
 		board[[x,y]] = {
 			q: y-Math.abs(x),
 			color: colors[(y+x+12)%3],
-			cx: c_x * 20 + 250,
+			cx: c_x * 17.5 + 250,
 			cy: c_y * 20 + 250,
 			piece: {player: 0, piece: ""},
 			id: "space" + id
@@ -93,16 +93,17 @@ function draw_board(svg, board) {
 	let s = "";
 	for (const k of iterate_board()) {
 		const space = board[k];
-		s += '<circle class="space" cx="' + space.cx + '" cy="' + space.cy
-		   + '" fill="' + space.color + '" id="' + space.id + '" r="20"/>';
+		const sx = space.cx - 25;
+		const sy = space.cy - 22;
+		s += '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color 
+		  + '.svg" class="space" id="' + space.id + '" width="50" />';
 		if (space.piece.player != 0 || space.piece.piece == "tower") {
-			let lab = "";
-			const x = space.cx - 10;
+			let lab="";
 			if (!space.piece.player == 0) {
 				lab += space.piece.player;
 			}
 			lab += symbols[space.piece.piece];
-			s += '<image x="' + (x - 15.5) + '" y="' + (space.cy - 22)
+			s += '<image x="' + sx + '" y="' + sy
 			   + '" href="imgs/' + lab + '.svg" width="50" />';
 		}
 	}
@@ -385,14 +386,12 @@ function list_possible_moves(board, player, is_phase_2) {
 }
 
 function highlight_spaces(ids) {
-	;
 	for (let ls of document.getElementsByClassName("space")) {
-		ls.setAttribute("stroke-width", "0");
+		ls.setAttribute("href", ls.getAttribute("href").replace("-hl", ""));
 	}
 	for (const id of ids) {
 		let el = document.getElementById(id);
-		el.setAttribute("stroke-width", "4");
-		el.setAttribute("stroke", "black");
+		el.setAttribute("href", el.getAttribute("href").replace(".svg", "-hl.svg"));
 	}
 }
 
