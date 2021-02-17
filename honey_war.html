@@ -101,9 +101,15 @@
 			var phase = 2;
 			var moves = [];
 			var undo_list = [];
+			var players = {1: "", 2: ""};
+			function format_player(player) {
+				return player + icon_for("castle", player) + players[player];
+			}
 			function setup_turn() {
 				draw_board(board_el, board);
-				header_el.innerHTML = "Turn " + turn + " player " + player + " phase " + phase;
+				header_el.innerHTML = "Turn " + turn
+					+ ", Player " + format_player(player)
+					+ ", Phase " + phase;
 				moves = list_possible_moves(board, player, (phase==2));
 				display_moves(board, moves, move_list);
 			}
