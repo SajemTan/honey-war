@@ -5,16 +5,18 @@
 		<title>Honey War simulator</title>
 		<script src="honey_war.js"></script>
 		<style>
-			#legend td img {
+			#movediv {
+				display: inline-block;
+				vertical-align: top;
+			}
+			#legend td > img {
 				width: 50px;
 			}
 			a {
 				color: black;
 				cursor: pointer;
 			}
-			.move-item {
-				/*! color: blue; */
-			}
+			.move-item { }
 			.move-item:hover, .move-item:active {
 				text-decoration: underline;
 				color: blue;
@@ -30,12 +32,15 @@
 				height: 1.2em;
 				vertical-align: top;
 			}
+			.hidden-space {
+				display: inline-block;
+			}
 		</style>
 	</head>
 	<body>
 		<h1 id="turn"></h1>
 		<svg id="board" width="500" height="500"/>
-		<div style="display: inline-block;vertical-align: top;">
+		<div id="">
 			<h3>Possible Moves</h3>
 			<button onclick="undo();">UNDO</button>
 			<div id="moves"></div>

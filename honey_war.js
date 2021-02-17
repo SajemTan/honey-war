@@ -409,7 +409,7 @@ function icon_for(piece, player) {
 			lab += player;
 		}
 		lab += symbols[piece];
-		s += '<span style="display: inline-block;"> </span>';
+		s += '<span class="hidden-space"> </span>';
 		s += '<img class="inline-icon" src="imgs/' + lab + '.svg" />';
 	}
 	return s;
