@@ -1,3 +1,4 @@
+"use strict";
 function make_board() {
 	var board = {};
 	var colors = ["green", "purple", "orange"];
@@ -368,6 +369,14 @@ function highlight_spaces(ids) {
 	}
 }
 
+function format_verb(str) {
+	return "<span class='verb'>" + str + "</span>";
+}
+
+function format_piece(str) {
+	return "<span class='piece'>" + str + "</span>";
+}
+
 function display_moves(board, moves, list) {
 	var s = "<ol onmouseout='highlight_spaces([]);'>";
 	for (let i = 0; i < moves.length; i++) {
@@ -378,19 +387,20 @@ function display_moves(board, moves, list) {
 				locs.push(board[mv[k].loc].id);
 			}
 		}
-		s += "<li onmouseover='highlight_spaces(" + JSON.stringify(locs) + ");' onclick='update(" + i + ");'><em>" + mv.verb + "</em>";
+		s += "<li><a class='move-item' onmouseover='highlight_spaces(" + JSON.stringify(locs) + ");' onclick='update(" + i + ");'>";
+		s += format_verb(mv.verb);
 		if (mv.verb == "move") {
-			s += " <em>" + mv.source.was.piece + "</em> from " + mv.source.loc + " to " + mv.dest.loc;
+			s += " " + format_piece(mv.source.was.piece) + " from " + mv.source.loc + " to " + mv.dest.loc;
 		} else if (mv.verb == "attack") {
-			s += " <em>" + mv.attack.was.piece + "</em> at " + mv.attack.loc;
-			s += " with <em>" + mv.source.was.piece + "</em> at " + mv.source.loc;
+			s += " " + format_piece(mv.attack.was.piece) + " at " + mv.attack.loc;
+			s += " with " + format_piece(mv.source.was.piece) + " at " + mv.source.loc;
 			if (mv.hasOwnProperty("dest")) {
 				s += " landing at " + mv.dest.loc;
 			}
 		} else if (mv.verb == "garrison") {
-			s += " <em>" + mv.source.was.piece + "</em> from " + mv.source.loc + " to " + mv.dest.loc;
+			s += " " + format_piece(mv.source.was.piece) + " from " + mv.source.loc + " to " + mv.dest.loc;
 		}
-		s += '</li>';
+		s += '</a></li>';
 	}
 	s += '</ol>';
 	list.innerHTML = s;

@@ -1,9 +1,35 @@
+<!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<title>Honey War simulator</title>
 		<script src="honey_war.js"></script>
 		<style>
-			#legend td img { width: 50px; }
+			#legend td img {
+				width: 50px;
+			}
+			a {
+				color: black;
+				cursor: pointer;
+			}
+			.move-item {
+				/*! color: blue; */
+			}
+			.move-item:hover {
+				text-decoration: underline;
+				color:blue;
+			}
+			.move-item:active {
+				text-decoration: underline;
+				color:blue;
+			}
+			.verb {
+				text-transform: capitalize;
+			}
+			.piece {
+				text-transform: capitalize;
+				font-weight: bold;
+			}
 		</style>
 	</head>
 	<body>
@@ -53,6 +79,7 @@
 			</tr>
 		</table>
 		<script>
+			"use strict";
 			var board_el = document.getElementById('board');
 			var board = make_board();
 			var header_el = document.getElementById('turn');
