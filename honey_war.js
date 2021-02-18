@@ -204,6 +204,7 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 			delete ret.dest;
 			ret.attack.is = copy_piece(ret.attack.was);
 			ret.attack.is.health = 1;
+			ret.source.is = {player: 0, piece: ""};
 		}
 	} else if (ret.attack.was.piece == "garrison") {
 		ret.attack.is = {player: 0, piece: "tower"};
@@ -443,7 +444,8 @@ function display_moves(board, moves, list) {
 			   + " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
 			if (mv.hasOwnProperty("dest")) {
 				s += " landing at " + mv.dest.loc;
-			} else if (mv.source.was.piece == "cavalry") {
+			} else if (mv.source.was.piece == "cavalry"
+			           && mv.attack.was.piece != "castle") {
 				s += " and retreat"
 			}
 		} else if (mv.verb == "garrison") {
