@@ -346,7 +346,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					} else {
 						for (const step2 of cavalry_moves(board, step1, player)) {
 							if (empty(board, step2) ||
-								are_same_coords(step1, step2)) {
+								are_same_coords(pos, step2)) {
 								moves.push(make_attack(board, pos, step2, step1));
 							}
 						}
