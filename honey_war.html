@@ -2,16 +2,17 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Honey War simulator</title>
 		<script src="honey_war.js"></script>
 		<style>
-			.movediv {
-				display: inline-block;
-				vertical-align: top;
-			}
 			.flex-container {
 				display: flex;
 				flex-wrap: wrap;
+			}
+			.flex-container > * {
+				display: inline-block;
+				vertical-align: top;
 			}
 			.flex-spacer {
 				width: 1em;
@@ -73,13 +74,42 @@
 			.hidden-space {
 				display: inline-block;
 			}
+			@media screen and (min-width: 990px) {
+				#board {
+					width: 500px;
+					max-height: 500px;
+					max-width: 40%;
+				}
+				#move-display {
+					min-width: 60%;
+				}
+			}
+			@media screen and (min-width: 800px) and (max-width: 989px) {
+				#board {
+					width: 400px;
+					max-height: 400px;
+					max-width: 50%;
+				}
+				#move-display {
+					min-width: 50%;
+				}
+			}
+			@media screen and (max-width: 799px) {
+				#board {
+					max-width: 500px;
+					width: 100%;
+				}
+				#move-display {
+					width: 100%;
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<h1 id="turn"></h1>
 		<div class="flex-container">
-			<svg id="board" width="500" height="500"/>
-			<div class="movediv">
+			<svg id="board" viewBox="0 0 500 500" />
+			<div id="move-display" class="movediv">
 				<h3>Possible Moves</h3>
 				<button onclick="undo();">UNDO</button>
 				<a id="moves_export">
@@ -87,6 +117,46 @@
 				</a>
 				<button id="restore" disabled onclick="restore_game()">RESTORE</button>
 				<div id="moves"></div>
+			</div><div class="flex-spacer"></div>
+			<div class="movediv">
+				<h3>Legend of Pieces</h3>
+				<table id="legend">
+					<tr>
+						<td><img src="imgs/1F.svg"></td>
+						<td><img src="imgs/2F.svg"></td>
+						<td>Footsoldier</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1I.svg"></td>
+						<td><img src="imgs/2I.svg"></td>
+						<td>Infantry</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1K.svg"></td>
+						<td><img src="imgs/2K.svg"></td>
+						<td>Cavalry</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1H.svg"></td>
+						<td><img src="imgs/2H.svg"></td>
+						<td>Chariot</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1B.svg"></td>
+						<td><img src="imgs/2B.svg"></td>
+						<td>Trebuchet</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1C.svg"></td>
+						<td><img src="imgs/2C.svg"></td>
+						<td>Castle</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1G.svg"></td>
+						<td><img src="imgs/2G.svg"></td>
+						<td>Tower/Garrison</td>
+					</tr>
+				</table>
 			</div><div class="flex-spacer"></div>
 			<div class="movediv" style="max-width: 550px;">
 				<h3>Settings</h3>
@@ -208,44 +278,6 @@
 				</div>
 			</div>
 		</div>
-		<h3>Legend of Pieces</h3>
-		<table id="legend">
-			<tr>
-				<td><img src="imgs/1F.svg"></td>
-				<td><img src="imgs/2F.svg"></td>
-				<td>Footsoldier</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1I.svg"></td>
-				<td><img src="imgs/2I.svg"></td>
-				<td>Infantry</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1K.svg"></td>
-				<td><img src="imgs/2K.svg"></td>
-				<td>Cavalry</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1H.svg"></td>
-				<td><img src="imgs/2H.svg"></td>
-				<td>Chariot</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1B.svg"></td>
-				<td><img src="imgs/2B.svg"></td>
-				<td>Trebuchet</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1C.svg"></td>
-				<td><img src="imgs/2C.svg"></td>
-				<td>Castle</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1G.svg"></td>
-				<td><img src="imgs/2G.svg"></td>
-				<td>Tower/Garrison</td>
-			</tr>
-		</table>
 		<p>
 			For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
 		</p>
