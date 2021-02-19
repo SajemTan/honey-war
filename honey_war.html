@@ -150,13 +150,19 @@
 
 			var players = {1: "Player 1", 2: "Player 2"};
 
+			function encode(s) {
+				return s.replace(/./g, function(c) {
+					return"&#"+c.charCodeAt(0)+";"
+				});
+			}
+
 			function update_players() {
-				players[1] = document.getElementById("P1-name").value;
-				players[2] = document.getElementById("P2-name").value;
+				players[1] = encode(document.getElementById("P1-name").value);
+				players[2] = encode(document.getElementById("P2-name").value);
 				write_title();
 			}
 			function format_player(player) {
-				return icon_for("castle", player) + players[player];
+				return icon_for("castle", player) + '<text>' + players[player] + '</text>';
 			}
 			function draw_icons() {
 				for (let el of document.getElementsByClassName("icon")) {
