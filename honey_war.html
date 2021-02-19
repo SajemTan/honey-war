@@ -9,6 +9,10 @@
 				display: inline-block;
 				vertical-align: top;
 			}
+			#board {
+				width: 500px;
+				max-width: 100%;
+			}
 			#legend td > img {
 				width: 50px;
 			}
@@ -40,7 +44,7 @@
 	<body>
 		<h1 id="turn"></h1>
 		<div class="movediv">
-			<svg id="board" width="500" height="500"/>
+			<svg id="board" viewBox="0 0 500 500" />
 			<h3>Legend of Pieces</h3>
 			<table id="legend">
 				<tr>
