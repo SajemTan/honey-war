@@ -9,8 +9,21 @@
 				display: inline-block;
 				vertical-align: top;
 			}
+			.flex-container {
+				display: flex;
+				flex-wrap: wrap;
+			}
+			.flex-spacer {
+				width: 1em;
+			}
+			#mp-settings {
+				flex-direction: column;
+			}
 			#legend td > img {
 				width: 50px;
+			}
+			#reset {
+				display: none;
 			}
 			a {
 				color: black;
@@ -28,6 +41,10 @@
 				text-transform: capitalize;
 				font-weight: bold;
 			}
+			.win {
+				text-transform: capitalize;
+				font-style: italic;
+			}
 			.inline-icon {
 				height: 1.2em;
 				vertical-align: top;
@@ -39,52 +56,71 @@
 	</head>
 	<body>
 		<h1 id="turn"></h1>
-		<div class="movediv">
+		<div class="flex-container">
 			<svg id="board" width="500" height="500"/>
-			<h3>Legend of Pieces</h3>
-			<table id="legend">
-				<tr>
-					<td><img src="imgs/1F.svg"></td>
-					<td><img src="imgs/2F.svg"></td>
-					<td>Footsoldier</td>
-				</tr>
-				<tr>
-					<td><img src="imgs/1I.svg"></td>
-					<td><img src="imgs/2I.svg"></td>
-					<td>Infantry</td>
-				</tr>
-				<tr>
-					<td><img src="imgs/1K.svg"></td>
-					<td><img src="imgs/2K.svg"></td>
-					<td>Cavalry</td>
-				</tr>
-				<tr>
-					<td><img src="imgs/1H.svg"></td>
-					<td><img src="imgs/2H.svg"></td>
-					<td>Chariot</td>
-				</tr>
-				<tr>
-					<td><img src="imgs/1B.svg"></td>
-					<td><img src="imgs/2B.svg"></td>
-					<td>Trebuchet</td>
-				</tr>
-				<tr>
-					<td><img src="imgs/1C.svg"></td>
-					<td><img src="imgs/2C.svg"></td>
-					<td>Castle</td>
-				</tr>
-				<tr>
-					<td><img src="imgs/1G.svg"></td>
-					<td><img src="imgs/2G.svg"></td>
-					<td>Tower/Garrison</td>
-				</tr>
-			</table>
+			<div class="movediv">
+				<h3>Possible Moves</h3>
+				<button onclick="undo();">UNDO</button>
+				<button id="reset" onclick="reset_game()">RESET</button>
+				<div id="moves"></div>
+			</div><div class="flex-spacer"></div>
+			<div class="movediv">
+				<h3>Multiplayer Settings</h3>
+				<div id="mp-settings" class="flex-container">
+					<div>
+						<span class="icon">1C</span>
+						<input type="text" class="inline-input"
+							id="P1-name" value="Player 1" onchange="update_players()">
+						vs.
+						<span class="icon">2C</span>
+						<input type="text" class="inline-input"
+							id="P2-name" value="Player 2" onchange="update_players()">
+					</div>
+					<div>
+						Session ID: <input type="text" id="sessionID">
+						<button id="getNewSession">New</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="movediv">
-			<h3>Possible Moves</h3>
-			<button onclick="undo();">UNDO</button>
-			<div id="moves"></div>
-		</div>
+		<h3>Legend of Pieces</h3>
+		<table id="legend">
+			<tr>
+				<td><img src="imgs/1F.svg"></td>
+				<td><img src="imgs/2F.svg"></td>
+				<td>Footsoldier</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1I.svg"></td>
+				<td><img src="imgs/2I.svg"></td>
+				<td>Infantry</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1K.svg"></td>
+				<td><img src="imgs/2K.svg"></td>
+				<td>Cavalry</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1H.svg"></td>
+				<td><img src="imgs/2H.svg"></td>
+				<td>Chariot</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1B.svg"></td>
+				<td><img src="imgs/2B.svg"></td>
+				<td>Trebuchet</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1C.svg"></td>
+				<td><img src="imgs/2C.svg"></td>
+				<td>Castle</td>
+			</tr>
+			<tr>
+				<td><img src="imgs/1G.svg"></td>
+				<td><img src="imgs/2G.svg"></td>
+				<td>Tower/Garrison</td>
+			</tr>
+		</table>
 		<script>
 			"use strict";
 			const board_el = document.getElementById('board');
@@ -108,15 +144,33 @@
 			var phase = 2;
 			var moves = [];
 			var undo_list = [];
-			var players = {1: "", 2: ""};
+
+			var players = {1: "Player 1", 2: "Player 2"};
+
+			function update_players() {
+				players[1] = document.getElementById("P1-name").value;
+				players[2] = document.getElementById("P2-name").value;
+				write_title();
+			}
 			function format_player(player) {
-				return player + icon_for("castle", player) + players[player];
+				return icon_for("castle", player) + players[player];
+			}
+			function draw_icons() {
+				for (let el of document.getElementsByClassName("icon")) {
+					const name = el.innerHTML;
+					el.innerHTML = '<img class="inline-icon" src="imgs/' + name + '.svg" />';
+				}
+			}
+			draw_icons();
+
+			function write_title() {
+				header_el.innerHTML = "Turn " + turn
+					+ ", " + format_player(player)
+					+ ", Phase " + phase;
 			}
 			function setup_turn() {
 				draw_board(board_el, board);
-				header_el.innerHTML = "Turn " + turn
-					+ ", Player " + format_player(player)
-					+ ", Phase " + phase;
+				write_title();
 				moves = list_possible_moves(board, player, (phase==2));
 				display_moves(board, moves, move_list);
 			}
@@ -154,6 +208,7 @@
 					move_list.innerHTML = "Game Over";
 				}
 			}
+			update_players();
 			setup_turn();
 		</script>
 	</body>
