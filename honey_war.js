@@ -24,6 +24,12 @@ function* iterate_board(player) {
 	}
 }
 
+function set_piece_symmetric(board, pos, piece) {
+	const [a,b] = pos;
+	board[[a,b]].piece = {player: 1, piece: piece};
+	board[[-a,-b]].piece = {player: 2, piece: piece};
+}
+
 function make_board() {
 	let board = new Map();
 	const colors = ["green", "purple", "orange"];
@@ -49,42 +55,25 @@ function make_board() {
 	// no player
 	board[[-2,2]].piece.piece = "tower";
 	board[[2,-2]].piece.piece = "tower";
-	board[[0,0]].piece.piece = "tower";
+	board[[0,0]].piece.piece  = "tower";
 
 	// foot soldiers
 	for (const [a, b] of [[1,5],[1,4],[2,4],[2,3],[3,4],[2,2]]) {
 		// take advantage of symmetry
-		board[[a,b]].piece = {player: 1, piece: "footsoldier"};
-		board[[b,a]].piece = {player: 1, piece: "footsoldier"};
-		board[[-a,-b]].piece = {player: 2, piece: "footsoldier"};
-		board[[-b,-a]].piece = {player: 2, piece: "footsoldier"};
+		set_piece_symmetric(board, [a,b], "footsoldier");
+		set_piece_symmetric(board, [b,a], "footsoldier");
 	}
 
-	// infantry
+	// infantry and cavalry are in opposite places left/right
 	for (const [a, b] of [[2,5],[4,5],[5,3]]) {
-		board[[a,b]].piece = {player: 1, piece: "infantry"};
-		board[[-a,-b]].piece = {player: 2, piece: "infantry"};
+		set_piece_symmetric(board, [a,b], "infantry");
+		set_piece_symmetric(board, [b,a], "cavalry");
 	}
 
-	// trebuchets
-	board[[3,3]].piece = {player: 1, piece: "trebuchet"};
-	board[[-3,-3]].piece = {player: 2, piece: "trebuchet"};
-
-	// castles
-	board[[4,4]].piece = {player: 1, piece: "castle", health: 2};
-	board[[-4,-4]].piece = {player: 2, piece: "castle", health: 2};
-
-	// cavalry
-	board[[3,5]].piece = {player: 1, piece: "cavalry"};
-	board[[5,4]].piece = {player: 1, piece: "cavalry"};
-	board[[5,2]].piece = {player: 1, piece: "cavalry"};
-	board[[-3,-5]].piece = {player: 2, piece: "cavalry"};
-	board[[-5,-4]].piece = {player: 2, piece: "cavalry"};
-	board[[-5,-2]].piece = {player: 2, piece: "cavalry"};
-
-	// chariot
-	board[[5,5]].piece = {player: 1, piece: "chariot"};
-	board[[-5,-5]].piece = {player: 2, piece: "chariot"};
+	// singles
+	set_piece_symmetric(board, [3,3], "trebuchet");
+	set_piece_symmetric(board, [4,4], "castle");
+	set_piece_symmetric(board, [5,5], "chariot");
 
 	return board;
 }
