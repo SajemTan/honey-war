@@ -125,6 +125,18 @@ function friendly(board, pos, player) {
 	return exists(board, pos) && !enemy(board, pos, player);
 }
 
+function counterattack_damage(board, pos) {
+	if (!exists(board, pos)) {
+		return 0;
+	} else if (board[pos].piece.piece == "castle") {
+		return 2;
+	} else if (board[pos].piece.piece == "garrison") {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 function is_at(board, piece, pos) {
 	return exists(board, pos) && board[pos].piece.piece == piece;
 }
@@ -271,7 +283,7 @@ function list_possible_moves(board, player, is_phase_2) {
 				} else if (is_phase_2 &&
 				    enemy(board, dist[1], player) &&
 				    (empty(board, dist[2]) ||
-				     is_at(board, "castle", dist[1]))) {
+				     counterattack_damage(board, dist[1]))) {
 					moves.push(make_attack(board, pos, dist[2], dist[1]));
 				} else if (is_phase_2 &&
 					        empty(board, dist[2]) &&
@@ -303,7 +315,7 @@ function list_possible_moves(board, player, is_phase_2) {
 						[x+dx*3, y+dy*3]];
 					if (enemy(board, dist[1], player) &&
 					    (empty(board, dist[2]) ||
-						  is_at(board, "castle", dist[1]))) {
+						  counterattack_damage(board, dist[1]) == 2)) {
 						moves.push(make_attack(board, pos, dist[2], dist[1]));
 					} else if (is_at(board, "tower", dist[1])) {
 						let mv = make_move(board, pos, dist[1]);
@@ -314,7 +326,7 @@ function list_possible_moves(board, player, is_phase_2) {
 								  empty(board, dist[1])) {
 						if (enemy(board, dist[2], player) &&
 						    (empty(board, dist[3]) ||
-						     is_at(board, "castle", dist[2]))) {
+						     counterattack_damage(board, dist[2]) == 2)) {
 							moves.push(make_attack(board, pos, dist[3], dist[2]));
 						} else if (is_at(board, "tower", dist[2])) {
 							let mv = make_move(board, pos, dist[2]);
@@ -325,27 +337,13 @@ function list_possible_moves(board, player, is_phase_2) {
 					}
 				}
 			}
-		} else if (piece.piece == "trebuchet" && is_phase_2) {
-			for (const [dx, dy] of list_adjacent([0,0], player)) {
-				const dist = [
-					pos,
-					[x+dx  , y+dy  ],
-					[x+dx*2, y+dy*2]];
-				if (empty(board, dist[1])) {
-					moves.push(make_move(board, pos, dist[1]));
-				}
-				if (exists(board, dist[2]) && !empty(board, dist[2]) &&
-				    board[dist[2]].piece.player != player) {
-					moves.push(make_attack(board, pos, pos, dist[2]));
-				}
-			}
 		} else if (piece.piece == "cavalry") {
 			for (const step1 of cavalry_moves(board, pos, player)) {
 				const [x1, y1] = step1;
 				if (empty(board, step1)) {
 					moves.push(make_move(board, pos, step1));
 				} else if (is_phase_2 && enemy(board, step1, player)) {
-					if (is_at(board, "castle", step1) || is_at(board, "garrison", step1)) {
+					if (counterattack_damage(board, step1)) {
 						// don't show fictitious landing positions if attacking castle
 						moves.push(make_attack(board, pos, pos, step1));
 					} else {
@@ -373,7 +371,7 @@ function list_possible_moves(board, player, is_phase_2) {
 						moves.push(make_move(board, pos, l));
 					} else if (is_phase_2 && enemy(board, l, player) &&
 					           (empty(board, ln) ||
-					            is_at(board, "castle", l))) {
+					            counterattack_damage(board, l))) {
 						moves.push(make_attack(board, pos, ln, l));
 						break;
 					} else {
@@ -381,8 +379,22 @@ function list_possible_moves(board, player, is_phase_2) {
 					}
 				}
 			}
-		} else if (is_phase_2
-		           && (piece.piece == "garrison" || piece.piece == "castle")) {
+		} else if (piece.piece == "trebuchet" && is_phase_2) {
+			for (const [dx, dy] of list_adjacent([0,0], player)) {
+				const dist = [
+					pos,
+					[x+dx  , y+dy  ],
+					[x+dx*2, y+dy*2]];
+				if (empty(board, dist[1])) {
+					moves.push(make_move(board, pos, dist[1]));
+				}
+				if (exists(board, dist[2]) && !empty(board, dist[2]) &&
+				    board[dist[2]].piece.player != player) {
+					moves.push(make_attack(board, pos, pos, dist[2]));
+				}
+			}
+		} else if (is_phase_2 && (piece.piece == "garrison"
+		                     || piece.piece == "castle")) {
 			for (const loc of list_adjacent(pos, player)) {
 				if (enemy(board, loc, player)) {
 					moves.push(make_attack(board, pos, pos, loc));

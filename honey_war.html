@@ -253,6 +253,7 @@
 					boardstate: board
 				}), 'Honey-War-Log.json', 'application/json');
 			}
+			var autoplay_timer;
 			async function do_import_game(gamestate, slowmode) {
 				let moveslist;
 				if (gamestate instanceof Array) {
