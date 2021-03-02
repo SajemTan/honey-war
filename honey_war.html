@@ -22,9 +22,6 @@
 			#legend td > img {
 				width: 50px;
 			}
-			#reset {
-				display: none;
-			}
 			a {
 				color: black;
 				cursor: pointer;
@@ -61,7 +58,11 @@
 			<div class="movediv">
 				<h3>Possible Moves</h3>
 				<button onclick="undo();">UNDO</button>
+				<a id="moves_export">
+					<button id="export" onclick="export_game()">EXPORT</button>
+				</a>
 				<button id="reset" onclick="reset_game()">RESET</button>
+				<button id="restore" disabled onclick="restore_game()">RESTORE</button>
 				<div id="moves"></div>
 			</div><div class="flex-spacer"></div>
 			<div class="movediv">
@@ -124,10 +125,16 @@
 		<p>
 			For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
 		</p>
+		<div>
+			<button id="import_btn" onclick="import_game(false)">Import</button>
+			<button id="replay_btn" onclick="import_game(true)">Replay</button>
+			<br>
+			<textarea id="input_area"></textarea>
+		</div>
 		<script>
 			"use strict";
 			const board_el = document.getElementById('board');
-			const board = make_board();
+			var board = make_board();
 			const header_el = document.getElementById('turn');
 			const move_list = document.getElementById('moves');
 			const symbols = {
@@ -200,9 +207,12 @@
 				undo_list.pop();
 				setup_turn();
 			}
-			function update(move_number) {
+			function execute(move_number) {
 				apply_move(board, moves[move_number], false);
 				undo_list.push(moves[move_number]);
+				update();
+			}
+			function update(move_number) {
 				phase++;
 				if (phase == 3) {
 					phase = 1;
@@ -219,6 +229,103 @@
 			}
 			update_players();
 			setup_turn();
+
+			function download(text, name, type) {
+			  var a = document.getElementById("moves_export");
+			  var file = new Blob([text], {type: type});
+			  a.href = URL.createObjectURL(file);
+			  a.download = name;
+			}
+			function sleep(ms) {
+			  return new Promise(resolve => setTimeout(resolve, ms));
+			}
+
+			function export_game() {
+				download(JSON.stringify({
+					playernames: {
+						1: document.getElementById("P1-name").value,
+						2: document.getElementById("P2-name").value
+					},
+					session: "",
+					moveslist: undo_list,
+					boardstate: board
+				}), 'Honey-War-Log.json', 'application/json');
+			}
+			async function do_import_game(gamestate, slowmode) {
+				let moveslist;
+				if (gamestate instanceof Array) {
+					moveslist = gamestate;
+				} else {
+					moveslist = gamestate.moveslist;
+					if (gamestate.playernames) {
+						document.getElementById("P1-name").value = gamestate.playernames[1];
+						document.getElementById("P2-name").value = gamestate.playernames[2];
+						update_players();
+					}
+				}
+				for (const move of moveslist) {
+					if (slowmode) {
+						var locs = [];
+						for (const k in move) {
+							if (k != "verb") {
+								locs.push(board[move[k].loc].id);
+							}
+						}
+						highlight_spaces(locs);
+						await sleep(1500);
+					}
+					apply_move(board, move, false);
+					undo_list.push(move);
+					update();
+				}
+			}
+			function import_game(slowmode) {
+				reset_game();
+				const new_game = JSON.parse(document.getElementById("input_area").value);
+				if (new_game) {
+					do_import_game(new_game, slowmode);
+				}
+			}
+
+			var stash = [];
+			async function reset_game() {
+				stash.push({
+					s_board: JSON.stringify(board),
+					s_moves: undo_list,
+					s_moves_avail: moves,
+					s_player: player,
+					s_turn: turn,
+					s_phase: phase
+				});
+				for (let i = undo_list.length; i > 0 ; --i) {
+					apply_move(board, undo_list[i-1], true);
+				}
+				player = 1;
+				turn = 1;
+				phase = 2;
+				undo_list = [];
+				setup_turn();
+				document.getElementById("restore").disabled = false;
+
+			}
+			async function restore_game() {
+				const restore = stash[stash.length - 1];
+
+				board = JSON.parse(restore.s_board);
+				undo_list = restore.s_moves;
+				moves = restore.s_moves_avail;
+				player = restore.s_player;
+				turn = restore.s_turn;
+				phase = restore.s_phase;
+
+				setup_turn();
+
+				stash.pop();
+				document.getElementById("restore").disabled = (stash.length > 0) ? false : true;
+
+			}
+
+
 		</script>
 	</body>
 </html>

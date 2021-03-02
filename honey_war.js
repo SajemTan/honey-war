@@ -95,7 +95,7 @@ function draw_board(svg, board) {
 		const space = board[k];
 		const sx = space.cx - 25;
 		const sy = space.cy - 22;
-		s += '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color 
+		s += '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color
 		  + '.svg" class="space" id="' + space.id + '" width="50" />';
 		if (space.piece.player != 0 || space.piece.piece == "tower") {
 			let lab="";
@@ -441,7 +441,7 @@ function display_moves(board, moves, list) {
 			}
 		}
 		s += "<li><a class='move-item' onmouseover='highlight_spaces("
-		   + JSON.stringify(locs) + ");' onclick='update(" + i++ + ");'>";
+		   + JSON.stringify(locs) + ");' onclick='execute(" + i++ + ");'>";
 		if (mv.verb == "move") {
 			s += format_verb(mv.verb) + format_piece(mv.source.was)
 			   + " from " + mv.source.loc + " to " + mv.dest.loc;
