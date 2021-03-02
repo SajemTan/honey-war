@@ -118,7 +118,7 @@ function empty(board, pos) {
 }
 
 function enemy(board, pos, player) {
-	return exists(board, pos) && board[pos].piece.player == (3-player);
+	return exists(board, pos) && board[pos].piece.player == enemy_of[player];
 }
 
 function friendly(board, pos, player) {
@@ -256,7 +256,7 @@ function list_possible_moves(board, player, is_phase_2) {
 		const piece = board[pos].piece;
 		if (piece.player != player) { continue; }
 		if (piece.piece == "footsoldier") {
-			for (const [dx, dy] of [[forward, 0], [0, forward]]) {
+			for (const [dx, dy] of [[forward, 0], [0, forward], [-forward, 0], [0, -forward]]) {
 				const dist = [
 					pos,
 					[x+dx  , y+dy  ],
@@ -264,7 +264,11 @@ function list_possible_moves(board, player, is_phase_2) {
 				if (empty(board, dist[1])) {
 					moves.push(make_move(board, pos, dist[1]));
 				}
-				if (is_phase_2 &&
+				if (is_phase_2 && empty(board, dist[2])
+				    && exists(board, dist[1])
+				    && board[dist[1]].piece.player == player) {
+					moves.push(make_move(board, pos, dist[2]));
+				} else if (is_phase_2 &&
 				    enemy(board, dist[1], player) &&
 				    (empty(board, dist[2]) ||
 				     is_at(board, "castle", dist[1]))) {
