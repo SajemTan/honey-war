@@ -207,6 +207,13 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 			ret.source.is = {player: 0, piece: ""};
 		}
 	} else if (ret.attack.was.piece == "garrison") {
+		if (ret.source.was.piece != "infantry") {
+			delete ret.dest;
+		} else {
+			ret.dest.is.piece = "footsoldier";
+		}
+
+		ret.source.is = {player: 0, piece: ""};
 		ret.attack.is = {player: 0, piece: "tower"};
 	}
 	return ret;
@@ -341,7 +348,7 @@ function list_possible_moves(board, player, is_phase_2) {
 				if (empty(board, step1)) {
 					moves.push(make_move(board, pos, step1));
 				} else if (is_phase_2 && enemy(board, step1, player)) {
-					if (is_at(board, "castle", step1)) {
+					if (is_at(board, "castle", step1) || is_at(board, "garrison", step1)) {
 						// don't show fictitious landing positions if attacking castle
 						moves.push(make_attack(board, pos, pos, step1));
 					} else {
@@ -445,7 +452,8 @@ function display_moves(board, moves, list) {
 			if (mv.hasOwnProperty("dest")) {
 				s += " landing at " + mv.dest.loc;
 			} else if (mv.source.was.piece == "cavalry"
-			           && mv.attack.was.piece != "castle") {
+			           && mv.attack.was.piece != "castle"
+						  && mv.attack.was.piece != "garrison") {
 				s += " and retreat"
 			}
 		} else if (mv.verb == "garrison") {
