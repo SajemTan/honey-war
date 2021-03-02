@@ -102,7 +102,11 @@ function draw_board(svg, board) {
 			if (!space.piece.player == 0) {
 				lab += space.piece.player;
 			}
-			lab += symbols[space.piece.piece];
+			if (space.piece.piece == "castle" && space.piece.health == 1) {
+				lab += symbols["castle_damaged"];
+			} else {
+				lab += symbols[space.piece.piece];
+			}
 			s += '<image x="' + sx + '" y="' + sy
 			   + '" href="imgs/' + lab + '.svg" width="50" />';
 		}
