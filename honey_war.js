@@ -27,7 +27,7 @@ function* iterate_board(player) {
 function set_piece_symmetric(board, pos, piece) {
 	const [a,b] = pos;
 	board[[a,b]].piece = {player: 1, piece: piece};
-	board[[-a,-b]].piece = {player: 2, piece: piece};
+	board[[-b,-a]].piece = {player: 2, piece: piece};
 }
 
 function make_board() {
