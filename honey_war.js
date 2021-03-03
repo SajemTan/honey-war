@@ -24,11 +24,29 @@ function* iterate_board(player) {
 	}
 }
 
-function set_piece_symmetric(board, pos, piece) {
+function set_piece_symmetric(board, pos, piece, player = 1) {
 	const [a,b] = pos;
-	board[[a,b]].piece = {player: 1, piece: piece};
-	board[[-b,-a]].piece = {player: 2, piece: piece};
+	const opposite = function(){
+		if (opts.configuration = "rotated") {
+			return [-a,-b];
+		} else if (opts.configuration == "mirrored") {
+			return [-b,-a];
+		} else {
+			return pos;
+		}
+	}();
+
+	board[pos].piece = {player: player, piece: piece};
+	if (!are_same_coords(pos, opposite)) {
+		board[opposite].piece = {player: enemy_of[player], piece: piece};
+	}
 }
+
+const tower_arrangements = {
+	"3": [[2,-2],[0,0],[-2,2]],
+	"2": [[1,-1],[-1,1]],
+	"2w": [[2,-2],[-2,2]]
+};
 
 function make_board() {
 	let board = new Map();
@@ -53,6 +71,10 @@ function make_board() {
 	}
 
 	// no player
+	for (const pos of tower_arrangements[opts.towers]) {
+		board[pos].piece.piece = "tower";
+	}
+
 	board[[-2,2]].piece.piece = "tower";
 	board[[2,-2]].piece.piece = "tower";
 	board[[0,0]].piece.piece  = "tower";
@@ -268,7 +290,8 @@ function list_possible_moves(board, player, is_phase_2) {
 		const piece = board[pos].piece;
 		if (piece.player != player) { continue; }
 		if (piece.piece == "footsoldier") {
-			for (const [dx, dy] of [[forward, 0], [0, forward], [-forward, 0], [0, -forward]]) {
+			const back = [-forward, -forward];
+			for (const [dx, dy] of [[forward, 0], [0, forward], back]) {
 				const dist = [
 					pos,
 					[x+dx  , y+dy  ],
@@ -278,7 +301,8 @@ function list_possible_moves(board, player, is_phase_2) {
 				}
 				if (is_phase_2 && empty(board, dist[2])
 				    && exists(board, dist[1])
-				    && board[dist[1]].piece.player == player) {
+				    && board[dist[1]].piece.player == player
+				    && !are_same_coords([dx,dy], back)) {
 					moves.push(make_move(board, pos, dist[2]));
 				} else if (is_phase_2 &&
 				    enemy(board, dist[1], player) &&
