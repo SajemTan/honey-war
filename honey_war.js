@@ -99,6 +99,7 @@ function opt(option) {
 		document.getElementById('configmirrored').disabled = false;
 		break;
 	case 'friendly-footsoldiers':
+	case 'stranded-footsoldiers':
 		break;
 	case 'buff-footsoldiers':
 	case 'upgrade-footsoldiers':
@@ -106,12 +107,14 @@ function opt(option) {
 				= (document.getElementById('buff-footsoldiers').checked ||
 					document.getElementById('upgrade-footsoldiers').checked);
 		break;
-	case 'stranded-footsoldiers':
-		break;
-	case 'garrisonrange':
-		break;
+	case 'garrisonshort':
+	case 'garrisonlong':
+	case 'garrisonboth':
+	case 'buff-trebuchet':
 	case 'buff-infantry':
 		break;
+	default:
+		console.log('Unknown option toggled: "' + option + '"');
 	}
 }
 
@@ -272,6 +275,9 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 		is: {player: 0, piece: ""}
 	};
 	if (ret.source.was.piece == "trebuchet") {
+		if (opts.rules.IB && ret.attack.was.piece == "infantry") {
+			ret.attack.is = {player: ret.attack.was.player, piece: "footsoldier"};
+		}
 		delete ret.dest;
 		ret.source.is = ret.source.was;
 		if (ret.attack.was.piece == "castle") {
@@ -469,7 +475,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					}
 				}
 			}
-		} else if (piece.piece == "trebuchet" && is_phase_2) {
+		} else if (piece.piece == "trebuchet" && (is_phase_2 || opts.rules.bB)) {
 			for (const [dx, dy] of list_adjacent([0,0], player)) {
 				const dist = [
 					pos,
@@ -478,19 +484,39 @@ function list_possible_moves(board, player, is_phase_2) {
 				if (empty(board, dist[1])) {
 					moves.push(make_move(board, pos, dist[1]));
 				}
-				if (exists(board, dist[2]) && !empty(board, dist[2]) &&
+				if (is_phase_2 &&
+				    exists(board, dist[2]) && !empty(board, dist[2]) &&
 				    board[dist[2]].piece.player != player) {
 					moves.push(make_attack(board, pos, pos, dist[2]));
 				}
 			}
-		} else if (is_phase_2 && (piece.piece == "garrison"
-		                     || piece.piece == "castle")) {
+		} else if (is_phase_2 && piece.piece == "castle") {
 			for (const loc of list_adjacent(pos, player)) {
 				if (enemy(board, loc, player)) {
 					moves.push(make_attack(board, pos, pos, loc));
 				}
 			}
-		}
+		} else if (is_phase_2 && piece.piece == "garrison") {
+		  for (const [dx,dy] of list_adjacent([0,0], player)) {
+			  let dist = [];
+			  switch (opts.rules.Gr) {
+			  case 'both':
+				  dist.push([x+dx,y+dy]);
+			  case 'long':
+				  dist.push([x+2*dx,y+2*dy]);
+				  break;
+			  case 'short':
+			  default:
+				  dist = [[x+dx,y+dy]];
+				  break;
+			  }
+			  for (const loc of dist) {
+				  if (enemy(board, loc, player)) {
+					  moves.push(make_attack(board, pos, pos, loc));
+				  }
+			  }
+		  }
+	  }
 	}
 	return moves;
 }

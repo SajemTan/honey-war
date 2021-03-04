@@ -176,22 +176,26 @@
 					<div class="inset">
 						<div><span class="icon">1G</span><span class="piece">Garrison</span> range:</div>
 						<div><input type="radio" name="garrisonrange" id="garrisonshort"
-						value="garrisonshort" onchange="opt('garrisonshort')" checked disabled>
+						value="garrisonshort" onchange="opt('garrisonshort')" checked>
 						<label for="friendly-footsoldiers">Garrisons attack adjacent
 						hexes. (Standard)</label></div>
 						<div><input type="radio" name="garrisonrange" id="garrisonlong"
-						value="garrisonlong" onchange="opt('garrisonlong')" disabled>
+						value="garrisonlong" onchange="opt('garrisonlong')">
 						<label for="friendly-footsoldiers">Garrisons attack at double
 						range.</label></div>
 						<div><input type="radio" name="garrisonrange" id="garrisonboth"
-						value="garrisonboth" onchange="opt('garrisonboth')" disabled>
+						value="garrisonboth" onchange="opt('garrisonboth')">
 						<label for="friendly-footsoldiers">Garrisons attack at
 						standard and double range.</label></div>
 					</div>
 					<div class="inset">
-						<div><span class="icon">1B</span><span class="piece">Trebuchet</span> attacks:</div>
+						<div><span class="icon">1B</span><span class="piece">Trebuchets</span>:</div>
+						<div><input type="checkbox" id="buff-trebuchet"
+						onchange="opt('buff-trebuchet')">
+						<label for="buff-trebuchet">Trebuchets can move as a normal
+						action.</label></div>
 						<div><input type="checkbox" id="buff-infantry"
-						onchange="opt('buff-infantry')" disabled>
+						onchange="opt('buff-infantry')">
 						<label for="buff-infantry">Infantry survive bombardment as
 						footsoldiers.</label></div>
 					</div>
@@ -287,7 +291,8 @@
 					uF: false,
 					sF: false,
 					Gr: "short",
-					IB: false
+					IB: false,
+					bB: false
 				}
 			};
 
@@ -321,53 +326,98 @@
 					document.getElementById('towers3').checked = true;
 					opts.towers = '3';
 				}
+
+				if (document.getElementById('garrisonlong').checked) {
+					opts.rules.Gr = 'long';
+				} else if (document.getElementById('garrisonboth').checked) {
+					opts.rules.Gr = 'both';
+				} else {
+					document.getElementById('garrisonshort').checked = true;
+					opts.rules.Gr = 'short';
+				}
+
+				opts.rules.IB = document.getElementById('buff-infantry').checked;
+				opts.rules.bB = document.getElementById('buff-trebuchet').checked;
 				console.dir(opts);
 			}
-			opt();
-			set_opts();
 
 			function reset_opts_ui(options) {
 				if (options.configuration == 'rotated') {
 					document.getElementById('configrotated').checked = true;
 					document.getElementById('configmirrored').checked = false;
 					opts.configuration = 'rotated';
+					opt('rotated');
 				} else {
 					document.getElementById('configmirrored').checked = true;
 					document.getElementById('configrotated').checked = false;
 					opts.configuration = 'mirrored';
+					opt('mirrored');
 				}
 				if (options.board_size == 4) {
 					document.getElementById('boardsmall').checked = true;
 					document.getElementById('boardlarge').checked = false;
 					opts.board_size = 4;
+					opt('small');
 				} else {
 					document.getElementById('boardlarge').checked = true;
 					document.getElementById('boardsmall').checked = false;
 					opts.board_size = 5;
+					opt('large');
 				}
-				document.getElementById('towers3').checked = false;
-				document.getElementById('towers2').checked = false;
-				document.getElementById('towers2w').checked = false;
-				document.getElementById('towers1').checked = false;
-				document.getElementById('towers3t').checked = false;
-				document.getElementById('towers3tc').checked = false;
-				if (options.towers == '3') {
+				const tower_settings = [
+					'3','2','2w','1',
+					'3t','3tc',
+					'2mr','2ml'
+				];
+				let set = false;
+				for (const code of tower_settings) {
+					if (options.towers == code) {
+						document.getElementById('towers' + code).checked = true;
+						opts.towers = code;
+						set = true;
+						opt('t'+code);
+						break;
+					} else {
+						document.getElementById('towers' + code).checked = false;
+					}
+				}
+				if (!set) {
 					document.getElementById('towers3').checked = true;
-				} else if (options.towers == '2') {;
-					document.getElementById('towers2').checked = true;
-				} else if (options.towers == '2w') {
-					document.getElementById('towers2w').checked = true;
-				} else if (options.towers == '1') {
-					document.getElementById('towers1').checked = true;
-				} else if (options.towers == '3t') {
-					document.getElementById('towers3t').checked = true;
-				} else if (options.towers == '3tc') {
-					document.getElementById('towers3tc').checked = true;
+					opts.towers = '3';
+					opt('t3');
+				}
+
+				if (options.rules.Gr == 'long') {
+					document.getElementById('garrisonlong').checked = true;
+					document.getElementById('garrisonshort').checked = false;
+					document.getElementById('garrisonboth').checked = false;
+					opts.rules.Gr = 'long';
+					opt('garrisonlong');
+				} else if (options.rules.Gr == 'both') {
+					document.getElementById('garrisonboth').checked = true;
+					document.getElementById('garrisonlong').checked = false;
+					document.getElementById('garrisonshort').checked = false;
+					opts.rules.Gr = 'both';
+					opt('garrisonboth');
 				} else {
-					document.getElementById('towers3').checked = true;
+					document.getElementById('garrisonshort').checked = true;
+					document.getElementById('garrisonlong').checked = false;
+					document.getElementById('garrisonboth').checked = false;
+					opts.rules.Gr = 'short';
+					opt('garrisonshort');
 				}
+
+				if (document.getElementById('buff-infantry').checked = opts.rules.IB) {
+					opt('buff-infantry');
+				}
+				if (document.getElementById('buff-trebuchet').checked = opts.rules.bB) {
+					opt('buff-trebuchet');
+				}
+
 				console.dir(opts);
 			}
+			set_opts();
+			reset_opts_ui(opts);
 
 			var board = make_board();
 
