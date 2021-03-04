@@ -12,11 +12,16 @@
 			}
 			.flex-container > * {
 				display: inline-block;
+				flex: 1 1 auto;
 				vertical-align: top;
+			}
+			#moves {
+				display: inline;
 			}
 			#moves > ol {
 				overflow-y: scroll;
-				max-height: 50vh;
+				display: revert;
+				max-height: 80%;
 			}
 			#moves > ol > li:nth-child(odd) {
 				background-color: #eee;
@@ -26,13 +31,15 @@
 			}
 			#mp-settings {
 				flex-direction: column;
+				flex-flow: row;
+				flex-wrap: wrap;
 			}
 			.inset {
 				border-style: inset none none inset;
 				border-radius: .4em;
 				padding: .5em;
 				border-width: thin;
-				background: #eeea;
+				background: #EEEEEE80;
 				mix-blend-mode: multiply;
 			}
 			#legend td > img {
@@ -42,9 +49,12 @@
 				color: black;
 				cursor: pointer;
 			}
+			h1 {
+				margin: 0;
+			}
 			h3 {
 				margin-top: .5em;
-				margin-bottom: .5em;
+				margin-bottom: .4em;
 			}
 			h4 {
 				margin: 0;
@@ -81,40 +91,26 @@
 			.hidden-space {
 				display: inline-block;
 			}
-			@media screen and (min-width: 990px) {
+			@media screen and (min-width: 800px) {
 				#board {
 					max-height: 500px;
-					width: 40%;
+					flex: 1 2 275px;
 				}
 				#move-display {
-					width: 60%;
+					max-height: 500px;
+					flex-grow: 4;
+					flex-shrink: 1;
 				}
 				#legend-display {
-					width: 30%;
+					flex: 0 0 min-content;
 				}
 				#mp-display {
-					width: 70%;
-				}
-			}
-			@media screen and (min-width: 800px) and (max-width: 989px) {
-				#board {
-					max-height: 400px;
-					width: 50%;
-				}
-				#move-display {
-					width: 50%;
-				}
-				#legend-display {
-					width: 32%;
-				}
-				#mp-display {
-					width: 68%;
+					flex: 1 1 min-content;
 				}
 			}
 			@media screen and (max-width: 799px) {
 				#board {
-					max-width: 500px;
-					margin: auto;
+					max-height: 400px;
 				}
 				#board, #move-display, #mp-display {
 					order: 1;
@@ -129,10 +125,10 @@
 		</style>
 	</head>
 	<body>
-		<h1 id="turn"></h1>
+		<h1 id="turn" class="inset"></h1>
 		<div class="flex-container">
-			<svg id="board" viewBox="0 0 500 500" class="movediv" />
-			<div id="move-display" class="movediv">
+			<svg id="board" viewBox="0 0 500 500" class="movediv inset" />
+			<div id="move-display" class="movediv inset">
 				<h3>Possible Moves</h3>
 				<button onclick="undo();">UNDO</button>
 				<a id="moves_export">
@@ -141,7 +137,8 @@
 				<button id="restore" disabled onclick="restore_game()">RESTORE</button>
 				<div id="moves"></div>
 			</div>
-			<div id="legend-display" class="movediv">
+		</div><div class="flex-container">
+			<div id="legend-display" class="movediv inset">
 				<h3>Legend of Pieces</h3>
 				<table id="legend">
 					<tr>
@@ -175,17 +172,26 @@
 						<td>Castle</td>
 					</tr>
 					<tr>
+						<td><img src="imgs/1D.svg"></td>
+						<td><img src="imgs/2D.svg"></td>
+						<td>Damaged Castle</td>
+					</tr>
+					<tr>
 						<td><img src="imgs/1G.svg"></td>
 						<td><img src="imgs/2G.svg"></td>
 						<td>Tower/Garrison</td>
 					</tr>
 				</table>
+				<p>
+					For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
+				</p>
 			</div>
-			<div id="mp-display" class="movediv"> <!--style="max-width: 550px;">-->
+			<div id="mp-display" class="movediv inset"> <!--style="max-width: 550px;">-->
 				<h3>Settings</h3>
-				<div id="mp-settings" class="flex-container inset">
-					<h3>Player Names</h3>
+				<div id="mp-settings" class="flex-container">
+					<div>
 					<div class="inset">
+						<h3>Player Names</h3>
 						<span class="icon">1C</span>
 						<input type="text" class="inline-input"
 							id="P1-name" value="Player 1" onchange="update_players()"><br>
@@ -193,10 +199,10 @@
 						<input type="text" class="inline-input"
 							id="P2-name" value="Player 2" onchange="update_players()">
 					</div>
-					<h3>Game Settings</h3>
 					<div class="inset">
+						<h3>Game Settings</h3>
 						<div>
-							<h4>Configuration:</h4>
+						<h4>Configuration:</h4>
 							<input type="radio" name="boardconfig" id="configmirrored"
 							value="mirrored" onchange="opt('mirrored')" checked>
 							<label for="configmirrored">Mirrored</label>
@@ -214,8 +220,8 @@
 							<label for="boardsmall">9 (Small, 1-2 towers recommended)</label>
 						</div>
 						<div>
-							<h4><span class="icon">T</span><span class="piece">Tower</span> configuration:</h4>
 							<div class="inset">
+								<h4><span class="icon">T</span><span class="piece">Tower</span> configuration:</h4>
 								<input type="radio" name="towerconfig" id="towers3"
 								value="3" onchange="opt('t3')" checked>
 								<label for="towers3">3</label>
@@ -245,6 +251,8 @@
 							</div>
 						</div>
 					</div>
+					</div>
+					<div class="inset">
 					<h3>Rule variations</h3>
 					<div class="inset">
 						<div><span class="icon">1F</span><span class="piece">Footsoldier</span> mobility:</div>
@@ -291,23 +299,22 @@
 						<label for="buff-infantry">Infantry survive bombardment as
 						footsoldiers.</label></div>
 					</div>
-					<h3>Multiplayer</h3>
 					<div class="inset">
+						<h3>Multiplayer</h3>
 						Session ID: <input type="text" id="sessionID">
 						<button id="getNewSession">New</button>
 					</div>
-					<button id="reset" class="button" onclick="reset_game()">Apply and reset game</button>
+					<button id="reset" class="button" onclick="reset_game()">Apply
+					and reset game</button>
+					</div>
+					<div class="inset">
+						<button id="import_btn" onclick="import_game(false)">Import</button>
+						<button id="replay_btn" onclick="import_game(true)">Replay</button>
+						<br>
+						<textarea id="input_area"></textarea>
+					</div>
 				</div>
 			</div>
-		</div>
-		<p>
-			For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
-		</p>
-		<div>
-			<button id="import_btn" onclick="import_game(false)">Import</button>
-			<button id="replay_btn" onclick="import_game(true)">Replay</button>
-			<br>
-			<textarea id="input_area"></textarea>
 		</div>
 		<script>
 			"use strict";
