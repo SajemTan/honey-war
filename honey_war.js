@@ -275,12 +275,17 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 		is: {player: 0, piece: ""}
 	};
 	if (ret.source.was.piece == "trebuchet") {
-		if (opts.rules.IB && ret.attack.was.piece == "infantry") {
-			ret.attack.is = {player: ret.attack.was.player, piece: "footsoldier"};
-		}
 		delete ret.dest;
 		ret.source.is = ret.source.was;
-		if (ret.attack.was.piece == "castle") {
+		if (ret.attack.was.piece == "infantry") {
+			if (opts.rules.IB) {
+				ret.attack.is = {player: ret.attack.was.player, piece: "footsoldier"};
+			} else {
+				ret.verb = "destroy";
+			}
+		} else if (ret.attack.was.piece == "garrison") {
+			ret.verb = "destroy";
+		} else if (ret.attack.was.piece == "castle") {
 			ret.verb = "win";
 		}
 	} else if (ret.attack.was.piece == "infantry") {
@@ -570,7 +575,7 @@ function display_moves(board, moves, list) {
 		if (mv.verb == "move") {
 			s += format_verb(mv.verb) + format_piece(mv.source.was)
 			   + " from " + mv.source.loc + " to " + mv.dest.loc;
-		} else if (mv.verb == "attack") {
+		} else if (mv.verb == "attack" || mv.verb == "destroy") {
 			s += format_verb(mv.verb)
 			   + format_piece(mv.attack.was) + " at " + mv.attack.loc
 			   + " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
