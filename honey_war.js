@@ -451,10 +451,16 @@ function display_moves(board, moves, list) {
 			   + " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
 			if (mv.hasOwnProperty("dest")) {
 				s += " landing at " + mv.dest.loc;
+				if (mv.source.was.piece != mv.dest.is.piece &&
+						mv.dest.is.piece != "") {
+					s += " as " + format_piece(mv.dest.is);
+				}
 			} else if (mv.source.was.piece == "cavalry"
 			           && mv.attack.was.piece != "castle"
 						  && mv.attack.was.piece != "garrison") {
-				s += " and retreat"
+				s += " and retreat";
+			} else if (!(mv.source.was.piece in ["tower", "garrison"])) {
+			    s += " and destroy piece";
 			}
 		} else if (mv.verb == "garrison") {
 			//s += format_piece({piece: mv.verb, player: mv.source.was.player})
