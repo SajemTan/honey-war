@@ -50,18 +50,32 @@ const tower_arrangements = {
 	"3": [[2,-2],[0,0],[-2,2]],
 	"2": [[1,-1],[-1,1]],
 	"2w": [[2,-2],[-2,2]],
-	"1": [[0,0]]
+	"1": [[0,0]],
+	"3t": [[2,-1],[0,0],[-2,1]],
+	"3tc": [[1,-2],[0,0],[-1,2]],
+	"2mr": [[-1,1],[2,-2]],
+	"2ml": [[-2,2],[1,-1]]
 };
 
 function opt(option) {
 	switch (option) {
 	case 'mirrored':
+		document.getElementById('towers3t').disabled = true;
+		document.getElementById('towers3tc').disabled = true;
+
+		document.getElementById('towers2mr').disabled = false;
+		document.getElementById('towers2ml').disabled = false;
+		break;
 	case 'rotated':
+		document.getElementById('towers2mr').disabled = true;
+		document.getElementById('towers2ml').disabled = true;
+
+		document.getElementById('towers3t').disabled = false;
+		document.getElementById('towers3tc').disabled = false;
 		break;
 	case 'large':
-		document.getElementById('towers3').disabled = false;
-		document.getElementById('towers2').disabled = false;
-		document.getElementById('towers2w').disabled = false;
+		//document.getElementById('towers3').disabled = false;
+		//document.getElementById('towers2w').disabled = false;
 		break;
 	case 'small':
 		//document.getElementById('towers3').disabled = true;
@@ -71,6 +85,18 @@ function opt(option) {
 	case 't2':
 	case 't2w':
 	case 't1':
+		document.getElementById('configmirrored').disabled = false;
+		document.getElementById('configrotated').disabled = false;
+		break;
+	case 't3t':
+	case 't3tc':
+		document.getElementById('configmirrored').disabled = true;
+		document.getElementById('configrotated').disabled = false;
+		break;
+	case 't2mr':
+	case 't2ml':
+		document.getElementById('configrotated').disabled = true;
+		document.getElementById('configmirrored').disabled = false;
 		break;
 	case 'friendly-footsoldiers':
 		break;

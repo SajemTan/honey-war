@@ -106,27 +106,51 @@
 						<div>
 							<h4>Configuration:</h4>
 							<input type="radio" name="boardconfig" id="configmirrored"
-							value="mirrored" onchange="opt('mirrored')" checked>Mirrored</input>
+							value="mirrored" onchange="opt('mirrored')" checked>
+							<label for="configmirrored">Mirrored</label>
 							<input type="radio" name="boardconfig" id="configrotated"
-							value="rotated" onchange="opt('rotated')">Rotated</input>
+							value="rotated" onchange="opt('rotated')">
+							<label for="configrotated">Rotated</label>
 						</div>
 						<div>
 							<h4>Board diameter:</h4>
 							<input type="radio" name="boardsize" id="boardlarge"
-							value="large" onchange="opt('large')" checked>11 (Standard)</input>
+							value="large" onchange="opt('large')" checked>
+							<label for="boardlarge">11 (Standard)</label>
 							<input type="radio" name="boardsize" id="boardsmall"
-							value="small" onchange="opt('small')">9 (Small, 1-2 towers recommended)</input>
+							value="small" onchange="opt('small')">
+							<label for="boardsmall">9 (Small, 1-2 towers recommended)</label>
 						</div>
 						<div>
 							<h4><span class="icon">T</span><span class="piece">Tower</span> configuration:</h4>
-							<input type="radio" name="towerconfig" id="towers3"
-							value="3" onchange="opt('t3')" checked>3</input>
-							<input type="radio" name="towerconfig" id="towers2"
-							value="2" onchange="opt('t2')">2</input>
-							<input type="radio" name="towerconfig" id="towers2w"
-							value="2w" onchange="opt('t2w')">2, widely spaced</input>
-							<input type="radio" name="towerconfig" id="towers1"
-							value="1" onchange="opt('t1')">1</input>
+							<div class="inset">
+								<input type="radio" name="towerconfig" id="towers3"
+								value="3" onchange="opt('t3')" checked>
+								<label for="towers3">3</label>
+								<input type="radio" name="towerconfig" id="towers2"
+								value="2" onchange="opt('t2')">
+								<label for="towers2">2</label>
+								<input type="radio" name="towerconfig" id="towers2w"
+								value="2w" onchange="opt('t2w')">
+								<label for="towers2w">2, widely spaced</label>
+								<input type="radio" name="towerconfig" id="towers1"
+								value="1" onchange="opt('t1')">
+								<label for="towers1">1</label>
+								<br/>
+								<input type="radio" name="towerconfig" id="towers3t"
+								value="3t" onchange="opt('t3t')">
+								<label for="towers3t">3, rotated</label>
+								<input type="radio" name="towerconfig" id="towers3tc"
+								value="3tc" onchange="opt('t3tc')">
+								<label for="towers3tc">3, counter-rotated</label>
+								<br/>
+								<input type="radio" name="towerconfig" id="towers2mr"
+								value="2mr" onchange="opt('t2mr')">
+								<label for="towers2mr">2, right biased</label>
+								<input type="radio" name="towerconfig" id="towers2ml"
+								value="2ml" onchange="opt('t2ml')">
+								<label for="towers2ml">2, left biased</label>
+							</div>
 						</div>
 					</div>
 					<h3>Rule variations</h3>
@@ -134,43 +158,42 @@
 						<div><span class="icon">1F</span><span class="piece">Footsoldier</span> mobility:</div>
 						<div><input type="checkbox" id="friendly-footsoldiers"
 						onchange="opt('friendly-footsoldiers')" checked disabled>
-							Footsoldiers move through friendlies in phase 2.
-						</input></div>
+						<label for="friendly-footsoldiers">Footsoldiers move through
+						friendlies in phase 2.</label></div>
 						<div><input type="checkbox" id="buff-footsoldiers"
 						onchange="opt('buff-footsoldiers')" checked disabled>
-							Footsoldiers can move backward.
-						</input></div>
+						<label for="buff-footsoldiers">Footsoldiers can move backward.
+						</label></div>
 						<div><input type="checkbox" id="upgrade-footsoldiers"
 						onchange="opt('upgrade-footsoldiers')" disabled>
-							Footsoldiers become infantry on reaching the end of the
-							board.
-						</input></div>
+						<label for="upgrade-footsoldiers">Footsoldiers become infantry
+						on reaching the end of the board.</label></div>
 						<div><input type="checkbox" id="stranded-footsoldiers"
-						onchange="opt('stranged-footsoldiers')" disabled>
-							Footsoldiers can attack the castle backward as a special case.
-						</input></div>
+						onchange="opt('stranded-footsoldiers')" disabled>
+						<label for="stranded-footsoldiers">Footsoldiers can attack the
+						castle backward as a special case.</label></div>
 					</div>
 					<div class="inset">
 						<div><span class="icon">1G</span><span class="piece">Garrison</span> range:</div>
 						<div><input type="radio" name="garrisonrange" id="garrisonshort"
 						value="garrisonshort" onchange="opt('garrisonshort')" checked disabled>
-							Garrisons attack adjacent hexes.
-						</input></div>
+						<label for="friendly-footsoldiers">Garrisons attack adjacent
+						hexes. (Standard)</label></div>
 						<div><input type="radio" name="garrisonrange" id="garrisonlong"
 						value="garrisonlong" onchange="opt('garrisonlong')" disabled>
-							Garrisons attack at double range.
-						</input></div>
+						<label for="friendly-footsoldiers">Garrisons attack at double
+						range.</label></div>
 						<div><input type="radio" name="garrisonrange" id="garrisonboth"
 						value="garrisonboth" onchange="opt('garrisonboth')" disabled>
-							Garrisons attack at standard and double range.
-						</input></div>
+						<label for="friendly-footsoldiers">Garrisons attack at
+						standard and double range.</label></div>
 					</div>
 					<div class="inset">
 						<div><span class="icon">1B</span><span class="piece">Trebuchet</span> attacks:</div>
 						<div><input type="checkbox" id="buff-infantry"
 						onchange="opt('buff-infantry')" disabled>
-							Infantry survive bombardment as footsoldiers.
-						</input></div>
+						<label for="buff-infantry">Infantry survive bombardment as
+						footsoldiers.</label></div>
 					</div>
 					<h3>Multiplayer</h3>
 					<div class="inset">
@@ -281,18 +304,26 @@
 					document.getElementById('boardlarge').checked = true;
 					opts.board_size = 5;
 				}
-				if (document.getElementById('towers2').checked) {
-					opts.towers = '2';
-				} else if (document.getElementById('towers2w').checked) {
-					opts.towers = '2w';
-				} else if (document.getElementById('towers1').checked) {
-					opts.towers = '1';
-				} else {
+				const tower_settings = [
+					'3','2','2w','1',
+					'3t','3tc',
+					'2mr','2ml'
+				];
+				let set = false;
+				for (const code of tower_settings) {
+					if (document.getElementById('towers' + code).checked) {
+						opts.towers = code;
+						set = true;
+						break;
+					}
+				}
+				if (!set) {
 					document.getElementById('towers3').checked = true;
 					opts.towers = '3';
 				}
 				console.dir(opts);
 			}
+			opt();
 			set_opts();
 
 			function reset_opts_ui(options) {
@@ -318,6 +349,8 @@
 				document.getElementById('towers2').checked = false;
 				document.getElementById('towers2w').checked = false;
 				document.getElementById('towers1').checked = false;
+				document.getElementById('towers3t').checked = false;
+				document.getElementById('towers3tc').checked = false;
 				if (options.towers == '3') {
 					document.getElementById('towers3').checked = true;
 				} else if (options.towers == '2') {;
@@ -326,6 +359,10 @@
 					document.getElementById('towers2w').checked = true;
 				} else if (options.towers == '1') {
 					document.getElementById('towers1').checked = true;
+				} else if (options.towers == '3t') {
+					document.getElementById('towers3t').checked = true;
+				} else if (options.towers == '3tc') {
+					document.getElementById('towers3tc').checked = true;
 				} else {
 					document.getElementById('towers3').checked = true;
 				}
