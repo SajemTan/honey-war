@@ -17,12 +17,15 @@
 			.flex-spacer {
 				width: 1em;
 			}
-			#moves {
+			#moves > ol {
 				overflow-y: scroll;
 				max-height: 50vh;
 			}
 			#moves > ol > li:nth-child(odd) {
 				background-color: #eee;
+			}
+			#moves > ol > li:nth-child(even) {
+				background-color: #ddd;
 			}
 			#mp-settings {
 				flex-direction: column;
