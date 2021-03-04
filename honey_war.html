@@ -17,6 +17,13 @@
 			.flex-spacer {
 				width: 1em;
 			}
+			#moves {
+				overflow-y: scroll;
+				max-height: 50vh;
+			}
+			#moves > ol > li:nth-child(odd) {
+				background-color: #eee;
+			}
 			#mp-settings {
 				flex-direction: column;
 			}
@@ -55,30 +62,37 @@
 			}
 			@media screen and (min-width: 990px) {
 				#board {
-					width: 500px;
 					max-height: 500px;
-					max-width: 40%;
+					width: 40%;
 				}
 				#move-display {
-					min-width: 60%;
+					width: 60%;
+				}
+				#legend-display, #mp-display {
+					width: 33%;
 				}
 			}
 			@media screen and (min-width: 800px) and (max-width: 989px) {
 				#board {
-					width: 400px;
 					max-height: 400px;
-					max-width: 50%;
+					width: 50%;
 				}
 				#move-display {
-					min-width: 50%;
+					width: 50%;
+				}
+				#legend-display {
+					width: 40%;
+				}
+				#mp-display {
+					width: 60%;
 				}
 			}
 			@media screen and (max-width: 799px) {
 				#board {
 					max-width: 500px;
-					width: 100%;
+					margin: auto;
 				}
-				#move-display {
+				.flex-container > .movediv {
 					width: 100%;
 				}
 			}
@@ -87,14 +101,14 @@
 	<body>
 		<h1 id="turn"></h1>
 		<div class="flex-container">
-			<svg id="board" viewBox="0 0 500 500" />
+			<svg id="board" viewBox="0 0 500 500" class="movediv" />
 			<div id="move-display" class="movediv">
 				<h3>Possible Moves</h3>
 				<button onclick="undo();">UNDO</button>
 				<button id="reset" onclick="reset_game()">RESET</button>
 				<div id="moves"></div>
 			</div>
-			<div class="movediv">
+			<div id="legend-display" class="movediv">
 				<h3>Legend of Pieces</h3>
 				<table id="legend">
 					<tr>
@@ -134,14 +148,13 @@
 					</tr>
 				</table>
 			</div>
-			<div class="movediv">
+			<div id="mp-display" class="movediv">
 				<h3>Multiplayer Settings</h3>
 				<div id="mp-settings" class="flex-container">
 					<div>
 						<span class="icon">1C</span>
 						<input type="text" class="inline-input"
-							id="P1-name" value="Player 1" onchange="update_players()">
-						vs.
+							id="P1-name" value="Player 1" onchange="update_players()"><br>
 						<span class="icon">2C</span>
 						<input type="text" class="inline-input"
 							id="P2-name" value="Player 2" onchange="update_players()">
