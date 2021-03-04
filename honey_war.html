@@ -115,7 +115,7 @@
 							<input type="radio" name="boardsize" id="boardlarge"
 							value="large" onchange="opt('large')" checked>11 (Standard)</input>
 							<input type="radio" name="boardsize" id="boardsmall"
-							value="small" onchange="opt('small')" disabled>9 (Small, only two towers fit)</input>
+							value="small" onchange="opt('small')">9 (Small, 1-2 towers recommended)</input>
 						</div>
 						<div>
 							<h4><span class="icon">T</span><span class="piece">Tower</span> configuration:</h4>
@@ -125,6 +125,8 @@
 							value="2" onchange="opt('t2')">2</input>
 							<input type="radio" name="towerconfig" id="towers2w"
 							value="2w" onchange="opt('t2w')">2, widely spaced</input>
+							<input type="radio" name="towerconfig" id="towers1"
+							value="1" onchange="opt('t1')">1</input>
 						</div>
 					</div>
 					<h3>Rule variations</h3>
@@ -253,7 +255,7 @@
 			var current_move = 0;
 
 			var opts = {
-				board_size: "large",
+				board_size: 5,
 				towers: "3",
 				configuration: "rotated",
 				rules: {
@@ -261,7 +263,8 @@
 					bF: true,
 					uF: false,
 					sF: false,
-					Gr: "short"
+					Gr: "short",
+					IB: false
 				}
 			};
 
@@ -273,15 +276,17 @@
 					opts.configuration = 'mirrored';
 				}
 				if (document.getElementById('boardsmall').checked) {
-					opts.board_size = 'small';
+					opts.board_size = 4;
 				} else {
 					document.getElementById('boardlarge').checked = true;
-					opts.board_size = 'large';
+					opts.board_size = 5;
 				}
 				if (document.getElementById('towers2').checked) {
 					opts.towers = '2';
 				} else if (document.getElementById('towers2w').checked) {
 					opts.towers = '2w';
+				} else if (document.getElementById('towers1').checked) {
+					opts.towers = '1';
 				} else {
 					document.getElementById('towers3').checked = true;
 					opts.towers = '3';
@@ -289,6 +294,43 @@
 				console.dir(opts);
 			}
 			set_opts();
+
+			function reset_opts_ui(options) {
+				if (options.configuration == 'rotated') {
+					document.getElementById('configrotated').checked = true;
+					document.getElementById('configmirrored').checked = false;
+					opts.configuration = 'rotated';
+				} else {
+					document.getElementById('configmirrored').checked = true;
+					document.getElementById('configrotated').checked = false;
+					opts.configuration = 'mirrored';
+				}
+				if (options.board_size == 4) {
+					document.getElementById('boardsmall').checked = true;
+					document.getElementById('boardlarge').checked = false;
+					opts.board_size = 4;
+				} else {
+					document.getElementById('boardlarge').checked = true;
+					document.getElementById('boardsmall').checked = false;
+					opts.board_size = 5;
+				}
+				document.getElementById('towers3').checked = false;
+				document.getElementById('towers2').checked = false;
+				document.getElementById('towers2w').checked = false;
+				document.getElementById('towers1').checked = false;
+				if (options.towers == '3') {
+					document.getElementById('towers3').checked = true;
+				} else if (options.towers == '2') {;
+					document.getElementById('towers2').checked = true;
+				} else if (options.towers == '2w') {
+					document.getElementById('towers2w').checked = true;
+				} else if (options.towers == '1') {
+					document.getElementById('towers1').checked = true;
+				} else {
+					document.getElementById('towers3').checked = true;
+				}
+				console.dir(opts);
+			}
 
 			var board = make_board();
 
@@ -447,7 +489,7 @@
 					s_turn: turn,
 					s_phase: phase,
 
-					s_options: opts
+					s_options: {...opts}
 				});
 			}
 
@@ -470,9 +512,14 @@
 				board = JSON.parse(restore.s_board);
 				undo_list = restore.s_moves;
 				moves = restore.s_moves_avail;
+				current_move = restore.s_move;
+
 				player = restore.s_player;
 				turn = restore.s_turn;
 				phase = restore.s_phase;
+
+				reset_opts_ui(restore.s_options);
+				set_opts();
 
 				setup_turn();
 

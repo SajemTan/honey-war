@@ -1,10 +1,11 @@
 "use strict";
 
 function* iterate_board(player) {
+	const bound = opts.board_size;
 	if (player != 1) {
-		for (let x = 5; x >= -5; x--) {
-			let y0 = -5;
-			let y1 = 5;
+		for (let x = bound; x >= -bound; x--) {
+			let y0 = -bound;
+			let y1 = bound;
 			if (x < 0) { y1 += x; }
 			if (x > 0) { y0 += x; }
 			for (let y = y1; y >= y0; y--) {
@@ -12,9 +13,9 @@ function* iterate_board(player) {
 			}
 		}
 	} else {
-		for (let x = -5; x <= 5; x++) {
-			let y0 = -5;
-			let y1 = 5;
+		for (let x = -bound; x <= bound; x++) {
+			let y0 = -bound;
+			let y1 = bound;
 			if (x < 0) { y1 += x; }
 			if (x > 0) { y0 += x; }
 			for (let y = y0; y <= y1; y++) {
@@ -25,6 +26,9 @@ function* iterate_board(player) {
 }
 
 function set_piece_symmetric(board, pos, piece, player = 1) {
+	if (opts.board_size == 4 && pos[0] > 0 && pos[1] > 0) {
+		pos = [pos[0]-1,pos[1]-1];
+	}
 	const [a,b] = pos;
 	const opposite = function(){
 		if (opts.configuration == "rotated") {
@@ -45,7 +49,8 @@ function set_piece_symmetric(board, pos, piece, player = 1) {
 const tower_arrangements = {
 	"3": [[2,-2],[0,0],[-2,2]],
 	"2": [[1,-1],[-1,1]],
-	"2w": [[2,-2],[-2,2]]
+	"2w": [[2,-2],[-2,2]],
+	"1": [[0,0]]
 };
 
 function opt(option) {
@@ -59,13 +64,13 @@ function opt(option) {
 		document.getElementById('towers2w').disabled = false;
 		break;
 	case 'small':
-		document.getElementById('towers3').disabled = true;
-		document.getElementById('towers2').disabled = true;
-		document.getElementById('towers2w').disabled = true;
+		//document.getElementById('towers3').disabled = true;
+		//document.getElementById('towers2w').disabled = true;
 		break;
 	case 't3':
 	case 't2':
 	case 't2w':
+	case 't1':
 		break;
 	case 'friendly-footsoldiers':
 		break;
@@ -112,10 +117,13 @@ function make_board() {
 	}
 
 	// foot soldiers
-	for (const [a, b] of [[1,5],[1,4],[2,4],[2,3],[3,4],[2,2]]) {
+	for (const [a, b] of [[1,5],[1,4],[2,4],[2,3],[3,4]]) {
 		// take advantage of symmetry
 		set_piece_symmetric(board, [a,b], "footsoldier");
 		set_piece_symmetric(board, [b,a], "footsoldier");
+	}
+	if (opts.board_size == 5) {
+		set_piece_symmetric(board, [2,2], "footsoldier");
 	}
 
 	// infantry and cavalry are in opposite places left/right
@@ -283,9 +291,9 @@ function list_adjacent(pos, player) {
 	const a1 = [[x-1,y-1],[x,y-1],[x+1,y]];
 	const a2 = [[x+1,y+1],[x,y+1],[x-1,y]];
 	if (player != 2) {
-		return a1.concat(a2);
+		return [...a1, ...a2];
 	} else {
-		return a2.concat(a1);
+		return [...a2, ...a1];
 	}
 }
 
