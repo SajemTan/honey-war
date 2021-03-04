@@ -27,7 +27,7 @@ function* iterate_board(player) {
 function set_piece_symmetric(board, pos, piece, player = 1) {
 	const [a,b] = pos;
 	const opposite = function(){
-		if (opts.configuration = "rotated") {
+		if (opts.configuration == "rotated") {
 			return [-a,-b];
 		} else if (opts.configuration == "mirrored") {
 			return [-b,-a];
@@ -47,6 +47,42 @@ const tower_arrangements = {
 	"2": [[1,-1],[-1,1]],
 	"2w": [[2,-2],[-2,2]]
 };
+
+function opt(option) {
+	switch (option) {
+	case 'mirrored':
+	case 'rotated':
+		break;
+	case 'large':
+		document.getElementById('towers3').disabled = false;
+		document.getElementById('towers2').disabled = false;
+		document.getElementById('towers2w').disabled = false;
+		break;
+	case 'small':
+		document.getElementById('towers3').disabled = true;
+		document.getElementById('towers2').disabled = true;
+		document.getElementById('towers2w').disabled = true;
+		break;
+	case 't3':
+	case 't2':
+	case 't2w':
+		break;
+	case 'friendly-footsoldiers':
+		break;
+	case 'buff-footsoldiers':
+	case 'upgrade-footsoldiers':
+		document.getElementById('stranded-footsoldiers').disabled
+				= (document.getElementById('buff-footsoldiers').checked ||
+					document.getElementById('upgrade-footsoldiers').checked);
+		break;
+	case 'stranded-footsoldiers':
+		break;
+	case 'garrisonrange':
+		break;
+	case 'buff-infantry':
+		break;
+	}
+}
 
 function make_board() {
 	let board = new Map();
@@ -74,10 +110,6 @@ function make_board() {
 	for (const pos of tower_arrangements[opts.towers]) {
 		board[pos].piece.piece = "tower";
 	}
-
-	board[[-2,2]].piece.piece = "tower";
-	board[[2,-2]].piece.piece = "tower";
-	board[[0,0]].piece.piece  = "tower";
 
 	// foot soldiers
 	for (const [a, b] of [[1,5],[1,4],[2,4],[2,3],[3,4],[2,2]]) {

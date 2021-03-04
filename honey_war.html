@@ -19,6 +19,14 @@
 			#mp-settings {
 				flex-direction: column;
 			}
+			.inset {
+				border-style: inset none none inset;
+				border-radius: .4em;
+				padding: .5em;
+				border-width: thin;
+				background: #eeea;
+				mix-blend-mode: multiply;
+			}
 			#legend td > img {
 				width: 50px;
 			}
@@ -26,10 +34,26 @@
 				color: black;
 				cursor: pointer;
 			}
+			h3 {
+				margin-top: .5em;
+				margin-bottom: .5em;
+			}
+			h4 {
+				margin: 0;
+			}
+			input[disabled] {
+			    filter: invert(25%);
+			}
+			input[disabled] * {
+			    color: grey;
+			}
 			.move-item { }
 			.move-item:hover, .move-item:active {
 				text-decoration: underline;
 				color: blue;
+			}
+			.button {
+				width: max-content;
 			}
 			.verb {
 				text-transform: capitalize;
@@ -61,14 +85,14 @@
 				<a id="moves_export">
 					<button id="export" onclick="export_game()">EXPORT</button>
 				</a>
-				<button id="reset" onclick="reset_game()">RESET</button>
 				<button id="restore" disabled onclick="restore_game()">RESTORE</button>
 				<div id="moves"></div>
 			</div><div class="flex-spacer"></div>
-			<div class="movediv">
-				<h3>Multiplayer Settings</h3>
-				<div id="mp-settings" class="flex-container">
-					<div>
+			<div class="movediv" style="max-width: 550px;">
+				<h3>Settings</h3>
+				<div id="mp-settings" class="flex-container inset">
+					<h3>Player Names</h3>
+					<div class="inset">
 						<span class="icon">1C</span>
 						<input type="text" class="inline-input"
 							id="P1-name" value="Player 1" onchange="update_players()">
@@ -77,10 +101,81 @@
 						<input type="text" class="inline-input"
 							id="P2-name" value="Player 2" onchange="update_players()">
 					</div>
-					<div>
+					<h3>Game Settings</h3>
+					<div class="inset">
+						<div>
+							<h4>Configuration:</h4>
+							<input type="radio" name="boardconfig" id="configmirrored"
+							value="mirrored" onchange="opt('mirrored')" checked>Mirrored</input>
+							<input type="radio" name="boardconfig" id="configrotated"
+							value="rotated" onchange="opt('rotated')">Rotated</input>
+						</div>
+						<div>
+							<h4>Board diameter:</h4>
+							<input type="radio" name="boardsize" id="boardlarge"
+							value="large" onchange="opt('large')" checked>11 (Standard)</input>
+							<input type="radio" name="boardsize" id="boardsmall"
+							value="small" onchange="opt('small')" disabled>9 (Small, only two towers fit)</input>
+						</div>
+						<div>
+							<h4><span class="icon">T</span><span class="piece">Tower</span> configuration:</h4>
+							<input type="radio" name="towerconfig" id="towers3"
+							value="3" onchange="opt('t3')" checked>3</input>
+							<input type="radio" name="towerconfig" id="towers2"
+							value="2" onchange="opt('t2')">2</input>
+							<input type="radio" name="towerconfig" id="towers2w"
+							value="2w" onchange="opt('t2w')">2, widely spaced</input>
+						</div>
+					</div>
+					<h3>Rule variations</h3>
+					<div class="inset">
+						<div><span class="icon">1F</span><span class="piece">Footsoldier</span> mobility:</div>
+						<div><input type="checkbox" id="friendly-footsoldiers"
+						onchange="opt('friendly-footsoldiers')" checked disabled>
+							Footsoldiers move through friendlies in phase 2.
+						</input></div>
+						<div><input type="checkbox" id="buff-footsoldiers"
+						onchange="opt('buff-footsoldiers')" checked disabled>
+							Footsoldiers can move backward.
+						</input></div>
+						<div><input type="checkbox" id="upgrade-footsoldiers"
+						onchange="opt('upgrade-footsoldiers')" disabled>
+							Footsoldiers become infantry on reaching the end of the
+							board.
+						</input></div>
+						<div><input type="checkbox" id="stranded-footsoldiers"
+						onchange="opt('stranged-footsoldiers')" disabled>
+							Footsoldiers can attack the castle backward as a special case.
+						</input></div>
+					</div>
+					<div class="inset">
+						<div><span class="icon">1G</span><span class="piece">Garrison</span> range:</div>
+						<div><input type="radio" name="garrisonrange" id="garrisonshort"
+						value="garrisonshort" onchange="opt('garrisonshort')" checked disabled>
+							Garrisons attack adjacent hexes.
+						</input></div>
+						<div><input type="radio" name="garrisonrange" id="garrisonlong"
+						value="garrisonlong" onchange="opt('garrisonlong')" disabled>
+							Garrisons attack at double range.
+						</input></div>
+						<div><input type="radio" name="garrisonrange" id="garrisonboth"
+						value="garrisonboth" onchange="opt('garrisonboth')" disabled>
+							Garrisons attack at standard and double range.
+						</input></div>
+					</div>
+					<div class="inset">
+						<div><span class="icon">1B</span><span class="piece">Trebuchet</span> attacks:</div>
+						<div><input type="checkbox" id="buff-infantry"
+						onchange="opt('buff-infantry')" disabled>
+							Infantry survive bombardment as footsoldiers.
+						</input></div>
+					</div>
+					<h3>Multiplayer</h3>
+					<div class="inset">
 						Session ID: <input type="text" id="sessionID">
 						<button id="getNewSession">New</button>
 					</div>
+					<button id="reset" class="button" onclick="reset_game()">Apply and reset game</button>
 				</div>
 			</div>
 		</div>
@@ -161,7 +256,40 @@
 				board_size: "large",
 				towers: "3",
 				configuration: "rotated",
+				rules: {
+					fF: true,
+					bF: true,
+					uF: false,
+					sF: false,
+					Gr: "short"
+				}
 			};
+
+			function set_opts() {
+				if (document.getElementById('configrotated').checked) {
+					opts.configuration = 'rotated';
+				} else {
+					document.getElementById('configmirrored').checked = true;
+					opts.configuration = 'mirrored';
+				}
+				if (document.getElementById('boardsmall').checked) {
+					opts.board_size = 'small';
+				} else {
+					document.getElementById('boardlarge').checked = true;
+					opts.board_size = 'large';
+				}
+				if (document.getElementById('towers2').checked) {
+					opts.towers = '2';
+				} else if (document.getElementById('towers2w').checked) {
+					opts.towers = '2w';
+				} else {
+					document.getElementById('towers3').checked = true;
+					opts.towers = '3';
+				}
+				console.dir(opts);
+			}
+			set_opts();
+
 			var board = make_board();
 
 			var players = {1: "Player 1", 2: "Player 2"};
@@ -325,6 +453,7 @@
 
 			async function reset_game() {
 				stash_game();
+				set_opts();
 				board = make_board();
 				player = 1;
 				turn = 1;
