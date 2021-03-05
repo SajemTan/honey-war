@@ -1,5 +1,13 @@
 "use strict";
 
+var verbs = {
+	move: { past: "moved" },
+	attack: { past: "attacked" },
+	destroy: { past: "destroyed" },
+	garrison: { past: "garrisoned" },
+	win: { past: "won" }
+}
+
 function* iterate_board(player) {
 	const bound = opts.board_size;
 	if (player != 1) {
@@ -576,8 +584,17 @@ function highlight_spaces(ids) {
 	}
 }
 
-function format_verb(str) {
-	if (str == "win") { return icon_for("castle", player) + "<span class='win'>Win</span>" }
+function format_verb(verb, style) {
+	var str;
+	if (style == null || style == "imperative") {
+		str = verb;
+	} else {
+		str = verbs[verb][style];
+	}
+
+	if (str == "win") {
+		return icon_for("castle", player) + "<span class='win'>Win</span>"
+	}
 	return "<span class='verb'>" + str + "</span>";
 }
 
@@ -611,41 +628,45 @@ function display_moves(board, moves, list) {
 			}
 		}
 		s += "<li><a class='move-item' onmouseover='highlight_spaces("
-		   + JSON.stringify(locs) + ");' onclick='execute(" + i++ + ");'>";
-		if (mv.verb == "move") {
-			s += format_verb(mv.verb) + format_piece(mv.source.was)
-			   + " from " + mv.source.loc + " to " + mv.dest.loc;
-		} else if (mv.verb == "attack" || mv.verb == "destroy") {
-			s += format_verb(mv.verb)
-			   + format_piece(mv.attack.was) + " at " + mv.attack.loc
-			   + " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
-			if (mv.hasOwnProperty("dest")) {
-				s += " landing at " + mv.dest.loc;
-				if (mv.source.was.piece != mv.dest.is.piece &&
-						mv.dest.is.piece != "") {
-					s += " as " + format_piece(mv.dest.is);
-				}
-			} else if (mv.source.was.piece == "cavalry"
-			           && mv.attack.was.piece != "castle"
-						  && mv.attack.was.piece != "garrison") {
-				s += " and retreat";
-			}
-		} else if (mv.verb == "garrison") {
-			//s += format_piece({piece: mv.verb, player: mv.source.was.player})
-			s += format_verb(mv.verb)
-			   + format_piece(mv.dest.was) + " at " + mv.dest.loc
-			   + " with" + format_piece(mv.source.was) + " at " + mv.source.loc
-		} else if (mv.verb == "win") {
-			s += format_verb(mv.verb) + " with" + format_piece(mv.source.was)
-			   + " at " + mv.source.loc;
-		} else {
-			s += format_verb(mv.verb);
-		}
-
-		s += '</a></li>';
+			+ JSON.stringify(locs) + ");' onclick='execute(" + i++ + ");'>"
+			+ format_move(mv) + '</a></li>';
 	}
 	s += '</ol>';
 	list.innerHTML = s;
+}
+
+function format_move(mv, style) {
+	var s = "";
+	if (mv.verb == "move") {
+		s += format_verb(mv.verb, style) + format_piece(mv.source.was)
+			+ " from " + mv.source.loc + " to " + mv.dest.loc;
+	} else if (mv.verb == "attack" || mv.verb == "destroy") {
+		s += format_verb(mv.verb, style)
+			+ format_piece(mv.attack.was) + " at " + mv.attack.loc
+			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
+		if (mv.hasOwnProperty("dest")) {
+			s += " landing at " + mv.dest.loc;
+			if (mv.source.was.piece != mv.dest.is.piece &&
+					mv.dest.is.piece != "") {
+				s += " as " + format_piece(mv.dest.is);
+			}
+		} else if (mv.source.was.piece == "cavalry"
+					&& mv.attack.was.piece != "castle"
+						&& mv.attack.was.piece != "garrison") {
+			s += " and retreat";
+		}
+	} else if (mv.verb == "garrison") {
+		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
+		s += format_verb(mv.verb, style)
+			+ format_piece(mv.dest.was) + " at " + mv.dest.loc
+			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc
+	} else if (mv.verb == "win") {
+		s += format_verb(mv.verb, style) + " with" + format_piece(mv.source.was)
+			+ " at " + mv.source.loc;
+	} else {
+		s += format_verb(mv.verb, style);
+	}
+	return s;
 }
 
 function apply_move(board, move, undo) {

@@ -38,10 +38,10 @@
 			#moves > ol {
 				overflow-y: scroll;
 			}
-			#moves > ol > li:nth-child(odd) {
+			.striped-list > ol > li:nth-child(odd) {
 				background-color: #eee;
 			}
-			#moves > ol > li:nth-child(even) {
+			.striped-list > ol > li:nth-child(even) {
 				background-color: #ddd;
 			}
 			#mp-settings {
@@ -160,14 +160,14 @@
 					<h3>Possible Moves</h3>
 				</div>
 				<div>
-					<button onclick="undo();">UNDO</button>
-					<button onclick="redo();">REDO</button>
+					<button onclick="undo(true);">UNDO</button>
+					<button onclick="redo(true);">REDO</button>
 					<a id="moves_export">
 						<button id="export" onclick="export_game()">EXPORT</button>
 					</a>
 					<button id="restore" disabled onclick="restore_game()">RESTORE</button>
 				</div>
-				<div id="moves"></div>
+				<div id="moves" class="striped-list"></div>
 			</div>
 		</div><div class="flex-container">
 			<div id="legend-display" class="movediv inset">
@@ -348,11 +348,18 @@
 				</div>
 			</div>
 		</div>
+		<div class="flex-container">
+			<div class="movediv inset">
+				<h3>Timeline Controls</h3>
+				<div id="timeline" class="striped-list"></div>
+			</div>
+		</div>
 		<script>
 			"use strict";
 			const board_el = document.getElementById('board');
 			const header_el = document.getElementById('turn');
 			const move_list = document.getElementById('moves');
+			const timeline_el = document.getElementById('timeline');
 			const symbols = {
 				tower: "T",
 				footsoldier: "F",
@@ -570,9 +577,13 @@
 				write_title();
 				moves = list_possible_moves(board, player, (phase==2));
 				display_moves(board, moves, move_list);
+				show_timeline();
+				if (move_index != 0 && undo_list[move_index-1].verb == "win") {
+					move_list.innerHTML = "Game Over";
+				}
 			}
 
-			function undo() {
+			function undo(setup_after) {
 				if (turn == 1 && player == 1 && phase == 2) {
 					return;
 				} else if (phase == 2) {
@@ -587,28 +598,31 @@
 				}
 				apply_move(board, undo_list[move_index-1], true);
 				move_index--;
-				setup_turn();
+				if (setup_after) {
+					setup_turn();
+				}
 			}
 
-			function redo() {
+			function redo(setup_after) {
 				if (move_index < undo_list.length) {
 					apply_move(board, undo_list[move_index], false);
 					move_index++;
-					update();
+					update_turninfo();
+				}
+				if (setup_after) {
+					setup_turn();
 				}
 			}
 
 			function goto(position) {
 				while (move_index != position) {
 					if (move_index > position) {
-						apply_move(board, undo_list[move_index], true);
-						move_index--;
+						undo(false);
 					} else {
-						apply_move(board, undo_list[move_index], false);
-						move_index++;
+						redo(false);
 					}
 				}
-				update();
+				setup_turn();
 			}
 
 			function execute(move_number) {
@@ -621,7 +635,7 @@
 				update();
 			}
 
-			function update() {
+			function update_turninfo() {
 				phase++;
 				if (phase == 3) {
 					phase = 1;
@@ -631,10 +645,11 @@
 						turn++;
 					}
 				}
+			}
+
+			function update() {
+				update_turninfo();
 				setup_turn();
-				if (undo_list[undo_list.length-1].verb == "win") {
-					move_list.innerHTML = "Game Over";
-				}
 			}
 			update_players();
 			setup_turn();
@@ -768,6 +783,32 @@
 
 				stash.pop();
 				document.getElementById("restore").disabled = (stash.length > 0) ? false : true;
+			}
+
+			function show_timeline() {
+				var s = "<ol>";
+				var l_turn = 1;
+				var l_player = 1;
+				var l_phase = 2;
+
+				for (const [idx, mv] of undo_list.entries()) {
+					s += "<li><a class='move-item' onclick='goto(" + idx + ")'>" + l_turn + "/"
+					   + l_player + "/" + l_phase + ": " + format_player(l_player)
+					   + " " + format_move(mv, "past") + "</a></li>";
+
+					l_phase++;
+					if (l_phase == 3) {
+						l_phase = 1;
+						l_player++;
+
+						if (l_player == 3) {
+							l_player = 1;
+							l_turn++;
+						}
+					}
+				}
+				s += "</ol>";
+				timeline_el.innerHTML = s;
 			}
 		</script>
 	</body>
