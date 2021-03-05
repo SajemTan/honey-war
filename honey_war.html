@@ -722,8 +722,13 @@
 					}
 					apply_move(board, move, false);
 					undo_list.push(move);
-					update();
+					move_index++;
+					update_turninfo();
+					if (slowmode) {
+						setup_turn();
+					}
 				}
+				setup_turn();
 			}
 
 			function import_game(slowmode) {
