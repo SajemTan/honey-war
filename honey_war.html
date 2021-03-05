@@ -167,7 +167,6 @@
 					<a id="moves_export">
 						<button id="export" onclick="export_game()">EXPORT</button>
 					</a>
-					<button id="restore" disabled onclick="restore_game()">RESTORE</button>
 				</div>
 				<div id="moves" class="striped-list"></div>
 			</div>
@@ -353,12 +352,19 @@
 		<div class="flex-container">
 			<div class="movediv inset">
 				<h3>Current Game</h3>
-				Click on an entry to travel to that point. History is not deleted until
-				you make a move from a point in the past.
+				<p>
+					Click on an entry to travel to that point. History is not deleted until
+					you make a move from a point in the past.
+				</p>
 				<div id="timeline" class="striped-list"></div>
 			</div>
 			<div class="movediv inset">
 				<h3>Stored Games</h3>
+				<button id="save-game" onclick="save_game()">SAVE CURRENT STATE</button>
+				<br>
+				<p>
+					Click on one of the entries below to load that gamestate.
+				</p>
 				<div id="saves" class="striped-list"></div>
 			</div>
 		</div>
@@ -368,6 +374,7 @@
 			const header_el = document.getElementById('turn');
 			const move_list = document.getElementById('moves');
 			const timeline_el = document.getElementById('timeline');
+			const saves_el = document.getElementById('saves');
 			const symbols = {
 				tower: "T",
 				footsoldier: "F",
@@ -388,6 +395,7 @@
 			var moves = [];
 			var undo_list = [];
 			var move_index = 0;
+			var saves = [];
 
 			var opts = {
 				board_size: 5,
@@ -586,6 +594,7 @@
 				moves = list_possible_moves(board, player, (phase==2));
 				display_moves(board, moves, move_list);
 				show_timeline();
+				show_saves();
 				if (move_index != 0 && undo_list[move_index-1].verb == "win") {
 					move_list.innerHTML = "Game Over";
 				}
@@ -747,9 +756,8 @@
 				}
 			}
 
-			var stash = [];
-			function stash_game() {
-				stash.push({
+			function save_game() {
+				saves.push({
 					s_board: JSON.stringify(board),
 					s_moves: undo_list,
 					s_moves_avail: moves,
@@ -761,10 +769,11 @@
 
 					s_options: {...opts}
 				});
+				show_saves();
 			}
 
 			async function reset_game() {
-				stash_game();
+				save_game();
 				set_opts();
 				board = make_board();
 				player = 1;
@@ -773,12 +782,10 @@
 				move_index = 0;
 				undo_list = [];
 				setup_turn();
-				document.getElementById("restore").disabled = false;
-
 			}
 
-			async function restore_game() {
-				const restore = stash[stash.length - 1];
+			async function load_game(number) {
+				const restore = saves[number];
 
 				board = JSON.parse(restore.s_board);
 				undo_list = restore.s_moves;
@@ -793,9 +800,6 @@
 				set_opts();
 
 				setup_turn();
-
-				stash.pop();
-				document.getElementById("restore").disabled = (stash.length > 0) ? false : true;
 			}
 
 			function show_timeline() {
@@ -830,6 +834,20 @@
 				}
 				s += "</ol>";
 				timeline_el.innerHTML = s;
+			}
+
+			function show_saves() {
+				var s = "<ol>";
+
+				for (const [idx, g] of saves.entries()) {
+					s += "<li><a class='move-item' onclick='load_game(" + idx + ")'>Turn "
+						+ g.s_turn + ", " + format_player(g.s_player) + ", Phase " + g.s_phase
+						+ "</a></li>";
+				}
+
+				s += "</ol>";
+
+				saves_el.innerHTML = s;
 			}
 		</script>
 	</body>
