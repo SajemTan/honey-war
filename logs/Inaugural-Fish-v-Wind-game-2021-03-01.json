@@ -1,0 +1,4860 @@
+{
+  "playernames": {
+    "1": "Fish",
+    "2": "Wind"
+  },
+  "session": "",
+  "moveslist": [
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          5
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          4,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -5,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          4,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "garrison",
+      "source": {
+        "loc": [
+          2,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": "tower"
+        },
+        "is": {
+          "player": 1,
+          "piece": "garrison"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          5
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          -3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          0,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      },
+      "attack": {
+        "loc": [
+          1,
+          -3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          2,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "garrison"
+        },
+        "is": {
+          "player": 1,
+          "piece": "garrison"
+        }
+      },
+      "attack": {
+        "loc": [
+          2,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          4,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          4,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          4,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -5
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          0,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": "tower"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -1,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          5
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -2,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          0,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          4,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      },
+      "attack": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      },
+      "attack": {
+        "loc": [
+          -3,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -1,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -2,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": "tower"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -5,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 2,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          3,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          0,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -1,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          4,
+          5
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          5
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -1,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -1,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          4,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          3,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      },
+      "attack": {
+        "loc": [
+          2,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          3,
+          3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          2,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          5
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          5,
+          5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "attack": {
+        "loc": [
+          4,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "castle",
+          "health": 2
+        },
+        "is": {
+          "player": 1,
+          "piece": "castle",
+          "health": 1
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -2,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -3,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -5,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      },
+      "attack": {
+        "loc": [
+          -4,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 1,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      },
+      "attack": {
+        "loc": [
+          2,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "garrison"
+        },
+        "is": {
+          "player": 0,
+          "piece": "tower"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -1,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -5,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -3,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -5
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          -5
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -5
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      },
+      "attack": {
+        "loc": [
+          -2,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -5
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      },
+      "attack": {
+        "loc": [
+          -3,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          3,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      },
+      "attack": {
+        "loc": [
+          3,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -5,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -3,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          2,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": "tower"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          5
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          3,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          3,
+          2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      },
+      "attack": {
+        "loc": [
+          4,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "cavalry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          3,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          2,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          2,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          2,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "cavalry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          0,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          0,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          0,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          1,
+          1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          0
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          0,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -4,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      },
+      "attack": {
+        "loc": [
+          -2,
+          -1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -3,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          1
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          1
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -1,
+          -1
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "chariot"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -1,
+          -4
+        ],
+        "was": {
+          "player": 1,
+          "piece": "chariot"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "attack": {
+        "loc": [
+          -4,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "castle",
+          "health": 2
+        },
+        "is": {
+          "player": 2,
+          "piece": "castle",
+          "health": 1
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -2,
+          0
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -1,
+          0
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -3,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "trebuchet"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          0,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "attack",
+      "source": {
+        "loc": [
+          -2,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      },
+      "attack": {
+        "loc": [
+          -3,
+          -2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "trebuchet"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          2
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          5,
+          3
+        ],
+        "was": {
+          "player": 2,
+          "piece": "footsoldier"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          5,
+          4
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 2,
+          "piece": "footsoldier"
+        }
+      }
+    },
+    {
+      "verb": "move",
+      "source": {
+        "loc": [
+          -4,
+          -2
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "dest": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 0,
+          "piece": ""
+        },
+        "is": {
+          "player": 1,
+          "piece": "infantry"
+        }
+      }
+    },
+    {
+      "verb": "win",
+      "source": {
+        "loc": [
+          -4,
+          -3
+        ],
+        "was": {
+          "player": 1,
+          "piece": "infantry"
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      },
+      "attack": {
+        "loc": [
+          -4,
+          -4
+        ],
+        "was": {
+          "player": 2,
+          "piece": "castle",
+          "health": 1
+        },
+        "is": {
+          "player": 0,
+          "piece": ""
+        }
+      }
+    }
+  ],
+  "boardstate": {}
+}
