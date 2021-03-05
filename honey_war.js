@@ -251,6 +251,26 @@ function make_move(board, from_pos, to_pos) {
 			}
 		};
 	}
+	if (opts.rules.uF && board[from_pos].piece.piece == 'footsoldier') {
+		const player = board[from_pos].piece.player;
+		const bound = opts.board_size * (player == 1 ? -1 : 1);
+		if (to_pos[0] == bound || to_pos[1] == bound) {
+			return {
+				verb: "move",
+				source: {
+					loc: from_pos,
+					was: copy_piece(board[from_pos].piece),
+					is: {player: 0, piece: ""}
+				},
+				dest: {
+					loc: to_pos,
+					was: copy_piece(board[to_pos].piece),
+					is: {player: player, piece: "infantry"}
+				}
+			};
+		}
+	}
+
 	return {
 		verb: "move",
 		source: {
@@ -368,7 +388,8 @@ function list_possible_moves(board, player, is_phase_2) {
 		if (piece.player != player) { continue; }
 		if (piece.piece == "footsoldier") {
 			const back = [-forward, -forward];
-			for (const [dx, dy] of [[forward, 0], [0, forward], back]) {
+			const DF = [[forward, 0], [0, forward]];
+			for (const [dx, dy] of (opts.rules.bF ? [...DF, back] : DF)) {
 				const dist = [
 					pos,
 					[x+dx  , y+dy  ],
@@ -376,10 +397,9 @@ function list_possible_moves(board, player, is_phase_2) {
 				if (empty(board, dist[1])) {
 					moves.push(make_move(board, pos, dist[1]));
 				}
-				if (is_phase_2 && empty(board, dist[2])
-				    && exists(board, dist[1])
-				    && board[dist[1]].piece.player == player
-				    && !are_same_coords([dx,dy], back)) {
+				if (is_phase_2 && opts.rules.fF && !are_same_coords([dx,dy], back)
+				    && exists(board, dist[1]) && empty(board, dist[2])
+				    && board[dist[1]].piece.player == player) {
 					moves.push(make_move(board, pos, dist[2]));
 				} else if (is_phase_2 &&
 				    enemy(board, dist[1], player) &&
@@ -392,6 +412,26 @@ function list_possible_moves(board, player, is_phase_2) {
 					let mv = make_attack(board, pos, dist[2], dist[1]);
 					mv.dest.is.piece = "infantry";
 					moves.push(mv);
+				}
+			}
+			if (is_phase_2 && opts.rules.sF
+			    && (x == forward*opts.board_size || y == forward*opts.board_size)) {
+				for (const [dx,dy] of DF) {
+					const loc = [x-dx, y-dy];
+					if (exists(board, loc)) {
+						console.log("footsoldier at " + x + "," + y +
+										" looking for enemy castle at " + (x-dx) + "," + (y-dy));
+						console.log("\te:" + enemy(board, loc, player) +
+										"; c:" + is_at(board, "castle", loc) +
+										"; p:" + JSON.stringify(board[loc].piece));
+						if (enemy(board, loc, player) && is_at(board, "castle", loc)) {
+							console.log("Found a castle!");
+							moves.push(
+								make_attack(board, pos, pos, loc));
+						} else {
+							console.log("Didn't find a castle.");
+						}
+					}
 				}
 			}
 		} else if (piece.piece == "infantry") {

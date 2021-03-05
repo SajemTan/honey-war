@@ -51,7 +51,7 @@
 			}
 			.inset {
 				border-style: inset none none inset;
-				border-radius: .4em;
+				border-radius: 6px;
 				padding: .5em;
 				border-width: thin;
 				background: #EEEEEE80;
@@ -288,15 +288,15 @@
 					<div class="inset">
 						<div><span class="icon">1F</span><span class="piece">Footsoldier</span> mobility:</div>
 						<div><input type="checkbox" id="friendly-footsoldiers"
-						onchange="opt('friendly-footsoldiers')" checked disabled>
+						onchange="opt('friendly-footsoldiers')" checked>
 						<label for="friendly-footsoldiers">Footsoldiers move through
 						friendlies in phase 2.</label></div>
 						<div><input type="checkbox" id="buff-footsoldiers"
-						onchange="opt('buff-footsoldiers')" checked disabled>
+						onchange="opt('buff-footsoldiers')" checked>
 						<label for="buff-footsoldiers">Footsoldiers can move backward.
 						</label></div>
 						<div><input type="checkbox" id="upgrade-footsoldiers"
-						onchange="opt('upgrade-footsoldiers')" disabled>
+						onchange="opt('upgrade-footsoldiers')">
 						<label for="upgrade-footsoldiers">Footsoldiers become infantry
 						on reaching the end of the board.</label></div>
 						<div><input type="checkbox" id="stranded-footsoldiers"
@@ -428,8 +428,18 @@
 					opts.rules.Gr = 'short';
 				}
 
-				opts.rules.IB = document.getElementById('buff-infantry').checked;
-				opts.rules.bB = document.getElementById('buff-trebuchet').checked;
+				const checkboxes = [
+					['friendly-footsoldiers', 'fF'],
+					['buff-footsoldiers', 'bF'],
+					['upgrade-footsoldiers', 'uF'],
+					['stranded-footsoldiers', 'sF'],
+					['buff-infantry', 'bI'],
+					['buff-trebuchet', 'bB']
+				];
+
+				for (const [id, rule] of checkboxes) {
+					opts.rules[rule] = document.getElementById(id).checked;
+				}
 				console.dir(opts);
 			}
 
@@ -499,12 +509,20 @@
 					opt('garrisonshort');
 				}
 
-				// Assignment is intentional here
-				if (document.getElementById('buff-infantry').checked = opts.rules.IB) {
-					opt('buff-infantry');
-				}
-				if (document.getElementById('buff-trebuchet').checked = opts.rules.bB) {
-					opt('buff-trebuchet');
+				const checkboxes = [
+					['friendly-footsoldiers', 'fF'],
+					['buff-footsoldiers', 'bF'],
+					['upgrade-footsoldiers', 'uF'],
+					['stranded-footsoldiers', 'sF'],
+					['buff-infantry', 'bI'],
+					['buff-trebuchet', 'bB']
+				];
+
+				for (const [id, rule] of checkboxes) {
+					document.getElementById(id).checked = opts.rules[rule];
+					if (opts.rules[rule]) {
+						opt(id);
+					}
 				}
 
 				console.dir(opts);
@@ -632,6 +650,24 @@
 						document.getElementById("P2-name").value = gamestate.playernames[2];
 						update_players();
 					}
+					if (gamestate.options) {
+						opts = gamestate.options;
+					}/* else {
+						opts = {
+							board_size: 5,
+							towers: "3",
+							configuration: "rotated",
+							rules: {
+								fF: true,
+								bF: true,
+								uF: false,
+								sF: false,
+								Gr: "short",
+								IB: false,
+								bB: false
+							}
+						}
+					}*/
 				}
 				for (const move of moveslist) {
 					if (slowmode) {
@@ -650,9 +686,9 @@
 				}
 			}
 			function import_game(slowmode) {
-				reset_game();
 				const new_game = JSON.parse(document.getElementById("input_area").value);
 				if (new_game) {
+					reset_game();
 					do_import_game(new_game, slowmode);
 				}
 			}
