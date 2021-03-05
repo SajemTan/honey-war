@@ -161,6 +161,7 @@
 				</div>
 				<div>
 					<button onclick="undo();">UNDO</button>
+					<button onclick="redo();">REDO</button>
 					<a id="moves_export">
 						<button id="export" onclick="export_game()">EXPORT</button>
 					</a>
@@ -371,7 +372,7 @@
 			var phase = 2;
 			var moves = [];
 			var undo_list = [];
-			var current_move = 0;
+			var move_index = 0;
 
 			var opts = {
 				board_size: 5,
@@ -545,9 +546,11 @@
 				players[2] = encode(document.getElementById("P2-name").value);
 				write_title();
 			}
+
 			function format_player(player) {
 				return icon_for("castle", player) + '<text>' + players[player] + '</text>';
 			}
+
 			function draw_icons() {
 				for (let el of document.getElementsByClassName("icon")) {
 					const name = el.innerHTML;
@@ -561,12 +564,14 @@
 					+ ", " + format_player(player)
 					+ ", Phase " + phase;
 			}
+
 			function setup_turn() {
 				draw_board(board_el, board);
 				write_title();
 				moves = list_possible_moves(board, player, (phase==2));
 				display_moves(board, moves, move_list);
 			}
+
 			function undo() {
 				if (turn == 1 && player == 1 && phase == 2) {
 					return;
@@ -580,24 +585,29 @@
 					player = 2;
 					phase = 2;
 				}
-				apply_move(board, undo_list[undo_list.length-1], true);
-				current_move--;
-				undo_list.pop();
+				apply_move(board, undo_list[move_index-1], true);
+				move_index--;
 				setup_turn();
 			}
+
 			function redo() {
-				if (current_move < undo_list.length) {
-					apply_move(board, moves[current_move]);
-					current_move++;
+				if (move_index < undo_list.length) {
+					apply_move(board, undo_list[move_index], false);
+					move_index++;
 					update();
 				}
 			}
+
 			function execute(move_number) {
 				apply_move(board, moves[move_number], false);
+				while (move_index < undo_list.length) {
+					undo_list.pop();
+				}
 				undo_list.push(moves[move_number]);
-				current_move++;
+				move_index++;
 				update();
 			}
+
 			function update(move_number) {
 				phase++;
 				if (phase == 3) {
@@ -622,6 +632,7 @@
 			  a.href = URL.createObjectURL(file);
 			  a.download = name;
 			}
+
 			function sleep(ms) {
 			  return new Promise(resolve => setTimeout(resolve, ms));
 			}
@@ -638,6 +649,7 @@
 					options: opts
 				}), 'Honey-War-Log.json', 'application/json');
 			}
+
 			var autoplay_timer;
 			async function do_import_game(gamestate, slowmode) {
 				let moveslist;
@@ -685,6 +697,7 @@
 					update();
 				}
 			}
+
 			function import_game(slowmode) {
 				const new_game = JSON.parse(document.getElementById("input_area").value);
 				if (new_game) {
@@ -699,7 +712,7 @@
 					s_board: JSON.stringify(board),
 					s_moves: undo_list,
 					s_moves_avail: moves,
-					s_move: current_move,
+					s_move: move_index,
 
 					s_player: player,
 					s_turn: turn,
@@ -716,19 +729,20 @@
 				player = 1;
 				turn = 1;
 				phase = 2;
-				current_move = 0;
+				move_index = 0;
 				undo_list = [];
 				setup_turn();
 				document.getElementById("restore").disabled = false;
 
 			}
+
 			async function restore_game() {
 				const restore = stash[stash.length - 1];
 
 				board = JSON.parse(restore.s_board);
 				undo_list = restore.s_moves;
 				moves = restore.s_moves_avail;
-				current_move = restore.s_move;
+				move_index = restore.s_move;
 
 				player = restore.s_player;
 				turn = restore.s_turn;
@@ -741,10 +755,7 @@
 
 				stash.pop();
 				document.getElementById("restore").disabled = (stash.length > 0) ? false : true;
-
 			}
-
-
 		</script>
 	</body>
 </html>
