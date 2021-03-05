@@ -44,6 +44,10 @@
 			.striped-list > ol > li:nth-child(even) {
 				background-color: #ddd;
 			}
+			#saves ol li div {
+				display: flex;
+				justify-content: space-between;
+			}
 			#mp-settings {
 				flex-direction: column;
 				flex-flow: row;
@@ -86,6 +90,13 @@
 			.move-item:hover, .move-item:active {
 				text-decoration: underline;
 				color: blue;
+			}
+			.move-item.delete {
+				color: red;
+				font-style: italic;
+			}
+			.move-item.delete:hover, .move-item.delete:active {
+				color: purple;
 			}
 			.button {
 				width: max-content;
@@ -802,6 +813,11 @@
 				setup_turn();
 			}
 
+		 function delete_game(index) {
+			 saves.splice(index, 1);
+			 show_saves();
+		 }
+
 			function show_timeline() {
 				var l_turn = 1;
 				var l_player = 1;
@@ -814,8 +830,7 @@
 					s += "<li><a class='move-item "
 					   + (move_index == idx + 1 ? "selected" : "")
 					   + "' onclick='goto(" + (idx+1) + ")'>"
-
-					s += l_turn + "/" + l_player + "/" + l_phase + ": "
+					   + l_turn + "/" + l_player + "/" + l_phase + ":"
 					   + format_player(l_player) + " " + format_move(mv, "past")
 					   + "</a>";
 
@@ -840,9 +855,10 @@
 				var s = "<ol>";
 
 				for (const [idx, g] of saves.entries()) {
-					s += "<li><a class='move-item' onclick='load_game(" + idx + ")'>Turn "
-						+ g.s_turn + ", " + format_player(g.s_player) + ", Phase " + g.s_phase
-						+ "</a></li>";
+					s += "<li><div><a class='move-item' onclick='load_game(" + idx + ")'>Turn "
+					   + g.s_turn + "," + format_player(g.s_player) + ", Phase " + g.s_phase
+					   + "</a><a class='move-item delete' onclick='delete_game("
+					   + idx + ")'>(delete)</a></div></li>";
 				}
 
 				s += "</ol>";
