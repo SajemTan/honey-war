@@ -791,16 +791,33 @@
 			}
 
 			function show_timeline() {
-				var s = "<ol><li><a class='move-item' onclick='goto(0)'>Game start</li>"
+				var s = "<ol><li><a class='move-item' onclick='goto(0)'>";
 				var l_turn = 1;
 				var l_player = 1;
 				var l_phase = 2;
 
+				if (move_index == 0) {
+					s += "<em>Game begin</em></li>";
+				} else {
+					s += "Game begin</li>"
+				}
+
 				for (const [idx, mv] of undo_list.entries()) {
 					s += "<li><a class='move-item' onclick='goto(" + (idx+1) + ")'>"
-					   + l_turn + "/" + l_player + "/" + l_phase + ": "
+
+					if (move_index == idx + 1) {
+						s += "<em>";
+					}
+
+					s += l_turn + "/" + l_player + "/" + l_phase + ": "
 					   + format_player(l_player) + " " + format_move(mv, "past")
-					   + "</a></li>";
+					   + "</a>";
+
+					if (move_index == idx + 1) {
+						s += "</em>";
+					}
+
+					s += "</li>";
 
 					l_phase++;
 					if (l_phase == 3) {
