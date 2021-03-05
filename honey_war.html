@@ -598,6 +598,19 @@
 				}
 			}
 
+			function goto(position) {
+				while (move_index != position) {
+					if (move_index > position) {
+						apply_move(board, undo_list[move_index], true);
+						move_index--;
+					} else {
+						apply_move(board, undo_list[move_index], false);
+						move_index++;
+					}
+				}
+				update();
+			}
+
 			function execute(move_number) {
 				apply_move(board, moves[move_number], false);
 				while (move_index < undo_list.length) {
@@ -608,7 +621,7 @@
 				update();
 			}
 
-			function update(move_number) {
+			function update() {
 				phase++;
 				if (phase == 3) {
 					phase = 1;
