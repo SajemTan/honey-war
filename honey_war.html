@@ -37,7 +37,7 @@
 			}
 			#moves > ol {
 				overflow-y: scroll;
-				min-width: 40em;
+				/*min-width: 40em;*/
 				/*display: revert;
 				max-height: 80%;*/
 			}
@@ -120,10 +120,10 @@
 					/*flex: 1 2 275px;*/
 				}
 				#boarddiv {
-					display: inline-flex;
+
 				}
 				#move-display {
-					max-height: 500px;
+					height: 500px;
 					/*flex-grow: 4;
 					flex-shrink: 1;*/
 					grid-column: 2;
@@ -164,7 +164,9 @@
 	<body>
 		<h1 id="turn" class="inset"></h1>
 		<div id="gamediv" class="grid-container col">
-			<div id="boarddiv"><svg id="board" viewBox="0 0 500 500" class="movediv inset" /></div>
+			<div id="boarddiv" class="inset">
+				<svg id="board" viewBox="0 0 500 500" class="movediv" />
+			</div>
 			<div id="move-display" class="inset grid-container row">
 				<div>
 					<h3>Possible Moves</h3>
