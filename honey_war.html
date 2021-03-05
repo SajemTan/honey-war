@@ -80,7 +80,9 @@
 			input[disabled] * {
 			    color: grey;
 			}
-			.move-item { }
+			.move-item.selected {
+				text-decoration: underline;
+			}
 			.move-item:hover, .move-item:active {
 				text-decoration: underline;
 				color: blue;
@@ -350,8 +352,14 @@
 		</div>
 		<div class="flex-container">
 			<div class="movediv inset">
-				<h3>Timeline Controls</h3>
+				<h3>Current Game</h3>
+				Click on an entry to travel to that point. History is not deleted until
+				you make a move from a point in the past.
 				<div id="timeline" class="striped-list"></div>
+			</div>
+			<div class="movediv inset">
+				<h3>Stored Games</h3>
+				<div id="saves" class="striped-list"></div>
 			</div>
 		</div>
 		<script>
@@ -791,31 +799,21 @@
 			}
 
 			function show_timeline() {
-				var s = "<ol><li><a class='move-item' onclick='goto(0)'>";
 				var l_turn = 1;
 				var l_player = 1;
 				var l_phase = 2;
-
-				if (move_index == 0) {
-					s += "<em>Game begin</em></li>";
-				} else {
-					s += "Game begin</li>"
-				}
+				var s = "<ol><li><a class='move-item "
+					  + (move_index == 0 ? "selected" : "")
+					  + "' onclick='goto(0)'>Game begin</a></li>";
 
 				for (const [idx, mv] of undo_list.entries()) {
-					s += "<li><a class='move-item' onclick='goto(" + (idx+1) + ")'>"
-
-					if (move_index == idx + 1) {
-						s += "<em>";
-					}
+					s += "<li><a class='move-item "
+					   + (move_index == idx + 1 ? "selected" : "")
+					   + "' onclick='goto(" + (idx+1) + ")'>"
 
 					s += l_turn + "/" + l_player + "/" + l_phase + ": "
 					   + format_player(l_player) + " " + format_move(mv, "past")
 					   + "</a>";
-
-					if (move_index == idx + 1) {
-						s += "</em>";
-					}
 
 					s += "</li>";
 
