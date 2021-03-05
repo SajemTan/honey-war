@@ -19,13 +19,27 @@
 				flex: 1 1 auto;
 				vertical-align: top;
 			}
+			.grid-container {
+				display: grid;
+				gap: 0;
+			}
+			.col {
+				grid-auto-flow: column;
+				grid-template-columns: minmax(auto, max-content);
+			}
+			.row {
+				grid-auto-flow: row;
+				grid-template-rows: minmax(auto, max-content);
+				align-content: start;
+			}
 			#moves {
-				display: inline;
+				display: contents;
 			}
 			#moves > ol {
 				overflow-y: scroll;
-				display: revert;
-				max-height: 80%;
+				min-width: 40em;
+				/*display: revert;
+				max-height: 80%;*/
 			}
 			#moves > ol > li:nth-child(odd) {
 				background-color: #eee;
@@ -95,15 +109,22 @@
 			.hidden-space {
 				display: inline-block;
 			}
-			@media screen and (min-width: 800px) {
+			@media screen and (min-width: 850px) {
+				#gamediv {
+					grid-template-columns: minmax(auto, max-content) minmax(55%, auto);
+				}
 				#board {
 					max-height: 500px;
-					flex: 1 2 275px;
+					/*flex: 1 2 275px;*/
+				}
+				#boarddiv {
+					display: inline-flex;
 				}
 				#move-display {
 					max-height: 500px;
-					flex-grow: 4;
-					flex-shrink: 1;
+					/*flex-grow: 4;
+					flex-shrink: 1;*/
+					grid-column: 2;
 				}
 				#legend-display {
 					flex: 0 0 min-content;
@@ -112,11 +133,21 @@
 					flex: 1 1 min-content;
 				}
 			}
-			@media screen and (max-width: 799px) {
+			@media screen and (max-width: 849px) {
+				#gamediv {
+					display: flex;
+					flex-direction: column;
+				}
 				#board {
 					max-height: 400px;
 				}
-				#board, #move-display, #mp-display {
+				#boarddiv {
+					display: contents;
+				}
+				#board, #move-display {
+					width: 100%;
+				}
+				#mp-display {
 					order: 1;
 				}
 				#legend-display {
@@ -130,15 +161,19 @@
 	</head>
 	<body>
 		<h1 id="turn" class="inset"></h1>
-		<div class="flex-container">
-			<svg id="board" viewBox="0 0 500 500" class="movediv inset" />
-			<div id="move-display" class="movediv inset">
-				<h3>Possible Moves</h3>
-				<button onclick="undo();">UNDO</button>
-				<a id="moves_export">
-					<button id="export" onclick="export_game()">EXPORT</button>
-				</a>
-				<button id="restore" disabled onclick="restore_game()">RESTORE</button>
+		<div id="gamediv" class="grid-container col">
+			<div id="boarddiv"><svg id="board" viewBox="0 0 500 500" class="movediv inset" /></div>
+			<div id="move-display" class="inset grid-container row">
+				<div>
+					<h3>Possible Moves</h3>
+				</div>
+				<div>
+					<button onclick="undo();">UNDO</button>
+					<a id="moves_export">
+						<button id="export" onclick="export_game()">EXPORT</button>
+					</a>
+					<button id="restore" disabled onclick="restore_game()">RESTORE</button>
+				</div>
 				<div id="moves"></div>
 			</div>
 		</div><div class="flex-container">
