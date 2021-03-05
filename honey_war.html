@@ -786,15 +786,16 @@
 			}
 
 			function show_timeline() {
-				var s = "<ol>";
+				var s = "<ol><li><a class='move-item' onclick='goto(0)'>Game start</li>"
 				var l_turn = 1;
 				var l_player = 1;
 				var l_phase = 2;
 
 				for (const [idx, mv] of undo_list.entries()) {
-					s += "<li><a class='move-item' onclick='goto(" + idx + ")'>" + l_turn + "/"
-					   + l_player + "/" + l_phase + ": " + format_player(l_player)
-					   + " " + format_move(mv, "past") + "</a></li>";
+					s += "<li><a class='move-item' onclick='goto(" + (idx+1) + ")'>"
+					   + l_turn + "/" + l_player + "/" + l_phase + ": "
+					   + format_player(l_player) + " " + format_move(mv, "past")
+					   + "</a></li>";
 
 					l_phase++;
 					if (l_phase == 3) {
