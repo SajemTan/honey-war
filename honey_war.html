@@ -368,7 +368,7 @@
 		<div class="flex-container">
 			<div class="movediv inset">
 				<h3>Current Game</h3>
-				<button id="game-replay">REPLAY FROM POINT</button>
+				<button id="game-replay" onclick="replay_game();">Replay from point</button>
 				<p>
 					Click on an entry to travel to that point. History is not deleted until
 					you make a move from a point in the past.
@@ -748,14 +748,6 @@
 					if (step) {
 						for (const move of moveslist) {
 							/* if (slowmode) {
-								var locs = [];
-								for (const k in move) {
-									if (k != "verb") {
-										locs.push(board[move[k].loc].id);
-									}
-								}
-								highlight_spaces(locs);
-								await sleep(1500);
 							} */
 							apply_move(board, move, false);
 							undo_list.push(move);
@@ -766,6 +758,23 @@
 						undo_list = gamestate.moveslist;
 					}
 					setup_turn();
+				}
+			}
+
+			async function replay_game() {
+				while (move_index != undo_list.length) {
+					const move = undo_list[move_index];
+					let locs = [];
+					for (const k in move) {
+						if (k != "verb") {
+							locs.push(board[move[k].loc].id);
+						}
+					}
+					highlight_spaces(locs);
+					await sleep(1500);
+					apply_move(board, move, false);
+					update();
+					move_index++;
 				}
 			}
 
