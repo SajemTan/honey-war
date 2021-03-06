@@ -173,15 +173,41 @@
 					<h3>Possible Moves</h3>
 				</div>
 				<div>
-					<button onclick="undo(true);">UNDO</button>
-					<button onclick="redo(true);">REDO</button>
+					<button onclick="undo(true);">Undo</button>
+					<button onclick="redo(true);">Redo</button>
 					<a id="moves_export">
-						<button id="export" onclick="export_game()">EXPORT</button>
+						<button id="export" onclick="export_game()">Export</button>
 					</a>
 				</div>
 				<div id="moves" class="striped-list"></div>
 			</div>
-		</div><div class="flex-container">
+		</div>
+		<div class="flex-container">
+			<div class="movediv inset">
+				<h3>Current Game</h3>
+				<button id="game-replay" onclick="replay_game();">
+					Replay from point
+				</button>
+				<button id="replay-pause" onclick="should_replay = false;" disabled>
+					Pause replay
+				</button>
+				<p>
+					Click on an entry to travel to that point. History is not deleted until
+					you make a move from a point in the past.
+				</p>
+				<div id="timeline" class="striped-list"></div>
+			</div>
+			<div class="movediv inset">
+				<h3>Stored Games</h3>
+				<button id="save-game" onclick="save_game()">Save current state</button>
+				<br>
+				<p>
+					Click on one of the entries below to load that gamestate.
+				</p>
+				<div id="saves" class="striped-list"></div>
+			</div>
+		</div>
+		<div class="flex-container">
 			<div id="legend-display" class="movediv inset">
 				<h3>Legend of Pieces</h3>
 				<table id="legend">
@@ -365,26 +391,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex-container">
-			<div class="movediv inset">
-				<h3>Current Game</h3>
-				<button id="game-replay" onclick="replay_game();">Replay from point</button>
-				<p>
-					Click on an entry to travel to that point. History is not deleted until
-					you make a move from a point in the past.
-				</p>
-				<div id="timeline" class="striped-list"></div>
-			</div>
-			<div class="movediv inset">
-				<h3>Stored Games</h3>
-				<button id="save-game" onclick="save_game()">SAVE CURRENT STATE</button>
-				<br>
-				<p>
-					Click on one of the entries below to load that gamestate.
-				</p>
-				<div id="saves" class="striped-list"></div>
-			</div>
-		</div>
 		<script>
 			"use strict";
 			const board_el = document.getElementById('board');
@@ -392,6 +398,8 @@
 			const move_list = document.getElementById('moves');
 			const timeline_el = document.getElementById('timeline');
 			const saves_el = document.getElementById('saves');
+			const replay_btn_el = document.getElementById('game-replay');
+			const pause_btn_el = document.getElementById('replay-pause');
 			const symbols = {
 				tower: "T",
 				footsoldier: "F",
@@ -413,6 +421,7 @@
 			var undo_list = [];
 			var move_index = 0;
 			var saves = [];
+			var should_replay = false;
 
 			var opts = {
 				board_size: 5,
@@ -762,7 +771,11 @@
 			}
 
 			async function replay_game() {
-				while (move_index != undo_list.length) {
+				replay_btn_el.disabled = true;
+				pause_btn_el.disabled = false;
+				should_replay = true;
+
+				while (move_index != undo_list.length && should_replay) {
 					const move = undo_list[move_index];
 					let locs = [];
 					for (const k in move) {
@@ -776,6 +789,10 @@
 					update();
 					move_index++;
 				}
+
+				replay_btn_el.disabled = false;
+				pause_btn_el.disabled = true;
+				should_replay = false;
 			}
 
 			function save_game() {
