@@ -195,6 +195,9 @@
 					<button id="replay-pause" onclick="should_replay = false;" disabled>
 						Pause replay
 					</button>
+					<br>
+					<label for="replay-delay">Delay (ms):</label>
+					<input id="replay-delay" type="number" value="1500">
 				</div>
 				<div>
 					<p>
@@ -407,6 +410,7 @@
 			const saves_el = document.getElementById('saves');
 			const replay_btn_el = document.getElementById('game-replay');
 			const pause_btn_el = document.getElementById('replay-pause');
+			const delay_el = document.getElementById('replay-delay');
 			const symbols = {
 				tower: "T",
 				footsoldier: "F",
@@ -791,7 +795,7 @@
 						}
 					}
 					highlight_spaces(locs);
-					await sleep(1500);
+					await sleep(delay_el.valueAsNumber);
 					apply_move(board, move, false);
 					update();
 					move_index++;
