@@ -352,8 +352,13 @@
 					and reset game</button>
 					</div>
 					<div class="inset">
-						<button id="import_btn" onclick="import_game(false)">Import</button>
-						<button id="replay_btn" onclick="import_game(true)">Replay</button>
+						<button id="import-begin" onclick="import_game(false)">
+							Import and start from beginning
+						</button>
+						<br>
+						<button id="import-end" onclick="import_game(true)">
+							Import and go to end
+						</button>
 						<br>
 						<textarea id="input_area"></textarea>
 					</div>
@@ -363,6 +368,7 @@
 		<div class="flex-container">
 			<div class="movediv inset">
 				<h3>Current Game</h3>
+				<button id="game-replay">REPLAY FROM POINT</button>
 				<p>
 					Click on an entry to travel to that point. History is not deleted until
 					you make a move from a point in the past.
@@ -706,64 +712,60 @@
 				}), 'Honey-War-Log.json', 'application/json');
 			}
 
-			var autoplay_timer;
-			async function do_import_game(gamestate, slowmode) {
-				let moveslist;
-				if (gamestate instanceof Array) {
-					moveslist = gamestate;
-				} else {
-					moveslist = gamestate.moveslist;
-					if (gamestate.playernames) {
-						document.getElementById("P1-name").value = gamestate.playernames[1];
-						document.getElementById("P2-name").value = gamestate.playernames[2];
-						update_players();
-					}
-					if (gamestate.options) {
-						opts = gamestate.options;
-					}/* else {
-						opts = {
-							board_size: 5,
-							towers: "3",
-							configuration: "rotated",
-							rules: {
-								fF: true,
-								bF: true,
-								uF: false,
-								sF: false,
-								Gr: "short",
-								IB: false,
-								bB: false
-							}
-						}
-					}*/
-				}
-				for (const move of moveslist) {
-					if (slowmode) {
-						var locs = [];
-						for (const k in move) {
-							if (k != "verb") {
-								locs.push(board[move[k].loc].id);
-							}
-						}
-						highlight_spaces(locs);
-						await sleep(1500);
-					}
-					apply_move(board, move, false);
-					undo_list.push(move);
-					move_index++;
-					update_turninfo();
-					if (slowmode) {
-						setup_turn();
-					}
-				}
-				setup_turn();
-			}
-
-			function import_game(slowmode) {
-				const new_game = JSON.parse(document.getElementById("input_area").value);
-				if (new_game) {
+			function import_game(step) {
+				const gamestate = JSON.parse(document.getElementById("input_area").value);
+				if (gamestate) {
 					reset_game();
-					do_import_game(new_game, slowmode);
+					let moveslist;
+					if (gamestate instanceof Array) {
+						moveslist = gamestate;
+					} else {
+						moveslist = gamestate.moveslist;
+						if (gamestate.playernames) {
+							document.getElementById("P1-name").value = gamestate.playernames[1];
+							document.getElementById("P2-name").value = gamestate.playernames[2];
+							update_players();
+						}
+						if (gamestate.options) {
+							opts = gamestate.options;
+						}/* else {
+							opts = {
+								board_size: 5,
+								towers: "3",
+								configuration: "rotated",
+								rules: {
+									fF: true,
+									bF: true,
+									uF: false,
+									sF: false,
+									Gr: "short",
+									IB: false,
+									bB: false
+								}
+							}
+						}*/
+					}
+					if (step) {
+						for (const move of moveslist) {
+							/* if (slowmode) {
+								var locs = [];
+								for (const k in move) {
+									if (k != "verb") {
+										locs.push(board[move[k].loc].id);
+									}
+								}
+								highlight_spaces(locs);
+								await sleep(1500);
+							} */
+							apply_move(board, move, false);
+							undo_list.push(move);
+							move_index++;
+							update_turninfo();
+						}
+					} else {
+						undo_list = gamestate.moveslist;
+					}
+					setup_turn();
 				}
 			}
 
