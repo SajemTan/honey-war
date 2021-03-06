@@ -32,10 +32,10 @@
 				grid-template-rows: minmax(auto, max-content);
 				align-content: start;
 			}
-			#moves {
+			.striped-list {
 				display: contents;
 			}
-			#moves > ol {
+			.striped-list > ol {
 				overflow-y: scroll;
 			}
 			.striped-list > ol > li:nth-child(odd) {
@@ -97,6 +97,9 @@
 			}
 			.move-item.delete:hover, .move-item.delete:active {
 				color: purple;
+			}
+			#current-game {
+				max-height: 500px;
 			}
 			.button {
 				width: max-content;
@@ -182,22 +185,26 @@
 				<div id="moves" class="striped-list"></div>
 			</div>
 		</div>
-		<div class="flex-container">
-			<div class="movediv inset">
-				<h3>Current Game</h3>
-				<button id="game-replay" onclick="replay_game();">
-					Replay from point
-				</button>
-				<button id="replay-pause" onclick="should_replay = false;" disabled>
-					Pause replay
-				</button>
-				<p>
-					Click on an entry to travel to that point. History is not deleted until
-					you make a move from a point in the past.
-				</p>
+		<div id="timelinediv" class="grid-container col">
+			<div id="current-game" class="inset grid-container row">
+				<div><h3>Current Game</h3></div>
+				<div>
+					<button id="game-replay" onclick="replay_game();">
+						Replay from point
+					</button>
+					<button id="replay-pause" onclick="should_replay = false;" disabled>
+						Pause replay
+					</button>
+				</div>
+				<div>
+					<p>
+						Click on an entry to travel to that point. History is not deleted until
+						you make a move from a point in the past.
+					</p>
+				</div>
 				<div id="timeline" class="striped-list"></div>
 			</div>
-			<div class="movediv inset">
+			<div class="inset row">
 				<h3>Stored Games</h3>
 				<button id="save-game" onclick="save_game()">Save current state</button>
 				<br>
