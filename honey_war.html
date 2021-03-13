@@ -2,22 +2,64 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Honey War simulator</title>
 		<script src="honey_war.js"></script>
 		<style>
-			.movediv {
-				display: inline-block;
-				vertical-align: top;
+			body {
+				color: black;
+				background: white;
 			}
 			.flex-container {
 				display: flex;
 				flex-wrap: wrap;
 			}
-			.flex-spacer {
-				width: 1em;
+			.flex-container > * {
+				/* display: inline-block; */
+				flex: 1 1 auto;
+				vertical-align: top;
+			}
+			.grid-container {
+				display: grid;
+				gap: 0;
+			}
+			.col {
+				grid-auto-flow: column;
+				grid-template-columns: minmax(auto, max-content);
+			}
+			.row {
+				grid-auto-flow: row;
+				grid-template-rows: minmax(auto, max-content);
+				align-content: start;
+			}
+			.striped-list {
+				display: contents;
+			}
+			.striped-list > ol {
+				overflow-y: scroll;
+			}
+			.striped-list > ol > li:nth-child(odd) {
+				background-color: #eee;
+			}
+			.striped-list > ol > li:nth-child(even) {
+				background-color: #ddd;
+			}
+			#saves ol li div {
+				display: flex;
+				justify-content: space-between;
 			}
 			#mp-settings {
 				flex-direction: column;
+				flex-flow: row;
+				flex-wrap: wrap;
+			}
+			.inset {
+				border-style: inset none none inset;
+				border-radius: 6px;
+				padding: .5em;
+				border-width: thin;
+				background: #EEEEEE80;
+				mix-blend-mode: multiply;
 			}
 			#legend td > img {
 				width: 50px;
@@ -26,10 +68,41 @@
 				color: black;
 				cursor: pointer;
 			}
-			.move-item { }
+			h1 {
+				margin: 0;
+			}
+			h3 {
+				margin-top: .5em;
+				margin-bottom: .4em;
+			}
+			h4 {
+				margin: 0;
+			}
+			input[disabled] {
+				filter: invert(25%);
+			}
+			input[disabled] * {
+				color: grey;
+			}
+			.move-item.selected {
+				text-decoration: underline;
+			}
 			.move-item:hover, .move-item:active {
 				text-decoration: underline;
 				color: blue;
+			}
+			.move-item.delete {
+				color: red;
+				font-style: italic;
+			}
+			.move-item.delete:hover, .move-item.delete:active {
+				color: purple;
+			}
+			#current-game {
+				max-height: 500px;
+			}
+			.button {
+				width: max-content;
 			}
 			.verb {
 				text-transform: capitalize;
@@ -49,99 +122,340 @@
 			.hidden-space {
 				display: inline-block;
 			}
+			@media screen and (min-width: 850px) {
+				#gamediv {
+					grid-template-columns:
+						minmax(400px, 500px)
+					minmax(50%, auto);
+				}
+				#board {
+					max-height: 500px;
+				}
+				#boarddiv {
+
+				}
+				#move-display {
+					height: 500px;
+					grid-column: 2;
+				}
+				#legend-display {
+					flex: 0 0 min-content;
+				}
+				#mp-display {
+					flex: 1 1 min-content;
+				}
+			}
+			@media screen and (max-width: 849px) {
+				#gamediv {
+					display: flex;
+					flex-direction: column;
+				}
+				#board {
+					max-height: 400px;
+				}
+				#mp-display {
+					order: 1;
+				}
+				#legend-display {
+					order: 2;
+				}
+				.flex-container > .movediv {
+					width: 100%;
+				}
+			}
 		</style>
 	</head>
 	<body>
-		<h1 id="turn"></h1>
+		<h1 id="turn" class="inset"></h1>
+		<div id="gamediv" class="grid-container col">
+			<div id="boarddiv" class="inset">
+				<svg id="board" viewBox="0 0 500 500" class="movediv" />
+			</div>
+			<div id="move-display" class="inset grid-container row">
+				<div>
+					<h3>Possible Moves</h3>
+				</div>
+				<div>
+					<button onclick="undo(true);">Undo</button>
+					<button onclick="redo(true);">Redo</button>
+					<a id="moves_export">
+						<button id="export" onclick="export_game()">Export</button>
+					</a>
+				</div>
+				<div id="moves" class="striped-list"></div>
+			</div>
+		</div>
+		<div id="timelinediv" class="grid-container col">
+			<div id="current-game" class="inset grid-container row">
+				<div><h3>Current Game</h3></div>
+				<div>
+					<button id="game-replay" onclick="replay_game();">
+						Replay from point
+					</button>
+					<button id="replay-pause" onclick="should_replay = false;" disabled>
+						Pause replay
+					</button>
+					<br>
+					<label for="replay-delay">Delay (ms):</label>
+					<input id="replay-delay" type="number" value="1500">
+				</div>
+				<div>
+					<p>
+						Click on an entry to travel to that point. History is not deleted until
+						you make a move from a point in the past.
+					</p>
+				</div>
+				<div id="timeline" class="striped-list"></div>
+			</div>
+			<div class="inset row">
+				<h3>Stored Games</h3>
+				<button id="save-game" onclick="save_game()">Save current state</button>
+				<br>
+				<p>
+					Click on one of the entries below to load that gamestate.
+				</p>
+				<div id="saves" class="striped-list"></div>
+			</div>
+		</div>
 		<div class="flex-container">
-			<svg id="board" width="500" height="500"/>
-			<div class="movediv">
-				<h3>Possible Moves</h3>
-				<button onclick="undo();">UNDO</button>
-				<a id="moves_export">
-					<button id="export" onclick="export_game()">EXPORT</button>
-				</a>
-				<button id="reset" onclick="reset_game()">RESET</button>
-				<button id="restore" disabled onclick="restore_game()">RESTORE</button>
-				<div id="moves"></div>
-			</div><div class="flex-spacer"></div>
-			<div class="movediv">
-				<h3>Multiplayer Settings</h3>
+			<div id="legend-display" class="movediv inset">
+				<h3>Legend of Pieces</h3>
+				<table id="legend">
+					<tr>
+						<td><img src="imgs/1F.svg"></td>
+						<td><img src="imgs/2F.svg"></td>
+						<td>Footsoldier</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1I.svg"></td>
+						<td><img src="imgs/2I.svg"></td>
+						<td>Infantry</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1K.svg"></td>
+						<td><img src="imgs/2K.svg"></td>
+						<td>Cavalry</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1H.svg"></td>
+						<td><img src="imgs/2H.svg"></td>
+						<td>Chariot</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1B.svg"></td>
+						<td><img src="imgs/2B.svg"></td>
+						<td>Trebuchet</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1C.svg"></td>
+						<td><img src="imgs/2C.svg"></td>
+						<td>Castle</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1D.svg"></td>
+						<td><img src="imgs/2D.svg"></td>
+						<td>Damaged Castle</td>
+					</tr>
+					<tr>
+						<td><img src="imgs/1G.svg"></td>
+						<td><img src="imgs/2G.svg"></td>
+						<td>Tower/Garrison</td>
+					</tr>
+				</table>
+				<p>
+					For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
+				</p>
+			</div>
+			<div id="mp-display" class="movediv inset"> <!--style="max-width: 550px;">-->
+				<h3>Settings</h3>
 				<div id="mp-settings" class="flex-container">
 					<div>
-						<span class="icon">1C</span>
-						<input type="text" class="inline-input"
-							id="P1-name" value="Player 1" onchange="update_players()">
-						vs.
-						<span class="icon">2C</span>
-						<input type="text" class="inline-input"
-							id="P2-name" value="Player 2" onchange="update_players()">
+						<div class="inset">
+							<h3>Player Names</h3>
+							<span class="icon">1C</span>
+							<input type="text" class="inline-input"
+								id="P1-name" value="Player 1" onchange="update_players()">
+							<br>
+							<span class="icon">2C</span>
+							<input type="text" class="inline-input"
+								id="P2-name" value="Player 2" onchange="update_players()">
+						</div>
+						<div class="inset">
+							<h3>Game Settings</h3>
+							<div>
+								<h4>Configuration:</h4>
+								<input type="radio" name="boardconfig" id="configmirrored"
+									value="mirrored" onchange="opt('mirrored')" checked>
+								<label for="configmirrored">Mirrored</label>
+								<input type="radio" name="boardconfig" id="configrotated"
+									value="rotated" onchange="opt('rotated')">
+								<label for="configrotated">Rotated</label>
+							</div>
+							<div>
+								<h4>Board diameter:</h4>
+								<input type="radio" name="boardsize" id="boardlarge"
+									value="large" onchange="opt('large')" checked>
+								<label for="boardlarge">11 (Standard)</label>
+								<input type="radio" name="boardsize" id="boardsmall"
+									value="small" onchange="opt('small')">
+								<label for="boardsmall">
+									9 (Small, 1-2 towers recommended)
+								</label>
+							</div>
+							<div>
+								<div class="inset">
+									<h4>
+										<span class="icon">T</span>
+										<span class="piece">Tower</span> configuration:
+									</h4>
+									<input type="radio" name="towerconfig" id="towers3"
+										value="3" onchange="opt('t3')" checked>
+									<label for="towers3">3</label>
+									<input type="radio" name="towerconfig" id="towers2"
+										value="2" onchange="opt('t2')">
+									<label for="towers2">2</label>
+									<input type="radio" name="towerconfig" id="towers2w"
+										value="2w" onchange="opt('t2w')">
+									<label for="towers2w">2, widely spaced</label>
+									<input type="radio" name="towerconfig" id="towers1"
+										value="1" onchange="opt('t1')">
+									<label for="towers1">1</label>
+									<br/>
+									<input type="radio" name="towerconfig" id="towers3t"
+										value="3t" onchange="opt('t3t')">
+									<label for="towers3t">3, rotated</label>
+									<input type="radio" name="towerconfig" id="towers3tc"
+										value="3tc" onchange="opt('t3tc')">
+									<label for="towers3tc">3, counter-rotated</label>
+									<br/>
+									<input type="radio" name="towerconfig" id="towers2mr"
+										value="2mr" onchange="opt('t2mr')">
+									<label for="towers2mr">2, right biased</label>
+									<input type="radio" name="towerconfig" id="towers2ml"
+										value="2ml" onchange="opt('t2ml')">
+									<label for="towers2ml">2, left biased</label>
+								</div>
+							</div>
+						</div>
 					</div>
-					<div>
-						Session ID: <input type="text" id="sessionID">
-						<button id="getNewSession">New</button>
+					<div class="inset">
+						<h3>Rule variations</h3>
+						<div class="inset">
+							<div>
+								<span class="icon">1F</span>
+								<span class="piece">Footsoldier</span> mobility:
+							</div>
+							<div>
+								<input type="checkbox" id="friendly-footsoldiers"
+									onchange="opt('friendly-footsoldiers')" checked>
+								<label for="friendly-footsoldiers">Footsoldiers move through
+									friendlies in phase 2.
+								</label>
+							</div>
+							<div>
+								<input type="checkbox" id="buff-footsoldiers"
+									onchange="opt('buff-footsoldiers')" checked>
+								<label for="buff-footsoldiers">
+									Footsoldiers can move backward.
+								</label>
+							</div>
+							<div>
+								<input type="checkbox" id="upgrade-footsoldiers"
+									 onchange="opt('upgrade-footsoldiers')">
+								<label for="upgrade-footsoldiers">
+									Footsoldiers become infantry on reaching the end of the
+									board.
+								</label>
+							</div>
+							<div>
+								<input type="checkbox" id="stranded-footsoldiers"
+									onchange="opt('stranded-footsoldiers')" disabled>
+								<label for="stranded-footsoldiers">
+									Footsoldiers can attack the castle backward as a special
+									case.
+								</label>
+							</div>
+						</div>
+						<div class="inset">
+							<div>
+								<span class="icon">1G</span>
+								<span class="piece">Garrison</span> range:
+							</div>
+							<div>
+								<input type="radio" name="garrisonrange" id="garrisonshort"
+									value="garrisonshort" onchange="opt('garrisonshort')"
+									checked>
+								<label for="friendly-footsoldiers">
+									Garrisons attack adjacent hexes. (Standard)
+								</label>
+							</div>
+							<div>
+								<input type="radio" name="garrisonrange" id="garrisonlong"
+									value="garrisonlong" onchange="opt('garrisonlong')">
+								<label for="garrisonlong">
+									Garrisons attack at double range.
+								</label>
+							</div>
+							<div>
+								<input type="radio" name="garrisonrange" id="garrisonboth"
+									value="garrisonboth" onchange="opt('garrisonboth')">
+								<label for="friendly-footsoldiers">
+									Garrisons attack at standard and double range.
+								</label></div>
+						</div>
+						<div class="inset">
+							<div>
+								<span class="icon">1B</span>
+								<span class="piece">Trebuchets</span>:
+							</div>
+							<div>
+								<input type="checkbox" id="buff-trebuchet"
+									onchange="opt('buff-trebuchet')">
+								<label for="buff-trebuchet">
+									Trebuchets can move as a normal action.
+								</label>
+							</div>
+							<div>
+								<input type="checkbox" id="buff-infantry"
+									onchange="opt('buff-infantry')">
+								<label for="buff-infantry">
+									Infantry survive bombardment as footsoldiers.
+								</label>
+							</div>
+						</div>
+						<div class="inset">
+							<h3>Multiplayer</h3>
+							Session ID: <input type="text" id="sessionID">
+							<button id="getNewSession">New</button>
+						</div>
+						<button id="reset" class="button" onclick="reset_game()">
+							Apply and reset game
+						</button>
+					</div>
+					<div class="inset">
+						<button id="import-begin" onclick="import_game(false)">
+							Import and start from beginning
+						</button>
+						<br>
+						<button id="import-end" onclick="import_game(true)">
+							Import and go to end
+						</button>
+						<br>
+						<textarea id="input_area"></textarea>
 					</div>
 				</div>
 			</div>
 		</div>
-		<h3>Legend of Pieces</h3>
-		<table id="legend">
-			<tr>
-				<td><img src="imgs/1F.svg"></td>
-				<td><img src="imgs/2F.svg"></td>
-				<td>Footsoldier</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1I.svg"></td>
-				<td><img src="imgs/2I.svg"></td>
-				<td>Infantry</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1K.svg"></td>
-				<td><img src="imgs/2K.svg"></td>
-				<td>Cavalry</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1H.svg"></td>
-				<td><img src="imgs/2H.svg"></td>
-				<td>Chariot</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1B.svg"></td>
-				<td><img src="imgs/2B.svg"></td>
-				<td>Trebuchet</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1C.svg"></td>
-				<td><img src="imgs/2C.svg"></td>
-				<td>Castle</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1D.svg"></td>
-				<td><img src="imgs/2D.svg"></td>
-				<td>Damaged Castle</td>
-			</tr>
-			<tr>
-				<td><img src="imgs/1G.svg"></td>
-				<td><img src="imgs/2G.svg"></td>
-				<td>Tower/Garrison</td>
-			</tr>
-		</table>
-		<p>
-			For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
-		</p>
-		<div>
-			<button id="import_btn" onclick="import_game(false)">Import</button>
-			<button id="replay_btn" onclick="import_game(true)">Replay</button>
-			<br>
-			<textarea id="input_area"></textarea>
-		</div>
 		<script>
 			"use strict";
 			const board_el = document.getElementById('board');
-			var board = make_board();
 			const header_el = document.getElementById('turn');
 			const move_list = document.getElementById('moves');
+			const timeline_el = document.getElementById('timeline');
+			const saves_el = document.getElementById('saves');
+			const replay_btn_el = document.getElementById('game-replay');
+			const pause_btn_el = document.getElementById('replay-pause');
+			const delay_el = document.getElementById('replay-delay');
 			const symbols = {
 				tower: "T",
 				footsoldier: "F",
@@ -155,11 +469,174 @@
 				tower_infantry: "TI",
 				tower_cavalry: "TC"
 			};
+			const enemy_of = [0, 2, 1];
 			var turn = 1;
 			var player = 1;
 			var phase = 2;
 			var moves = [];
 			var undo_list = [];
+			var move_index = 0;
+			var saves = [];
+			var should_replay = false;
+
+			var opts = {
+				board_size: 5,
+				towers: "3",
+				configuration: "rotated",
+				rules: {
+					fF: true,
+					bF: true,
+					uF: false,
+					sF: false,
+					Gr: "short",
+					IB: false,
+					bB: false
+				}
+			};
+
+			function set_opts() {
+				if (document.getElementById('configrotated').checked) {
+					opts.configuration = 'rotated';
+				} else {
+					document.getElementById('configmirrored').checked = true;
+					opts.configuration = 'mirrored';
+				}
+				if (document.getElementById('boardsmall').checked) {
+					opts.board_size = 4;
+				} else {
+					document.getElementById('boardlarge').checked = true;
+					opts.board_size = 5;
+				}
+				const tower_settings = [
+					'3','2','2w','1',
+					'3t','3tc',
+					'2mr','2ml'
+				];
+				let set = false;
+				for (const code of tower_settings) {
+					if (document.getElementById('towers' + code).checked) {
+						opts.towers = code;
+						set = true;
+						break;
+					}
+				}
+				if (!set) {
+					document.getElementById('towers3').checked = true;
+					opts.towers = '3';
+				}
+
+				if (document.getElementById('garrisonlong').checked) {
+					opts.rules.Gr = 'long';
+				} else if (document.getElementById('garrisonboth').checked) {
+					opts.rules.Gr = 'both';
+				} else {
+					document.getElementById('garrisonshort').checked = true;
+					opts.rules.Gr = 'short';
+				}
+
+				const checkboxes = [
+					['friendly-footsoldiers', 'fF'],
+					['buff-footsoldiers', 'bF'],
+					['upgrade-footsoldiers', 'uF'],
+					['stranded-footsoldiers', 'sF'],
+					['buff-infantry', 'bI'],
+					['buff-trebuchet', 'bB']
+				];
+
+				for (const [id, rule] of checkboxes) {
+					opts.rules[rule] = document.getElementById(id).checked;
+				}
+				console.dir(opts);
+			}
+
+			function reset_opts_ui(options) {
+				if (options.configuration == 'rotated') {
+					document.getElementById('configrotated').checked = true;
+					document.getElementById('configmirrored').checked = false;
+					opts.configuration = 'rotated';
+					opt('rotated');
+				} else {
+					document.getElementById('configmirrored').checked = true;
+					document.getElementById('configrotated').checked = false;
+					opts.configuration = 'mirrored';
+					opt('mirrored');
+				}
+				if (options.board_size == 4) {
+					document.getElementById('boardsmall').checked = true;
+					document.getElementById('boardlarge').checked = false;
+					opts.board_size = 4;
+					opt('small');
+				} else {
+					document.getElementById('boardlarge').checked = true;
+					document.getElementById('boardsmall').checked = false;
+					opts.board_size = 5;
+					opt('large');
+				}
+				const tower_settings = [
+					'3','2','2w','1',
+					'3t','3tc',
+					'2mr','2ml'
+				];
+				let set = false;
+				for (const code of tower_settings) {
+					if (options.towers == code) {
+						document.getElementById('towers' + code).checked = true;
+						opts.towers = code;
+						set = true;
+						opt('t'+code);
+						break;
+					} else {
+						document.getElementById('towers' + code).checked = false;
+					}
+				}
+				if (!set) {
+					document.getElementById('towers3').checked = true;
+					opts.towers = '3';
+					opt('t3');
+				}
+
+				if (options.rules.Gr == 'long') {
+					document.getElementById('garrisonlong').checked = true;
+					document.getElementById('garrisonshort').checked = false;
+					document.getElementById('garrisonboth').checked = false;
+					opts.rules.Gr = 'long';
+					opt('garrisonlong');
+				} else if (options.rules.Gr == 'both') {
+					document.getElementById('garrisonboth').checked = true;
+					document.getElementById('garrisonlong').checked = false;
+					document.getElementById('garrisonshort').checked = false;
+					opts.rules.Gr = 'both';
+					opt('garrisonboth');
+				} else {
+					document.getElementById('garrisonshort').checked = true;
+					document.getElementById('garrisonlong').checked = false;
+					document.getElementById('garrisonboth').checked = false;
+					opts.rules.Gr = 'short';
+					opt('garrisonshort');
+				}
+
+				const checkboxes = [
+					['friendly-footsoldiers', 'fF'],
+					['buff-footsoldiers', 'bF'],
+					['upgrade-footsoldiers', 'uF'],
+					['stranded-footsoldiers', 'sF'],
+					['buff-infantry', 'bI'],
+					['buff-trebuchet', 'bB']
+				];
+
+				for (const [id, rule] of checkboxes) {
+					document.getElementById(id).checked = opts.rules[rule];
+					if (opts.rules[rule]) {
+						opt(id);
+					}
+				}
+
+				console.dir(opts);
+			}
+			set_opts();
+			reset_opts_ui(opts);
+
+			var board = make_board();
 
 			var players = {1: "Player 1", 2: "Player 2"};
 
@@ -174,9 +651,11 @@
 				players[2] = encode(document.getElementById("P2-name").value);
 				write_title();
 			}
+
 			function format_player(player) {
 				return icon_for("castle", player) + '<text>' + players[player] + '</text>';
 			}
+
 			function draw_icons() {
 				for (let el of document.getElementsByClassName("icon")) {
 					const name = el.innerHTML;
@@ -187,16 +666,23 @@
 
 			function write_title() {
 				header_el.innerHTML = "Turn " + turn
-					+ ", " + format_player(player)
-					+ ", Phase " + phase;
+									+ ", " + format_player(player)
+									+ ", Phase " + phase;
 			}
+
 			function setup_turn() {
 				draw_board(board_el, board);
 				write_title();
 				moves = list_possible_moves(board, player, (phase==2));
 				display_moves(board, moves, move_list);
+				show_timeline();
+				show_saves();
+				if (move_index != 0 && undo_list[move_index-1].verb == "win") {
+					move_list.innerHTML = "Game Over";
+				}
 			}
-			function undo() {
+
+			function undo(setup_after) {
 				if (turn == 1 && player == 1 && phase == 2) {
 					return;
 				} else if (phase == 2) {
@@ -209,16 +695,46 @@
 					player = 2;
 					phase = 2;
 				}
-				apply_move(board, undo_list[undo_list.length-1], true);
-				undo_list.pop();
+				apply_move(board, undo_list[move_index-1], true);
+				move_index--;
+				if (setup_after) {
+					setup_turn();
+				}
+			}
+
+			function redo(setup_after) {
+				if (move_index < undo_list.length) {
+					apply_move(board, undo_list[move_index], false);
+					move_index++;
+					update_turninfo();
+				}
+				if (setup_after) {
+					setup_turn();
+				}
+			}
+
+			function goto(position) {
+				while (move_index != position) {
+					if (move_index > position) {
+						undo(false);
+					} else {
+						redo(false);
+					}
+				}
 				setup_turn();
 			}
+
 			function execute(move_number) {
 				apply_move(board, moves[move_number], false);
+				while (move_index < undo_list.length) {
+					undo_list.pop();
+				}
 				undo_list.push(moves[move_number]);
+				move_index++;
 				update();
 			}
-			function update(move_number) {
+
+			function update_turninfo() {
 				phase++;
 				if (phase == 3) {
 					phase = 1;
@@ -228,22 +744,24 @@
 						turn++;
 					}
 				}
+			}
+
+			function update() {
+				update_turninfo();
 				setup_turn();
-				if (undo_list[undo_list.length-1].verb == "win") {
-					move_list.innerHTML = "Game Over";
-				}
 			}
 			update_players();
 			setup_turn();
 
 			function download(text, name, type) {
-			  var a = document.getElementById("moves_export");
-			  var file = new Blob([text], {type: type});
-			  a.href = URL.createObjectURL(file);
-			  a.download = name;
+				var a = document.getElementById("moves_export");
+				var file = new Blob([text], {type: type});
+				a.href = URL.createObjectURL(file);
+				a.download = name;
 			}
+
 			function sleep(ms) {
-			  return new Promise(resolve => setTimeout(resolve, ms));
+				return new Promise(resolve => setTimeout(resolve, ms));
 			}
 
 			function export_game() {
@@ -254,84 +772,183 @@
 					},
 					session: "",
 					moveslist: undo_list,
-					boardstate: board
+					boardstate: board,
+					options: opts
 				}), 'Honey-War-Log.json', 'application/json');
 			}
-			async function do_import_game(gamestate, slowmode) {
-				let moveslist;
-				if (gamestate instanceof Array) {
-					moveslist = gamestate;
-				} else {
-					moveslist = gamestate.moveslist;
-					if (gamestate.playernames) {
-						document.getElementById("P1-name").value = gamestate.playernames[1];
-						document.getElementById("P2-name").value = gamestate.playernames[2];
-						update_players();
-					}
-				}
-				for (const move of moveslist) {
-					if (slowmode) {
-						var locs = [];
-						for (const k in move) {
-							if (k != "verb") {
-								locs.push(board[move[k].loc].id);
-							}
+
+			function import_game(step) {
+				const gamestate = JSON.parse(document.getElementById("input_area").value);
+				if (gamestate) {
+					reset_game();
+					let moveslist;
+					if (gamestate instanceof Array) {
+						moveslist = gamestate;
+					} else {
+						moveslist = gamestate.moveslist;
+						if (gamestate.playernames) {
+							document.getElementById("P1-name").value = gamestate.playernames[1];
+							document.getElementById("P2-name").value = gamestate.playernames[2];
+							update_players();
 						}
-						highlight_spaces(locs);
-						await sleep(1500);
+						if (gamestate.options) {
+							opts = gamestate.options;
+						}/* else {
+							opts = {
+							board_size: 5,
+							towers: "3",
+							configuration: "rotated",
+							rules: {
+							fF: true,
+							bF: true,
+							uF: false,
+							sF: false,
+							Gr: "short",
+							IB: false,
+							bB: false
+							}
+							}
+							}*/
 					}
-					apply_move(board, move, false);
-					undo_list.push(move);
-					update();
-				}
-			}
-			function import_game(slowmode) {
-				reset_game();
-				const new_game = JSON.parse(document.getElementById("input_area").value);
-				if (new_game) {
-					do_import_game(new_game, slowmode);
+					if (step) {
+						for (const move of moveslist) {
+							/* if (slowmode) {
+							   } */
+							apply_move(board, move, false);
+							undo_list.push(move);
+							move_index++;
+							update_turninfo();
+						}
+					} else {
+						undo_list = gamestate.moveslist;
+					}
+					setup_turn();
 				}
 			}
 
-			var stash = [];
-			async function reset_game() {
-				stash.push({
+			async function replay_game() {
+				replay_btn_el.disabled = true;
+				pause_btn_el.disabled = false;
+				should_replay = true;
+
+				while (move_index != undo_list.length && should_replay) {
+					const move = undo_list[move_index];
+					let locs = [];
+					for (const k in move) {
+						if (k != "verb") {
+							locs.push(board[move[k].loc].id);
+						}
+					}
+					highlight_spaces(locs);
+					await sleep(delay_el.valueAsNumber);
+					apply_move(board, move, false);
+					update();
+					move_index++;
+				}
+
+				replay_btn_el.disabled = false;
+				pause_btn_el.disabled = true;
+				should_replay = false;
+			}
+
+			function save_game() {
+				saves.push({
 					s_board: JSON.stringify(board),
 					s_moves: undo_list,
 					s_moves_avail: moves,
+					s_move: move_index,
+
 					s_player: player,
 					s_turn: turn,
-					s_phase: phase
+					s_phase: phase,
+
+					s_options: {...opts}
 				});
-				for (let i = undo_list.length; i > 0 ; --i) {
-					apply_move(board, undo_list[i-1], true);
-				}
+				show_saves();
+			}
+
+			async function reset_game() {
+				save_game();
+				set_opts();
+				board = make_board();
 				player = 1;
 				turn = 1;
 				phase = 2;
+				move_index = 0;
 				undo_list = [];
 				setup_turn();
-				document.getElementById("restore").disabled = false;
-
 			}
-			async function restore_game() {
-				const restore = stash[stash.length - 1];
+
+			async function load_game(number) {
+				const restore = saves[number];
 
 				board = JSON.parse(restore.s_board);
 				undo_list = restore.s_moves;
 				moves = restore.s_moves_avail;
+				move_index = restore.s_move;
+
 				player = restore.s_player;
 				turn = restore.s_turn;
 				phase = restore.s_phase;
 
+				reset_opts_ui(restore.s_options);
+				set_opts();
+
 				setup_turn();
-
-				stash.pop();
-				document.getElementById("restore").disabled = (stash.length > 0) ? false : true;
-
 			}
 
+			function delete_game(index) {
+				saves.splice(index, 1);
+				show_saves();
+			}
 
+			function show_timeline() {
+				var l_turn = 1;
+				var l_player = 1;
+				var l_phase = 2;
+				var s = "<ol><li><a class='move-item "
+					  + (move_index == 0 ? "selected" : "")
+					  + "' onclick='goto(0)'>Game begin</a></li>";
+
+				for (const [idx, mv] of undo_list.entries()) {
+					s += "<li><a class='move-item "
+					   + (move_index == idx + 1 ? "selected" : "")
+					   + "' onclick='goto(" + (idx+1) + ")'>"
+					   + l_turn + "/" + l_player + "/" + l_phase + ":"
+					   + format_player(l_player) + " " + format_move(mv, "past")
+					   + "</a>";
+
+					s += "</li>";
+
+					l_phase++;
+					if (l_phase == 3) {
+						l_phase = 1;
+						l_player++;
+
+						if (l_player == 3) {
+							l_player = 1;
+							l_turn++;
+						}
+					}
+				}
+				s += "</ol>";
+				timeline_el.innerHTML = s;
+			}
+
+			function show_saves() {
+				var s = "<ol>";
+
+				for (const [idx, g] of saves.entries()) {
+					s += "<li><div><a class='move-item' onclick='load_game(" + idx + ")'>Turn "
+					   + g.s_turn + "," + format_player(g.s_player) + ", Phase " + g.s_phase
+					   + "</a><a class='move-item delete' onclick='delete_game("
+					   + idx + ")'>(delete)</a></div></li>";
+				}
+
+				s += "</ol>";
+
+				saves_el.innerHTML = s;
+			}
 		</script>
 	</body>
 </html>
