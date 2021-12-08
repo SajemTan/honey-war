@@ -10,7 +10,7 @@ var verbs = {
 
 function* iterate_board(player) {
 	const bound = opts.board_size;
-	if (player != 1) {
+	if (player !== 1) {
 		for (let x = bound; x >= -bound; x--) {
 			let y0 = -bound;
 			let y1 = bound;
@@ -34,14 +34,14 @@ function* iterate_board(player) {
 }
 
 function set_piece_symmetric(board, pos, piece, player = 1) {
-	if (opts.board_size == 4 && pos[0] > 0 && pos[1] > 0) {
+	if (opts.board_size === 4 && pos[0] > 0 && pos[1] > 0) {
 		pos = [pos[0]-1,pos[1]-1];
 	}
 	const [a,b] = pos;
 	const opposite = function(){
-		if (opts.configuration == "rotated") {
+		if (opts.configuration === "rotated") {
 			return [-a,-b];
-		} else if (opts.configuration == "mirrored") {
+		} else if (opts.configuration === "mirrored") {
 			return [-b,-a];
 		} else {
 			return pos;
@@ -159,7 +159,7 @@ function make_board() {
 		set_piece_symmetric(board, [a,b], "footsoldier");
 		set_piece_symmetric(board, [b,a], "footsoldier");
 	}
-	if (opts.board_size == 5) {
+	if (opts.board_size === 5) {
 		set_piece_symmetric(board, [2,2], "footsoldier");
 	}
 
@@ -185,12 +185,12 @@ function draw_board(svg, board) {
 		const sy = space.cy - 22;
 		s += '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color
 		  + '.svg" class="space" id="' + space.id + '" width="50" />';
-		if (space.piece.player != 0 || space.piece.piece == "tower") {
+		if (space.piece.player !== 0 || space.piece.piece === "tower") {
 			let lab="";
-			if (!space.piece.player == 0) {
+			if (space.piece.player) {
 				lab += space.piece.player;
 			}
-			if (space.piece.piece == "castle" && space.piece.health == 1) {
+			if (space.piece.piece === "castle" && space.piece.health === 1) {
 				lab += symbols["castle_damaged"];
 			} else {
 				lab += symbols[space.piece.piece];
@@ -207,17 +207,17 @@ function exists(board, pos) {
 }
 
 function are_same_coords(a, b) {
-	return a[0] == b[0] && a[1] == b[1];
+	return a[0] === b[0] && a[1] === b[1];
 }
 
 function empty(board, pos) {
 	return exists(board, pos) &&
-		board[pos].piece.player == 0 &&
-		board[pos].piece.piece == "";
+		board[pos].piece.player === 0 &&
+		board[pos].piece.piece === "";
 }
 
 function enemy(board, pos, player) {
-	return exists(board, pos) && board[pos].piece.player == enemy_of[player];
+	return exists(board, pos) && board[pos].piece.player === enemy_of[player];
 }
 
 function friendly(board, pos, player) {
@@ -227,9 +227,9 @@ function friendly(board, pos, player) {
 function counterattack_damage(board, pos) {
 	if (!exists(board, pos)) {
 		return 0;
-	} else if (board[pos].piece.piece == "castle") {
+	} else if (board[pos].piece.piece === "castle") {
 		return 2;
-	} else if (board[pos].piece.piece == "garrison") {
+	} else if (board[pos].piece.piece === "garrison") {
 		return 1;
 	} else {
 		return 0;
@@ -237,7 +237,7 @@ function counterattack_damage(board, pos) {
 }
 
 function is_at(board, piece, pos) {
-	return exists(board, pos) && board[pos].piece.piece == piece;
+	return exists(board, pos) && board[pos].piece.piece === piece;
 }
 
 function copy_piece(pc) {
@@ -259,10 +259,10 @@ function make_move(board, from_pos, to_pos) {
 			}
 		};
 	}
-	if (opts.rules.uF && board[from_pos].piece.piece == 'footsoldier') {
+	if (opts.rules.uF && board[from_pos].piece.piece === 'footsoldier') {
 		const player = board[from_pos].piece.player;
-		const bound = opts.board_size * (player == 1 ? -1 : 1);
-		if (to_pos[0] == bound || to_pos[1] == bound) {
+		const bound = opts.board_size * (player === 1 ? -1 : 1);
+		if (to_pos[0] === bound || to_pos[1] === bound) {
 			return {
 				verb: "move",
 				source: {
@@ -302,27 +302,27 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 		was: copy_piece(board[attack_pos].piece),
 		is: {player: 0, piece: ""}
 	};
-	if (ret.source.was.piece == "trebuchet") {
+	if (ret.source.was.piece === "trebuchet") {
 		delete ret.dest;
 		ret.source.is = ret.source.was;
-		if (ret.attack.was.piece == "infantry") {
+		if (ret.attack.was.piece === "infantry") {
 			if (opts.rules.IB) {
 				ret.attack.is = {player: ret.attack.was.player, piece: "footsoldier"};
 			} else {
 				ret.verb = "destroy";
 			}
-		} else if (ret.attack.was.piece == "garrison") {
+		} else if (ret.attack.was.piece === "garrison") {
 			ret.verb = "destroy";
-		} else if (ret.attack.was.piece == "castle") {
+		} else if (ret.attack.was.piece === "castle") {
 			ret.verb = "win";
 		}
-	} else if (ret.attack.was.piece == "infantry") {
+	} else if (ret.attack.was.piece === "infantry") {
 		ret.attack.is = {
 			player: ret.attack.was.player,
 			piece: "footsoldier"
 		};
-	} else if (ret.attack.was.piece == "castle") {
-		if (ret.attack.was.health == 1) {
+	} else if (ret.attack.was.piece === "castle") {
+		if (ret.attack.was.health === 1) {
 			ret = {
 				verb: "win",
 				source: ret.source,
@@ -338,8 +338,8 @@ function make_attack(board, from_pos, to_pos, attack_pos) {
 			ret.attack.is.health = 1;
 			ret.source.is = {player: 0, piece: ""};
 		}
-	} else if (ret.attack.was.piece == "garrison") {
-		if (ret.source.was.piece != "infantry") {
+	} else if (ret.attack.was.piece === "garrison") {
+		if (ret.source.was.piece !== "infantry") {
 			delete ret.dest;
 		} else {
 			ret.dest.is.piece = "footsoldier";
@@ -355,7 +355,7 @@ function list_adjacent(pos, player) {
 	const [x, y] = pos;
 	const a1 = [[x-1,y-1],[x,y-1],[x+1,y]];
 	const a2 = [[x+1,y+1],[x,y+1],[x-1,y]];
-	if (player != 2) {
+	if (player !== 2) {
 		return [...a1, ...a2];
 	} else {
 		return [...a2, ...a1];
@@ -368,7 +368,7 @@ function cavalry_moves(board, pos0, player) {
 		if (friendly(board, pos1, player)) {
 			for (const pos2 of list_adjacent(pos1, player)) {
 				if (are_same_coords(pos0, pos2) || !exists(board, pos2) ||
-				    board[pos2].color != board[pos0].color) {
+				    board[pos2].color !== board[pos0].color) {
 					continue;
 				}
 				let already = false;
@@ -389,12 +389,12 @@ function cavalry_moves(board, pos0, player) {
 
 function list_possible_moves(board, player, is_phase_2) {
 	let moves = [];
-	const forward = (player == 1 ? -1 : 1);
+	const forward = (player === 1 ? -1 : 1);
 	for (const pos of iterate_board(player)) {
 		const [x, y] = pos;
 		const piece = board[pos].piece;
-		if (piece.player != player) { continue; }
-		if (piece.piece == "footsoldier") {
+		if (piece.player !== player) { continue; }
+		if (piece.piece === "footsoldier") {
 			const back = [-forward, -forward];
 			const DF = [[forward, 0], [0, forward]];
 			for (const [dx, dy] of (opts.rules.bF ? [...DF, back] : DF)) {
@@ -407,7 +407,7 @@ function list_possible_moves(board, player, is_phase_2) {
 				}
 				if (is_phase_2 && opts.rules.fF && !are_same_coords([dx,dy], back)
 				    && exists(board, dist[1]) && empty(board, dist[2])
-				    && board[dist[1]].piece.player == player) {
+				    && board[dist[1]].piece.player === player) {
 					moves.push(make_move(board, pos, dist[2]));
 				} else if (is_phase_2 &&
 				    enemy(board, dist[1], player) &&
@@ -442,7 +442,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					}
 				}
 			}
-		} else if (piece.piece == "infantry") {
+		} else if (piece.piece === "infantry") {
 			for (const [dx, dy] of list_adjacent([0,0], player)) {
 				const dist = [
 					pos,
@@ -450,7 +450,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					[x+dx*2, y+dy*2]];
 				if (empty(board, dist[1])) {
 					moves.push(make_move(board, pos, dist[1]));
-					if (dx + dy == forward && empty(board, dist[2])) {
+					if (dx + dy === forward && empty(board, dist[2])) {
 						moves.push(make_move(board, pos, dist[2]));
 					}
 				}
@@ -464,18 +464,18 @@ function list_possible_moves(board, player, is_phase_2) {
 						[x+dx*3, y+dy*3]];
 					if (enemy(board, dist[1], player) &&
 					    (empty(board, dist[2]) ||
-						  counterattack_damage(board, dist[1]) == 2)) {
+						  counterattack_damage(board, dist[1]) === 2)) {
 						moves.push(make_attack(board, pos, dist[2], dist[1]));
 					} else if (is_at(board, "tower", dist[1])) {
 						let mv = make_move(board, pos, dist[1]);
 						mv.verb = "garrison";
 						mv.dest.is.piece = "garrison";
 						moves.push(mv);
-					} else if (dx + dy == forward &&
+					} else if (dx + dy === forward &&
 								  empty(board, dist[1])) {
 						if (enemy(board, dist[2], player) &&
 						    (empty(board, dist[3]) ||
-						     counterattack_damage(board, dist[2]) == 2)) {
+						     counterattack_damage(board, dist[2]) === 2)) {
 							moves.push(make_attack(board, pos, dist[3], dist[2]));
 						} else if (is_at(board, "tower", dist[2])) {
 							let mv = make_move(board, pos, dist[2]);
@@ -486,7 +486,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					}
 				}
 			}
-		} else if (piece.piece == "cavalry") {
+		} else if (piece.piece === "cavalry") {
 			for (const step1 of cavalry_moves(board, pos, player)) {
 				const [x1, y1] = step1;
 				if (empty(board, step1)) {
@@ -511,7 +511,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					moves.push(mv);
 				}
 			}
-		} else if (piece.piece == "chariot") {
+		} else if (piece.piece === "chariot") {
 			for (const dir of list_adjacent([0,0], player)) {
 				for (let d = 1; ; d++) {
 					const l = [dir[0]*d + x, dir[1]*d + y];
@@ -528,7 +528,7 @@ function list_possible_moves(board, player, is_phase_2) {
 					}
 				}
 			}
-		} else if (piece.piece == "trebuchet" && (is_phase_2 || opts.rules.bB)) {
+		} else if (piece.piece === "trebuchet" && (is_phase_2 || opts.rules.bB)) {
 			for (const [dx, dy] of list_adjacent([0,0], player)) {
 				const dist = [
 					pos,
@@ -539,17 +539,17 @@ function list_possible_moves(board, player, is_phase_2) {
 				}
 				if (is_phase_2 &&
 				    exists(board, dist[2]) && !empty(board, dist[2]) &&
-				    board[dist[2]].piece.player != player) {
+				    board[dist[2]].piece.player !== player) {
 					moves.push(make_attack(board, pos, pos, dist[2]));
 				}
 			}
-		} else if (is_phase_2 && piece.piece == "castle") {
+		} else if (is_phase_2 && piece.piece === "castle") {
 			for (const loc of list_adjacent(pos, player)) {
 				if (enemy(board, loc, player)) {
 					moves.push(make_attack(board, pos, pos, loc));
 				}
 			}
-		} else if (is_phase_2 && piece.piece == "garrison") {
+		} else if (is_phase_2 && piece.piece === "garrison") {
 		  for (const [dx,dy] of list_adjacent([0,0], player)) {
 			  let dist = [];
 			  switch (opts.rules.Gr) {
@@ -586,13 +586,13 @@ function highlight_spaces(ids) {
 
 function format_verb(verb, style) {
 	var str;
-	if (style == null || style == "imperative") {
+	if (!style || style === "imperative") {
 		str = verb;
 	} else {
 		str = verbs[verb][style];
 	}
 
-	if (str == "win") {
+	if (str === "win") {
 		return icon_for("castle", player) + "<span class='win'>Win</span>"
 	}
 	return "<span class='verb'>" + str + "</span>";
@@ -600,9 +600,9 @@ function format_verb(verb, style) {
 
 function icon_for(piece, player) {
 	let s = "";
-	if (player != 0 || piece == "tower") {
+	if (player || piece === "tower") {
 		var lab = "";
-		if (!player == 0) {
+		if (player) {
 			lab += player;
 		}
 		lab += symbols[piece];
@@ -623,7 +623,7 @@ function display_moves(board, moves, list) {
 	for (const mv of moves) {
 		var locs = [];
 		for (const k in mv) {
-			if (k != "verb") {
+			if (k !== "verb") {
 				locs.push(board[mv[k].loc].id);
 			}
 		}
@@ -637,30 +637,30 @@ function display_moves(board, moves, list) {
 
 function format_move(mv, style) {
 	var s = "";
-	if (mv.verb == "move") {
+	if (mv.verb === "move") {
 		s += format_verb(mv.verb, style) + format_piece(mv.source.was)
 			+ " from " + mv.source.loc + " to " + mv.dest.loc;
-	} else if (mv.verb == "attack" || mv.verb == "destroy") {
+	} else if (mv.verb === "attack" || mv.verb === "destroy") {
 		s += format_verb(mv.verb, style)
 			+ format_piece(mv.attack.was) + " at " + mv.attack.loc
 			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
 		if (mv.hasOwnProperty("dest")) {
 			s += " landing at " + mv.dest.loc;
-			if (mv.source.was.piece != mv.dest.is.piece &&
-					mv.dest.is.piece != "") {
+			if (mv.source.was.piece !== mv.dest.is.piece &&
+					mv.dest.is.piece !== "") {
 				s += " as " + format_piece(mv.dest.is);
 			}
-		} else if (mv.source.was.piece == "cavalry"
-					&& mv.attack.was.piece != "castle"
-						&& mv.attack.was.piece != "garrison") {
+		} else if (mv.source.was.piece === "cavalry"
+					&& mv.attack.was.piece !== "castle"
+						&& mv.attack.was.piece !== "garrison") {
 			s += " and retreat";
 		}
-	} else if (mv.verb == "garrison") {
+	} else if (mv.verb === "garrison") {
 		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
 		s += format_verb(mv.verb, style)
 			+ format_piece(mv.dest.was) + " at " + mv.dest.loc
 			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc
-	} else if (mv.verb == "win") {
+	} else if (mv.verb === "win") {
 		s += format_verb(mv.verb, style) + " with" + format_piece(mv.source.was)
 			+ " at " + mv.source.loc;
 	} else {
@@ -671,7 +671,7 @@ function format_move(mv, style) {
 
 function apply_move(board, move, undo) {
 	for (const k in move) {
-		if (k == "verb") { continue; }
+		if (k === "verb") { continue; }
 		board[move[k].loc].piece = (undo ? move[k].was : move[k].is);
 	}
 }

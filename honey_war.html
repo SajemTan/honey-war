@@ -552,7 +552,7 @@
 			}
 
 			function reset_opts_ui(options) {
-				if (options.configuration == 'rotated') {
+				if (options.configuration === 'rotated') {
 					document.getElementById('configrotated').checked = true;
 					document.getElementById('configmirrored').checked = false;
 					opts.configuration = 'rotated';
@@ -563,7 +563,7 @@
 					opts.configuration = 'mirrored';
 					opt('mirrored');
 				}
-				if (options.board_size == 4) {
+				if (options.board_size === 4) {
 					document.getElementById('boardsmall').checked = true;
 					document.getElementById('boardlarge').checked = false;
 					opts.board_size = 4;
@@ -581,7 +581,7 @@
 				];
 				let set = false;
 				for (const code of tower_settings) {
-					if (options.towers == code) {
+					if (options.towers === code) {
 						document.getElementById('towers' + code).checked = true;
 						opts.towers = code;
 						set = true;
@@ -597,13 +597,13 @@
 					opt('t3');
 				}
 
-				if (options.rules.Gr == 'long') {
+				if (options.rules.Gr === 'long') {
 					document.getElementById('garrisonlong').checked = true;
 					document.getElementById('garrisonshort').checked = false;
 					document.getElementById('garrisonboth').checked = false;
 					opts.rules.Gr = 'long';
 					opt('garrisonlong');
-				} else if (options.rules.Gr == 'both') {
+				} else if (options.rules.Gr === 'both') {
 					document.getElementById('garrisonboth').checked = true;
 					document.getElementById('garrisonlong').checked = false;
 					document.getElementById('garrisonshort').checked = false;
@@ -685,11 +685,11 @@
 			}
 
 			function undo(setup_after) {
-				if (turn == 1 && player == 1 && phase == 2) {
+				if (turn === 1 && player === 1 && phase === 2) {
 					return;
-				} else if (phase == 2) {
+				} else if (phase === 2) {
 					phase = 1;
-				} else if (player == 2) {
+				} else if (player === 2) {
 					player = 1;
 					phase = 2;
 				} else {
@@ -716,7 +716,7 @@
 			}
 
 			function goto(position) {
-				while (move_index != position) {
+				while (move_index !== position) {
 					if (move_index > position) {
 						undo(false);
 					} else {
@@ -738,10 +738,10 @@
 
 			function update_turninfo() {
 				phase++;
-				if (phase == 3) {
+				if (phase === 3) {
 					phase = 1;
 					player++;
-					if (player == 3) {
+					if (player === 3) {
 						player = 1;
 						turn++;
 					}
@@ -833,7 +833,7 @@
 				pause_btn_el.disabled = false;
 				should_replay = true;
 
-				while (move_index != undo_list.length && should_replay) {
+				while (move_index !== undo_list.length && should_replay) {
 					const move = undo_list[move_index];
 					let locs = [];
 					for (const k in move) {
@@ -909,12 +909,12 @@
 				var l_player = 1;
 				var l_phase = 2;
 				var s = "<ol><li><a class='move-item "
-					  + (move_index == 0 ? "selected" : "")
+					  + (move_index === 0 ? "selected" : "")
 					  + "' onclick='goto(0)'>Game begin</a></li>";
 
 				for (const [idx, mv] of undo_list.entries()) {
 					s += "<li><a class='move-item "
-					   + (move_index == idx + 1 ? "selected" : "")
+					   + (move_index === idx + 1 ? "selected" : "")
 					   + "' onclick='goto(" + (idx+1) + ")'>"
 					   + l_turn + "/" + l_player + "/" + l_phase + ":"
 					   + format_player(l_player) + " " + format_move(mv, "past")
