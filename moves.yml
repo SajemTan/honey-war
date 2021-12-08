@@ -1,0 +1,221 @@
+Directions:
+  O: 0,0
+
+  FF: -1,-1
+  FR: 0,-1
+  BR: 1,0
+  BB: 1,1
+  BL: 0,1
+  FL: -1,0
+  
+  A: [FF,FR,BR,BB,BL,FL]
+  DF: [FL,FR]
+  DB: [BR,BL]
+
+Symbols:
+  Faction:
+    $: Friendly
+    %: Enemy
+    !: Neutral
+    '': Anything
+
+  Piece:
+    0: Empty
+
+# Normal pieces
+    F: Footsoldier
+    I: Infantry
+    K: Cavalry
+    H: Chariot
+    B: Trebuchet
+    N: '[FIKHB]'
+
+# Counterattacking pieces
+    G: Garrison
+    C: Castle
+    A: '[GC]'
+
+    T: Tower
+    
+    *: '[0FIKHBGCT]'
+
+  'Use Types':
+    '': No change (not highlighted)
+    +: No change (highlighted)
+    .: Landing spot, convert to the subject piece
+    .?: Landing spot, convert to named piece (on this faction)
+    -: Piece damaged
+    x: Piece destroyed
+
+
+# Move and attack descriptions:
+# Each move is a "vector" with an optional format string (if none is provided, one is pattern-matched from the below table).
+# Vectors are comprised of directed 'segments' strung together with '>', where each segment's direction is relative to the direction of the preceeding segment.
+# A segment may have any number of cells, including zero, which form a straight line, and each cell  specifies the requirements that must be met for the move to be valid, including faction and piece type, as well as what happens to that cell, which can be nothing, being overwritten with a piece, or being damaged or destroyed.
+# Absolute coordinates may be specified for moves as well.
+# Additionally, specific moves can be specified to only apply under specific alternative rulesets, by prefixing a list of names.
+
+# Note: O() must be the first segment, must have exactly one cell, and cannot
+# have faction/piece restrictions, only a use type (because by definition, it
+# contains the subject piece, so specification is redundant).
+
+# Formally, a vector looks like:
+  # vector :=
+  #   [ rule-code ] [ origin-use '>' ] segment-list
+  # segment-list:
+  #   segment [ '>' segment-list ]
+  # segment :=
+  #   direction [ cell* ]
+  # cell :=
+  #   [ absolute-coords ] '(' faction-restrictions piece-restrictions use-type ')' [ '*' ]
+  # origin-use :=
+  #   'O' '(' use-type ')'
+  # direction :=
+  #   'A' | 'DF' | 'DB' |
+  #   'FF' | 'FR' | 'BR' | 'BB' | 'BL' | 'FL'
+  #   /* see above for direction coordinates */
+  # absolute-coords :=
+  #   '[x=' number ']' | '[y=' number ']' | '[' number ',' number ']'
+  # faction-restrictions :=
+  #   /* see above */
+  # piece-restrictions :=
+  #   /* see above */
+  # use-type :=
+  #   /* see above */
+  # rule-code :=
+  #   '"' rule-name [ rule-joiner rule-name ]* '":'
+  # rule-joiner :=
+  #   '&' /* and */ | ',' /* or */
+
+'Default Formats':
+  Moves:
+    [Cx]:        "{Win} with {P O}"
+    ['C(H=1)-']: "{Win} with {P O}"
+    [-,'[^O].']: "{Attack} {P -} with {P O} landing at {L .}"
+    [-]:         "{Attack} {P -} with {P O}"
+    [.G]:        "{Garrison} {P .} with {P O}"
+    ['[^O].']:   "{Move} {T O} from {L O} to {L .}"
+
+  P: "{T} at {L}"
+
+using-rules:
+  standard: ["no-obstructed", "short", "no-buff-infantry"]
+  simulator: ["obstructed", "cavalry+towers", "short", "no-buff-infantry"]
+  balancing-test: ["buff-footsoldiers", "friendly-footsoldiers", "obstructed",
+    "cavalry+towers", "short", "no-buff-infantry"]
+
+Pieces:
+  Footsoldier:
+    M:
+      - v: DF(0.)
+      - v: '"buff-footsoldiers":DB(0.)'
+    A:
+      - v: DF(%N-)(0.)
+  # Attack tower to upgrade to infantry
+      - v: DF(T-)(0.I)
+  # Non-standard, in simulator: 
+      - v: '"obstructed":DF(%A-)'
+  # Standard, not in simulator: 
+      - v: '"no-obstructed":DF(%A-)(0+)'
+
+  # Non-standard: move backwards
+      - v: '"buff-footsoldiers":BB(0.)'
+      - v: '"buff-footsoldiers":BB(%N-)(0.)'
+      - v: '"buff-footsoldiers":BB(T-)(0.I)'
+      - v: '"buff-footsoldiers&no-obstructed":BB(C-)(0+)'
+      - v: '"buff-footsoldiers&obstructed":BB(C-)'
+  # Non-standard: Pass through friendlies
+      - v: '"friendly-footsoldiers":DF($*)(0.)'
+  #   - v: '"friendly-footsoldiers&buff-footsoldiers":BB($*)(0.)'
+  # Non-standard: Become infantry on reaching back of board
+      - v: '"upgrade-footsoldiers":DF[x=-5](0.I)'
+      - v: '"upgrade-footsoldiers":DF[y=-5](0.I)'
+      - v: '"upgrade-footsoldiers&friendly-footsoldiers":DF($*)[x=-5](0.I)'
+      - v: '"upgrade-footsoldiers&friendly-footsoldiers":DF($*)[y=-5](0.I)'
+  # Non-standard: Attack castle backwards
+  # (redundant with buff-footsoldiers, irrelevant with upgrade-footsoldiers)
+      - v: '"stranded&obstructed":DB(%C-)'
+      - v: '"stranded&no-obstructed":DB(%C-)(0+)'
+  Infantry:
+    M:
+      - v: A(0.)
+      - v: DF(0)(0.)
+    A:
+      - v: A(%N)(0.)
+      - v: DF(0)(%N-)(0.)
+  # Can garrison a tower
+      - v: A(T.G)
+      - v: DF(0)(T.G)
+  # Survives a garrison counterattack as a footsoldier
+      - v: A(%G)(0.F)
+      - v: DF(0)(%G-)(0.F)
+  # Does not survive a castle's counterattack
+  # Non-standard, in simulator: 
+      - v: '"obstructed":A(%C-)'
+      - v: '"obstructed":DF(0)(%C-)'
+  # Standard, not in simulator: 
+      - v: '"no-obstructed":A(%C-)(0+)'
+      - v: '"no-obstructed":DF(0)(%C-)(0+)'
+
+  # When damaged, an infantry turns into a footsoldier
+    D: F
+  Cavalry:
+    M:
+      - v: A($*)>DF(0.)
+      - v: '"cavalry+towers":A(T)>DF(0.)'
+    A:
+      - v: A($*)>DF(0.)
+      - v: A($*)>DF(T.G)
+      - v: A($*)>DF(%N-)>A($*)>DF(0.)
+      - v: O(.)>A($*)>DF(%N-)
+        f: "{Attack} {P -} with {P O} and retreat"
+  # Note that cavalry do not need the obstructed rule because they can retreat
+      - v: A($*)>DF(%A-)
+    
+      - v: '"cavalry+towers":A(T)>DF(0.)'
+      - v: '"cavalry+towers":A(T)>DF(T.G)'
+      - v: '"cavalry+towers":A(T)>DF(%N-)>A(T)>DF(0.)'
+      - v: '"cavalry+towers":O(.)>A(T)>DF(%N-)'
+        f: "{Attack} {P -} with {P O} and retreat"
+      - v: '"cavalry+towers":A(T)>DF(%A-)'
+
+  # Non-standard: Garrison adjacent tower
+     - v: '"cavalry+garrisons":A(T.G)'
+  Chariot:
+    M:
+      - v: A(0.)
+  # * means repeated
+      - v: A(0)*(0.)
+    A:
+      - v: A(0)*(0.)
+      - v: A(0)*(%N-)(0.)
+  # Non-standard, in simulator: 
+      - v: '"obstructed":A(0)*(%A-)'
+  # Standard, not in simulator: 
+      - v: '"no-obstructed":A(0)*(%A-)(0+)'
+  Trebuchet:
+    M: []
+    A:
+      - v: A(0.)
+      - v: '"no-buff-infantry":O(.)>A(*)(%*x)'
+  # Trebuchets can attack towers
+      - v: O(.)>A(*)(Tx)
+  # Non-standard: Deal only standard damage to infantry
+      - v: '"buff-infantry":O(.)>A(*)(%N-)'
+      - v: '"buff-infantry":O(.)>A(*)(%[GC]x)'
+  Tower:
+    M: []
+    A: []
+  Garrison:
+    M: []
+    A:
+      - v: '"short":O(.)>A(%*-)'
+  # Non-standard: Garrisons have a long-range attack
+      - v: '"long":O(.)A(*)(%*-)'
+    D: T
+  Castle:
+    M: []
+    A: []
+  # Castles have two hit points instead of one.
+    H: 2
+
