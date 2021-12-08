@@ -1,6 +1,6 @@
 Directions:
   O: 0,0
-
+# Clockwise from forward
   FF: -1,-1
   FR: 0,-1
   BR: 1,0
@@ -9,6 +9,7 @@ Directions:
   FL: -1,0
   
   A: [FF,FR,BR,BB,BL,FL]
+# Diagonals
   DF: [FL,FR]
   DB: [BR,BL]
 
@@ -21,6 +22,8 @@ Symbols:
 
   Piece:
     0: Empty
+	*: '[0FIKHBGCT]'
+	@: '[FIKHBGCT]'
 
 # Normal pieces
     F: Footsoldier
@@ -30,14 +33,12 @@ Symbols:
     B: Trebuchet
     N: '[FIKHB]'
 
+    T: Tower
+
 # Counterattacking pieces
     G: Garrison
     C: Castle
     A: '[GC]'
-
-    T: Tower
-    
-    *: '[0FIKHBGCT]'
 
   'Use Types':
     '': No change (not highlighted)
@@ -58,6 +59,10 @@ Symbols:
 # Note: O() must be the first segment, must have exactly one cell, and cannot
 # have faction/piece restrictions, only a use type (because by definition, it
 # contains the subject piece, so specification is redundant).
+
+# Empty tiles are counted as both friendly and enemy. Towers are neither.
+# Faction tags may be combined, as in 'A($!*)' (friendly or tower).
+# Piece tags may be combined, but must be enclosed in [], as in 'O(.)A(*)([TG]x)'.
 
 # Formally, a vector looks like:
   # vector :=
@@ -100,9 +105,23 @@ Symbols:
 
 using-rules:
   standard: ["no-obstructed", "short", "no-buff-infantry"]
-  simulator: ["obstructed", "cavalry+towers", "short", "no-buff-infantry"]
+  simulator: ["obstructed", "cavalry-towers", "short", "no-buff-infantry"]
   balancing-test: ["buff-footsoldiers", "friendly-footsoldiers", "obstructed",
-    "cavalry+towers", "short", "no-buff-infantry"]
+    "cavalry-towers", "short", "no-buff-infantry"]
+
+rule-descriptions:
+  friendly-footsoldiers: "Footsoldiers can pass through friendlies (p2)"
+  buff-footsoldiers: "Footsoldiers can move directly backwards"
+  upgrade-footsoldiers: "Footsoldiers become infantry when reaching end of board"
+  stranded: "Footsoldiers can attack castle directly backwards"
+  obstructed: "When attacking a	counterattacking piece, no landing site is needed"
+  short: "Garrisons attack adjacent tiles"
+  long: "Garrisons attack ranged tiles"
+  buff-infantry: "Trebuchets deal normal damage to infantry"
+  buff-trebuchet: "Trebuchets can move during phase 1"
+  cavalry-towers: "Cavalry can pass through towers"
+  cavalry-garrisons: "Cavalry can garrison an adjacent tower"
+  cavalry-sprint-garrisons: "Cavalry can attack and garrison in same turn"
 
 Pieces:
   Footsoldier:
@@ -112,7 +131,8 @@ Pieces:
     A:
       - v: DF(%N-)(0.)
   # Attack tower to upgrade to infantry
-      - v: DF(T-)(0.I)
+      - v: DF(Tx)(0.I)
+	    f: "{Destroy} {P -} with {P O} landing at {L .} as {I}"
   # Non-standard, in simulator: 
       - v: '"obstructed":DF(%A-)'
   # Standard, not in simulator: 
@@ -162,7 +182,7 @@ Pieces:
   Cavalry:
     M:
       - v: A($*)>DF(0.)
-      - v: '"cavalry+towers":A(T)>DF(0.)'
+      - v: '"cavalry-towers":A(T)>DF(0.)'
     A:
       - v: A($*)>DF(0.)
       - v: A($*)>DF(T.G)
@@ -172,15 +192,19 @@ Pieces:
   # Note that cavalry do not need the obstructed rule because they can retreat
       - v: A($*)>DF(%A-)
     
-      - v: '"cavalry+towers":A(T)>DF(0.)'
-      - v: '"cavalry+towers":A(T)>DF(T.G)'
-      - v: '"cavalry+towers":A(T)>DF(%N-)>A(T)>DF(0.)'
-      - v: '"cavalry+towers":O(.)>A(T)>DF(%N-)'
+      - v: '"cavalry-towers":A(T)>DF(0.)'
+      - v: '"cavalry-towers":A(T)>DF(T.G)'
+      - v: '"cavalry-towers":A(T)>DF(%N-)>A(T)>DF(0.)'
+      - v: '"cavalry-towers":O(.)>A(T)>DF(%N-)'
         f: "{Attack} {P -} with {P O} and retreat"
-      - v: '"cavalry+towers":A(T)>DF(%A-)'
+      - v: '"cavalry-towers":A(T)>DF(%A-)'
 
   # Non-standard: Garrison adjacent tower
-     - v: '"cavalry+garrisons":A(T.G)'
+     - v: '"cavalry-garrisons":A(T.G)'
+  # "capturing the tower with a cavalry unit that would be able to move to that
+  #  position as a type II action" could be interpreted as allowing this move
+     - v: '"cavalry-sprint-garrisons":A($*)>DF(%N-)>A($*)>DF(T.G)'
+	   f: "{Attack} {P -} with {P O} and {Garrison} {P .}"
   Chariot:
     M:
       - v: A(0.)
@@ -194,7 +218,8 @@ Pieces:
   # Standard, not in simulator: 
       - v: '"no-obstructed":A(0)*(%A-)(0+)'
   Trebuchet:
-    M: []
+    M:
+      - v: '"buff-trebuchet":A(0.)'
     A:
       - v: A(0.)
       - v: '"no-buff-infantry":O(.)>A(*)(%*x)'
