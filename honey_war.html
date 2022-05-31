@@ -188,10 +188,10 @@
 					<h3>Possible Moves</h3>
 				</div>
 				<div>
-					<button onchange="javascript:undo(true);">Undo</button>
-					<button onchange="javascript:redo(true);">Redo</button>
+					<button onclick="javascript:undo(true);">Undo</button>
+					<button onclick="javascript:redo(true);">Redo</button>
 					<a id="moves_export">
-						<button id="export" onchange="javascript:export_game()">Export</button>
+						<button id="export" onclick="javascript:export_game()">Export</button>
 					</a>
 				</div>
 				<div id="moves" class="striped-list"></div>
@@ -201,10 +201,10 @@
 			<div id="current-game" class="inset grid-container row">
 				<div><h3>Current Game</h3></div>
 				<div>
-					<button id="game-replay" onchange="javascript:replay_game();">
+					<button id="game-replay" onclick="javascript:replay_game();">
 						Replay from point
 					</button>
-					<button id="replay-pause" onchange="javascript:should_replay = false;" disabled>
+					<button id="replay-pause" onclick="javascript:should_replay = false;" disabled>
 						Pause replay
 					</button>
 					<br>
@@ -221,7 +221,7 @@
 			</div>
 			<div class="inset row">
 				<h3>Stored Games</h3>
-				<button id="save-game" onchange="javascript:save_game()">Save current state</button>
+				<button id="save-game" onclick="javascript:save_game()">Save current state</button>
 				<br>
 				<p>
 					Click on one of the entries below to load that gamestate.
@@ -469,11 +469,11 @@
 							<fieldset id="fs_game_import" class="inset">
 								<label for="input_area">Import a game log:</label>
 								<br>
-								<button id="import-begin" onchange="javascript:import_game(false)">
+								<button id="import-begin" onclick="javascript:import_game(false)">
 									Import and start from beginning
 								</button>
 								<br>
-								<button id="import-end" onchange="javascript:import_game(true)">
+								<button id="import-end" onclick="javascript:import_game(true)">
 									Import and go to end
 								</button>
 								<br>
@@ -484,7 +484,7 @@
 								<br>
 								<textarea id="rules-share" class="json"></textarea>
 								<br>
-								<button id="import-rules" onchange="javascript:import_rules()">
+								<button id="import-rules" onclick="javascript:import_rules()">
 									Import rules from string
 								</button>
 							</fieldset>
