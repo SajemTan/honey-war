@@ -22,8 +22,8 @@ Symbols:
 
   Piece:
     0: Empty
-	*: '[0FIKHBGCT]'
-	@: '[FIKHBGCT]'
+    *: '[0FIKHBGCT]'
+    @: '[FIKHBGCT]'
 
 # Normal pieces
     F: Footsoldier
@@ -40,13 +40,19 @@ Symbols:
     C: Castle
     A: '[GC]'
 
+# Unused in default rules
+  Color:
+    'g': Green
+    'p': Purple
+    'o': Orange
+
   'Use Types':
     '': No change (not highlighted)
     +: No change (highlighted)
     .: Landing spot, convert to the subject piece
     .?: Landing spot, convert to named piece (on this faction)
     -: Piece damaged
-    x: Piece destroyed
+    x: Piece removed/destroyed
 
 
 # Move and attack descriptions:
@@ -59,6 +65,7 @@ Symbols:
 # Note: O() must be the first segment, must have exactly one cell, and cannot
 # have faction/piece restrictions, only a use type (because by definition, it
 # contains the subject piece, so specification is redundant).
+# The default origin segment, if none is provided, is to remove the piece, equivalent to 'O(.0)', also equivalent to 'O(x)' except for highlighting. 'O(.)' instead means that the piece is unchanged by the move. 'O()' and 'O(+)' would also be equivalent except for highlighting.
 
 # Empty tiles are counted as both friendly and enemy. Towers are neither.
 # Faction tags may be combined, as in 'A($!*)' (friendly or tower).
@@ -126,13 +133,13 @@ rule-descriptions:
 Pieces:
   Footsoldier:
     M:
-      - v: DF(0.)
+      - v: 'DF(0.)'
       - v: '"buff-footsoldiers":DB(0.)'
     A:
-      - v: DF(%N-)(0.)
+      - v: 'DF(%N-)(0.)'
   # Attack tower to upgrade to infantry
-      - v: DF(Tx)(0.I)
-	    f: "{Destroy} {P -} with {P O} landing at {L .} as {I}"
+      - v: 'DF(Tx)(0.I)'
+        f: "{Destroy} {P -} with {P O} landing at {L .} as {I}"
   # Non-standard, in simulator: 
       - v: '"obstructed":DF(%A-)'
   # Standard, not in simulator: 
