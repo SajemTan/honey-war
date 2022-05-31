@@ -55,6 +55,10 @@
 				flex-flow: row;
 				flex-wrap: wrap;
 			}
+			fieldset {
+				border: none;
+				padding: 0px;
+			}
 			.inset {
 				border-style: inset none none inset;
 				border-radius: 6px;
@@ -86,6 +90,9 @@
 			input[disabled] * {
 				color: grey;
 			}
+			textarea:invalid {
+
+			}
 			.move-item.selected {
 				text-decoration: underline;
 			}
@@ -102,6 +109,9 @@
 			}
 			#current-game {
 				max-height: 500px;
+			}
+			button {
+				padding: 0;
 			}
 			.button {
 				width: max-content;
@@ -178,10 +188,10 @@
 					<h3>Possible Moves</h3>
 				</div>
 				<div>
-					<button onclick="undo(true);">Undo</button>
-					<button onclick="redo(true);">Redo</button>
+					<button onchange="javascript:undo(true);">Undo</button>
+					<button onchange="javascript:redo(true);">Redo</button>
 					<a id="moves_export">
-						<button id="export" onclick="export_game()">Export</button>
+						<button id="export" onchange="javascript:export_game()">Export</button>
 					</a>
 				</div>
 				<div id="moves" class="striped-list"></div>
@@ -191,10 +201,10 @@
 			<div id="current-game" class="inset grid-container row">
 				<div><h3>Current Game</h3></div>
 				<div>
-					<button id="game-replay" onclick="replay_game();">
+					<button id="game-replay" onchange="javascript:replay_game();">
 						Replay from point
 					</button>
-					<button id="replay-pause" onclick="should_replay = false;" disabled>
+					<button id="replay-pause" onchange="javascript:should_replay = false;" disabled>
 						Pause replay
 					</button>
 					<br>
@@ -211,7 +221,7 @@
 			</div>
 			<div class="inset row">
 				<h3>Stored Games</h3>
-				<button id="save-game" onclick="save_game()">Save current state</button>
+				<button id="save-game" onchange="javascript:save_game()">Save current state</button>
 				<br>
 				<p>
 					Click on one of the entries below to load that gamestate.
@@ -271,99 +281,107 @@
 			<div id="mp-display" class="movediv inset"> <!--style="max-width: 550px;">-->
 				<h3>Settings</h3>
 				<div id="mp-settings" class="flex-container">
-					<div>
-						<div class="inset">
-							<h3>Player Names</h3>
+					<div id="col1">
+						<fieldset class="inset" id="fs_player_names">
+							<label for="fs_player_names">
+								<h3>Player Names</h3>
+							</label>
 							<span class="icon">1C</span>
 							<input type="text" class="inline-input"
-								id="P1-name" value="Player 1" onchange="update_players()">
+								id="P1-name" value="Player 1" onchange="javascript:update_players()">
 							<br>
 							<span class="icon">2C</span>
 							<input type="text" class="inline-input"
-								id="P2-name" value="Player 2" onchange="update_players()">
-						</div>
-						<div class="inset">
-							<h3>Game Settings</h3>
-							<div>
-								<h4>Configuration:</h4>
+								id="P2-name" value="Player 2" onchange="javascript:update_players()">
+						</fieldset>
+						<fieldset class="inset" id="fs_game_settings">
+							<label for="fs_game_settings">
+								<h3>Game Settings</h3>
+							</label>
+							<fieldset id="fs_game_configuration">
+								<label for="fs_game_configuration">
+									<h4>Configuration:</h4>
+								</label>
 								<input type="radio" name="boardconfig" id="configmirrored"
-									value="mirrored" onchange="opt('mirrored')" checked>
+									value="mirrored" onchange="javascript:opt('mirrored')" checked>
 								<label for="configmirrored">Mirrored</label>
 								<input type="radio" name="boardconfig" id="configrotated"
-									value="rotated" onchange="opt('rotated')">
+									value="rotated" onchange="javascript:opt('rotated')">
 								<label for="configrotated">Rotated</label>
-							</div>
-							<div>
-								<h4>Board diameter:</h4>
+							</fieldset>
+							<fieldset id="fs_boardsize">
+								<label for="fs_boardsize"><h4>Board diameter:</h4></label>
 								<input type="radio" name="boardsize" id="boardlarge"
-									value="large" onchange="opt('large')" checked>
+									value="large" onchange="javascript:opt('large')" checked>
 								<label for="boardlarge">11 (Standard)</label>
 								<input type="radio" name="boardsize" id="boardsmall"
-									value="small" onchange="opt('small')">
+									value="small" onchange="javascript:opt('small')">
 								<label for="boardsmall">
 									9 (Small, 1-2 towers recommended)
 								</label>
-							</div>
-							<div>
-								<div class="inset">
-									<h4>
-										<span class="icon">T</span>
+							</fieldset>
+							<fieldset id="fs_boardtowers" class="inset">
+								<h4>
+									<span class="icon">T</span>
+									<label for="fs_boardtowers">
 										<span class="piece">Tower</span> configuration:
-									</h4>
-									<input type="radio" name="towerconfig" id="towers3"
-										value="3" onchange="opt('t3')" checked>
-									<label for="towers3">3</label>
-									<input type="radio" name="towerconfig" id="towers2"
-										value="2" onchange="opt('t2')">
-									<label for="towers2">2</label>
-									<input type="radio" name="towerconfig" id="towers2w"
-										value="2w" onchange="opt('t2w')">
-									<label for="towers2w">2, widely spaced</label>
-									<input type="radio" name="towerconfig" id="towers1"
-										value="1" onchange="opt('t1')">
-									<label for="towers1">1</label>
-									<br/>
-									<input type="radio" name="towerconfig" id="towers3t"
-										value="3t" onchange="opt('t3t')">
-									<label for="towers3t">3, rotated</label>
-									<input type="radio" name="towerconfig" id="towers3tc"
-										value="3tc" onchange="opt('t3tc')">
-									<label for="towers3tc">3, counter-rotated</label>
-									<br/>
-									<input type="radio" name="towerconfig" id="towers2mr"
-										value="2mr" onchange="opt('t2mr')">
-									<label for="towers2mr">2, right biased</label>
-									<input type="radio" name="towerconfig" id="towers2ml"
-										value="2ml" onchange="opt('t2ml')">
-									<label for="towers2ml">2, left biased</label>
-								</div>
-							</div>
-						</div>
+									</label>
+								</h4>
+								<input type="radio" name="towerconfig" id="towers3"
+									value="3" onchange="javascript:opt('t3')" checked>
+								<label for="towers3">3</label>
+								<input type="radio" name="towerconfig" id="towers2"
+									value="2" onchange="javascript:opt('t2')">
+								<label for="towers2">2</label>
+								<input type="radio" name="towerconfig" id="towers2w"
+									value="2w" onchange="javascript:opt('t2w')">
+								<label for="towers2w">2, widely spaced</label>
+								<input type="radio" name="towerconfig" id="towers1"
+									value="1" onchange="javascript:opt('t1')">
+								<label for="towers1">1</label>
+								<br/>
+								<input type="radio" name="towerconfig" id="towers3t"
+									value="3t" onchange="javascript:opt('t3t')">
+								<label for="towers3t">3, rotated</label>
+								<input type="radio" name="towerconfig" id="towers3tc"
+									value="3tc" onchange="javascript:opt('t3tc')">
+								<label for="towers3tc">3, counter-rotated</label>
+								<br/>
+								<input type="radio" name="towerconfig" id="towers2mr"
+									value="2mr" onchange="javascript:opt('t2mr')">
+								<label for="towers2mr">2, right biased</label>
+								<input type="radio" name="towerconfig" id="towers2ml"
+									value="2ml" onchange="javascript:opt('t2ml')">
+								<label for="towers2ml">2, left biased</label>
+							</fieldset>
+						</fieldset>
 					</div>
-					<div class="inset">
-						<h3>Rule variations</h3>
-						<div class="inset">
+					<fieldset id="col2" class="inset">
+						<label for="col2"><h3>Rule variations</h3></label>
+						<fieldset id="fs_footsoldier" class="inset">
 							<div>
 								<span class="icon">1F</span>
-								<span class="piece">Footsoldier</span> mobility:
+								<label for="fs_footsoldier">
+									<span class="piece">Footsoldier</span> mobility:
+								</label>
 							</div>
 							<div>
 								<input type="checkbox" id="friendly-footsoldiers"
-									onchange="opt('friendly-footsoldiers')" checked>
+									onchange="javascript:opt('friendly-footsoldiers')" checked>
 								<label for="friendly-footsoldiers">Footsoldiers move through
 									friendlies in phase 2.
 								</label>
 							</div>
 							<div>
 								<input type="checkbox" id="buff-footsoldiers"
-									onchange="opt('buff-footsoldiers')" checked>
+									onchange="javascript:opt('buff-footsoldiers')" checked>
 								<label for="buff-footsoldiers">
 									Footsoldiers can move backward.
 								</label>
 							</div>
 							<div>
 								<input type="checkbox" id="upgrade-footsoldiers"
-									 onchange="opt('upgrade-footsoldiers')">
+									 onchange="javascript:opt('upgrade-footsoldiers')">
 								<label for="upgrade-footsoldiers">
 									Footsoldiers become infantry on reaching the end of the
 									board.
@@ -371,21 +389,23 @@
 							</div>
 							<div>
 								<input type="checkbox" id="stranded-footsoldiers"
-									onchange="opt('stranded-footsoldiers')" disabled>
+									onchange="javascript:opt('stranded-footsoldiers')" disabled>
 								<label for="stranded-footsoldiers">
 									Footsoldiers can attack the castle backward as a special
 									case.
 								</label>
 							</div>
-						</div>
-						<div class="inset">
+						</fieldset>
+						<fieldset id="fs_garrison" class="inset">
 							<div>
 								<span class="icon">1G</span>
-								<span class="piece">Garrison</span> range:
+								<label for="fs_garrison">
+									<span class="piece">Garrison</span> range:
+								</label>
 							</div>
 							<div>
 								<input type="radio" name="garrisonrange" id="garrisonshort"
-									value="garrisonshort" onchange="opt('garrisonshort')"
+									value="garrisonshort" onchange="javascript:opt('garrisonshort')"
 									checked>
 								<label for="friendly-footsoldiers">
 									Garrisons attack adjacent hexes. (Standard)
@@ -393,58 +413,83 @@
 							</div>
 							<div>
 								<input type="radio" name="garrisonrange" id="garrisonlong"
-									value="garrisonlong" onchange="opt('garrisonlong')">
+									value="garrisonlong" onchange="javascript:opt('garrisonlong')">
 								<label for="garrisonlong">
 									Garrisons attack at double range.
 								</label>
 							</div>
 							<div>
 								<input type="radio" name="garrisonrange" id="garrisonboth"
-									value="garrisonboth" onchange="opt('garrisonboth')">
+									value="garrisonboth" onchange="javascript:opt('garrisonboth')">
 								<label for="friendly-footsoldiers">
 									Garrisons attack at standard and double range.
-								</label></div>
-						</div>
-						<div class="inset">
+								</label>
+							</div>
+						</fieldset>
+						<fieldset id="fs_trebuchet" class="inset">
 							<div>
 								<span class="icon">1B</span>
-								<span class="piece">Trebuchets</span>:
+								<label for="fs_trebuchet">
+									<span class="piece">Trebuchets</span>:
+								</label>
 							</div>
 							<div>
 								<input type="checkbox" id="buff-trebuchet"
-									onchange="opt('buff-trebuchet')">
+									onchange="javascript:opt('buff-trebuchet')">
 								<label for="buff-trebuchet">
 									Trebuchets can move as a normal action.
 								</label>
 							</div>
 							<div>
 								<input type="checkbox" id="buff-infantry"
-									onchange="opt('buff-infantry')">
+									onchange="javascript:opt('buff-infantry')">
 								<label for="buff-infantry">
 									Infantry survive bombardment as footsoldiers.
 								</label>
 							</div>
-						</div>
-						<div class="inset">
-							<h3>Multiplayer</h3>
-							Session ID: <input type="text" id="sessionID">
-							<button id="getNewSession">New</button>
-						</div>
-						<button id="reset" class="button" onclick="reset_game()">
+						</fieldset>
+						<button id="reset" class="button" onclick="javascript:reset_game()">
 							Apply and reset game
 						</button>
-					</div>
-					<div class="inset">
-						<button id="import-begin" onclick="import_game(false)">
-							Import and start from beginning
-						</button>
-						<br>
-						<button id="import-end" onclick="import_game(true)">
-							Import and go to end
-						</button>
-						<br>
-						<textarea id="input_area"></textarea>
-					</div>
+					</fieldset>
+					<fieldset class="inset">
+						<label for="fs_mp"><h3>Multiplayer</h3></label>
+						<fieldset id="fs_mp" class="inset">
+							<div>
+								<label for="sessionID">Session ID:</label>
+								<input type="text" id="sessionID">
+							</div>
+							<div>
+								<button id="btn_new_session">New Session ID</button>
+								<button id="btn_mp_connect">Load session by ID</button>
+							</div>
+						</fieldset>
+						<label for="fs_import"><h3>Import</h3></label>
+						<fieldset id="fs_import">
+							<fieldset id="fs_game_import" class="inset">
+								<label for="input_area">Import a game log:</label>
+								<br>
+								<button id="import-begin" onchange="javascript:import_game(false)">
+									Import and start from beginning
+								</button>
+								<br>
+								<button id="import-end" onchange="javascript:import_game(true)">
+									Import and go to end
+								</button>
+								<br>
+								<textarea id="input_area" class="json"></textarea>
+							</fieldset>
+							<fieldset id="fs_rules_import" class="inset">
+								<label for="rules-share">Rule string:</label>
+								<br>
+								<textarea id="rules-share" class="json"></textarea>
+								<br>
+								<button id="import-rules" onchange="javascript:import_rules()">
+									Import rules from string
+								</button>
+							</fieldset>
+						</fieldset>
+					</fieldset>
 				</div>
 			</div>
 		</div>
@@ -503,6 +548,15 @@
 				}
 			};
 
+			function apply_listeners() {
+				for (let e of document.getElementsByTagName('textarea')) {
+					if (e.classList.contains('json')) {
+						e.addEventListener('change', () => validate_JSON_field(e));
+					}
+				}
+			}
+			apply_listeners();
+
 			function set_opts() {
 				if (document.getElementById('configrotated').checked) {
 					opts.configuration = 'rotated';
@@ -555,6 +609,7 @@
 				for (const [id, rule] of checkboxes) {
 					opts.rules[rule] = document.getElementById(id).checked;
 				}
+				update_rulestr();
 				console.dir(opts);
 			}
 
@@ -640,6 +695,7 @@
 					}
 				}
 
+				update_rulestr();
 				console.dir(opts);
 			}
 			set_opts();
@@ -763,8 +819,8 @@
 			setup_turn();
 
 			function download(text, name, type) {
-				var a = document.getElementById("moves_export");
-				var file = new Blob([text], {type: type});
+				let a = document.getElementById("moves_export");
+				let file = new Blob([text], {type: type});
 				a.href = URL.createObjectURL(file);
 				a.download = name;
 			}
@@ -801,7 +857,9 @@
 							update_players();
 						}
 						if (gamestate.options) {
-							opts = gamestate.options;
+							reset_opts_ui(gamestate.options);
+							/*opts = gamestate.options;
+							update_rulestr();*/
 						}/* else {
 							opts = {
 							board_size: 5,
@@ -906,16 +964,26 @@
 				setup_turn();
 			}
 
+			function update_rulestr() {
+				document.getElementById('rules-share').value
+					= JSON.stringify(opts);
+			}
+
+			function import_rules() {
+				reset_opts_ui(JSON.parse(document.getElementById('rules-share').value));
+				reset_game();
+			}
+
 			function delete_game(index) {
 				saves.splice(index, 1);
 				show_saves();
 			}
 
 			function show_timeline() {
-				var l_turn = 1;
-				var l_player = 1;
-				var l_phase = 2;
-				var s = "<ol><li><a class='move-item "
+				let l_turn = 1;
+				let l_player = 1;
+				let l_phase = 2;
+				let s = "<ol><li><a class='move-item "
 					  + (move_index === 0 ? "selected" : "")
 					  + "' onclick='goto(0)'>Game begin</a></li>";
 
@@ -945,7 +1013,7 @@
 			}
 
 			function show_saves() {
-				var s = "<ol>";
+				let s = "<ol>";
 
 				for (const [idx, g] of saves.entries()) {
 					s += "<li><div><a class='move-item' onclick='load_game(" + idx + ")'>Turn "
@@ -957,6 +1025,21 @@
 				s += "</ol>";
 
 				saves_el.innerHTML = s;
+			}
+			function isJSON(str) {
+				try {
+					return (JSON.parse(str) && !!str);
+				} catch (e) {
+					return false;
+				}
+			}
+			function validate_JSON_field(Field) {
+				const valid = isJSON(Field.value);
+				if (!valid) {
+					Field.setCustomValidity("Invalid JSON");
+				} else {
+					Field.setCustomValidity("");
+				}
 			}
 		</script>
 	</body>
