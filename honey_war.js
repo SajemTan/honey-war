@@ -584,7 +584,7 @@ function highlight_spaces(ids) {
 	}
 }
 
-function format_verb(verb, style) {
+function format_verb(verb, style, player) {
 	var str;
 	if (!style || style === "imperative") {
 		str = verb;
@@ -637,11 +637,12 @@ function display_moves(board, moves, list) {
 
 function format_move(mv, style) {
 	var s = "";
+	let player = mv.source.was.player;
 	if (mv.verb === "move") {
-		s += format_verb(mv.verb, style) + format_piece(mv.source.was)
+		s += format_verb(mv.verb, style, player) + format_piece(mv.source.was)
 			+ " from " + mv.source.loc + " to " + mv.dest.loc;
 	} else if (mv.verb === "attack" || mv.verb === "destroy") {
-		s += format_verb(mv.verb, style)
+		s += format_verb(mv.verb, style, player)
 			+ format_piece(mv.attack.was) + " at " + mv.attack.loc
 			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
 		if (mv.hasOwnProperty("dest")) {
@@ -657,14 +658,14 @@ function format_move(mv, style) {
 		}
 	} else if (mv.verb === "garrison") {
 		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
-		s += format_verb(mv.verb, style)
+		s += format_verb(mv.verb, style, player)
 			+ format_piece(mv.dest.was) + " at " + mv.dest.loc
 			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc
 	} else if (mv.verb === "win") {
-		s += format_verb(mv.verb, style) + " with" + format_piece(mv.source.was)
+		s += format_verb(mv.verb, style, player) + " with" + format_piece(mv.source.was)
 			+ " at " + mv.source.loc;
 	} else {
-		s += format_verb(mv.verb, style);
+		s += format_verb(mv.verb, style, player);
 	}
 	return s;
 }
