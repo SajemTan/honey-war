@@ -469,11 +469,11 @@
 							<fieldset id="fs_game_import" class="inset">
 								<label for="input_area">Import a game log:</label>
 								<br>
-								<button id="import-begin" onclick="javascript:import_game(false)">
+								<button id="import-begin" onclick="javascript:import_game_from_textbox(false)">
 									Import and start from beginning
 								</button>
 								<br>
-								<button id="import-end" onclick="javascript:import_game(true)">
+								<button id="import-end" onclick="javascript:import_game_from_textbox(true)">
 									Import and go to end
 								</button>
 								<br>
@@ -523,7 +523,7 @@
 			var moves = [];
 			var undo_list = [];
 			var move_index = 0;
-			var saves = [];
+			var saves = JSON.parse(localStorage.getItem("saves")) || [];
 			var should_replay = false;
 
 			var opts = {
@@ -698,8 +698,6 @@
 				update_rulestr();
 				console.dir(opts);
 			}
-			set_opts();
-			reset_opts_ui(opts);
 
 			var board = make_board();
 
@@ -727,6 +725,14 @@
 					el.innerHTML = '<img class="inline-icon" src="imgs/' + name + '.svg" />';
 				}
 			}
+
+			set_opts();
+			if (localStorage.getItem("state")) {
+				import_game(true, JSON.parse(localStorage.getItem("state")));
+				// the game import function creates an extra checkpoint
+				delete_game(saves.length - 1);
+			}
+			reset_opts_ui(opts);
 			draw_icons();
 
 			function write_title() {
@@ -745,6 +751,7 @@
 				if (move_index != 0 && undo_list[move_index-1].verb == "win") {
 					move_list.innerHTML = "Game Over";
 				}
+				localStorage.setItem("state", game_state());
 			}
 
 			function undo(setup_after) {
@@ -798,6 +805,18 @@
 				move_index++;
 				update();
 			}
+			function game_state() {
+				return JSON.stringify({
+					playernames: {
+						1: document.getElementById("P1-name").value,
+						2: document.getElementById("P2-name").value
+					},
+					session: "",
+					moveslist: undo_list,
+					boardstate: board,
+					options: opts
+				});
+			}
 
 			function update_turninfo() {
 				phase++;
@@ -828,22 +847,11 @@
 			function sleep(ms) {
 				return new Promise(resolve => setTimeout(resolve, ms));
 			}
-
 			function export_game() {
-				download(JSON.stringify({
-					playernames: {
-						1: document.getElementById("P1-name").value,
-						2: document.getElementById("P2-name").value
-					},
-					session: "",
-					moveslist: undo_list,
-					boardstate: board,
-					options: opts
-				}), 'Honey-War-Log.json', 'application/json');
+				download(game_state(), 'Honey-War-Log.json', 'application/json');
 			}
 
-			function import_game(step) {
-				const gamestate = JSON.parse(document.getElementById("input_area").value);
+			function import_game(step, gamestate) {
 				if (gamestate) {
 					reset_game();
 					let moveslist;
@@ -891,6 +899,10 @@
 					}
 					setup_turn();
 				}
+			}
+			function import_game_from_textbox(step) {
+				const gamestate = JSON.parse(document.getElementById("input_area").value);
+				import_game(step, gamestate);
 			}
 
 			async function replay_game() {
@@ -1013,6 +1025,7 @@
 			}
 
 			function show_saves() {
+				localStorage.setItem("saves", JSON.stringify(saves));
 				let s = "<ol>";
 
 				for (const [idx, g] of saves.entries()) {
