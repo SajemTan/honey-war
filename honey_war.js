@@ -135,23 +135,53 @@ function make_board() {
 	const dx_y = 1;
 	const dy_x = -2;
 	const dy_y = 1;
+    function make_dots(sx, sy,c_id, dist, rot) {
+        const rots={
+            tr: -60.35,
+            tl: -119.65,
+            bl: 119.65,
+            br: 60.35
+        };
+        //const rots = [60.35,119.65,-119.65,-60.35];
+        return '<image x="' + sx + '" y="' + sy + '" href="imgs/dots' + dist
+            + '.svg" class="space" id="xdots' + c_id + '" width="50"'
+            + ' transform="rotate('+rots[rot]+' '+ (sx+25) +' ' + (sy+22) + ')" />'
+    }
 	for (const [x, y] of iterate_board()) {
 		const c_x = (dx_x * x) + (dy_x * y);
 		const c_y = (dx_y * x) + (dy_y * y);
+        const c_id = x + "_" + y;
 		const space = {
 			q: y-Math.abs(x),
 			color: colors[(y+x+12)%3],
 			cx: c_x * 17.5 + 250,
 			cy: c_y * 20 + 250,
 			piece: {player: 0, piece: ""},
-			id: "space" + x + "_" + y
+			id: "space" + c_id
 		}
         board[[x,y]] = space;
 		const sx = space.cx - 25;
 		const sy = space.cy - 22;
-		spaces_el.insertAdjacentHTML("beforeend",
+        spaces_el.insertAdjacentHTML("beforeend", '<g id="g'+c_id+'">');
+        let g_el = document.getElementById('g'+c_id);
+		g_el.insertAdjacentHTML("beforeend",
             '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color
             + '.svg" class="space" id="' + space.id + '" width="50" />');
+        if (x > 0) {
+            g_el.insertAdjacentHTML("beforeend",
+                                    make_dots(sx,sy,c_id,x,'tr'));
+        } else if (x < 0) {
+            g_el.insertAdjacentHTML("beforeend",
+                                    make_dots(sx,sy,c_id,x,'br'));
+        }
+        if (y > 0) {
+            g_el.insertAdjacentHTML("beforeend",
+                                    make_dots(sx,sy,c_id,-y,'tl'));
+        } else if (y < 0) {
+            g_el.insertAdjacentHTML("beforeend",
+                                    make_dots(sx,sy,c_id,-y,'bl'));
+        }
+
 	}
 
 	// no player
