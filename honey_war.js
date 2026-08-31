@@ -1,6 +1,6 @@
 "use strict";
 
-var verbs = {
+const verbs = {
 	move: { past: "moved" },
 	attack: { past: "attacked" },
 	destroy: { past: "destroyed" },
@@ -154,6 +154,8 @@ function make_board() {
 		const space = {
 			q: y-Math.abs(x),
 			color: colors[(y+x+12)%3],
+            x: x,
+            y: y,
 			cx: c_x * 17.5 + 250,
 			cy: c_y * 20 + 250,
 			piece: {player: 0, piece: ""},
@@ -162,11 +164,13 @@ function make_board() {
         board[[x,y]] = space;
 		const sx = space.cx - 25;
 		const sy = space.cy - 22;
-        spaces_el.insertAdjacentHTML("beforeend", '<g id="g'+c_id+'">');
+        spaces_el.insertAdjacentHTML("beforeend", '<g id="g'+c_id
+                                     + '" data-x="'+x+'" data-y="'+y+'">');
         let g_el = document.getElementById('g'+c_id);
 		g_el.insertAdjacentHTML("beforeend",
             '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color
-            + '.svg" class="space" id="' + space.id + '" width="50" />');
+            + '.svg"' + ' class="space" width="50" id="' + space.id
+            + '" data-x="' + x + '" data-y="' + y + '"/>');
         if (x > 0) {
             g_el.insertAdjacentHTML("beforeend",
                                     make_dots(sx,sy,c_id,x,'tr'));
@@ -234,7 +238,7 @@ function draw_pieces(svg, board) {
                 '<image class="piece" id="' + id + '" x="' + sx + '" y="' + sy
                 + '" href="imgs/' + lab + '.svg" width="50" />');
             let piece_image = document.getElementById(id);
-            piece_image.addEventListener("mouseover", highlight_from);
+            piece_image.addEventListener("mousemove", highlight_from);
             piece_image.addEventListener("click", highlight_from);
 		}
 	}
@@ -559,9 +563,9 @@ function list_moves_for_piece(board, player, is_phase_2, pos) {
                            (empty(board, ln) ||
                             counterattack_damage(board, l))) {
                     moves.push(make_attack(board, pos, ln, l));
-                    return moves;
+                    break;
                 } else {
-                    return moves;
+                    break;
                 }
             }
         }
@@ -619,10 +623,22 @@ function list_possible_moves(board, player, is_phase_2) {
 	return moves;
 }
 
-function highlight_from(event) {
-    console.log(event);
+function dist(x1,y1,x2,y2) {
+    return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
 
-    //let moves = list_moves_for_piece(board, player, (phase==2), pos);
+function get_pos_from_coords(x,y) {
+    const piece_radius = 18;
+    for (const pos of iterate_board()) {
+        const el = document.getElementById(board[pos].id);
+        let er = el.getBoundingClientRect();
+        let d = dist(x,y,er.x+er.width/2,er.y+er.height/2);
+        //console.log('['+pos+']: dist(['+x+','+y+'], ['+er.x+','+er.y+']) = ' + d);
+        if (d < piece_radius) {
+            return pos;
+        }
+    }
+    return undefined;
 }
 
 function highlight_spaces(ids) {
@@ -631,9 +647,42 @@ function highlight_spaces(ids) {
 		ls.setAttribute("href", ls.getAttribute("href").replace("-hl", ""));
 	}
 	for (const id of ids) {
+        if (id === undefined) {
+            continue;
+        }
+        //console.log(`id: ${id}`);
 		let el = document.getElementById(id);
 		el.setAttribute("href", el.getAttribute("href").replace(/(?<!hl).svg/, "-hl.svg"));
 	}
+}
+function highlight_from(event) {
+    let pos = get_pos_from_coords(event.x,event.y);
+    if (event.type === "mousemove") {
+        if (board[pos]) {
+            highlight_spaces([board[pos].id]);
+        } else {
+            highlight_spaces([]);
+        }
+    } else if (event.type === "click") {
+        //console.log(`event: ${event}, pos: ${pos}`);
+        if (pos && board[pos].piece.player === player) {
+            let moves = list_moves_for_piece(board, player, (phase==2), pos);
+            let spaces = [board[pos].id];
+            for (const move of moves) {
+                if (move.dest) {
+                    spaces.push(board[move.dest.loc].id);
+                }
+            }
+            highlight_spaces(spaces);
+            document.getElementById("movelist-title").innerHTML = "Selected Piece Moves";
+            display_moves(board, moves, move_list);
+        } else {
+            highlight_spaces([]);
+            document.getElementById("movelist-title").innerHTML = "Possible Moves";
+            display_moves(board, list_possible_moves(board, player, (phase==2)),
+                          move_list);
+        }
+    }
 }
 
 function format_verb(verb, style, player) {
@@ -680,8 +729,8 @@ function display_moves(board, moves, list) {
 			}
 		}
 		s += "<li><a class='move-item' onmouseover='highlight_spaces("
-			+ JSON.stringify(locs) + ");' onclick='execute(" + i++ + ");'>"
-			+ format_move(mv) + '</a></li>';
+			+ JSON.stringify(locs) + ");' onclick='execute("
+            + JSON.stringify(mv) + ");'>" + format_move(mv) + '</a></li>';
 	}
 	s += '</ol>';
 	list.innerHTML = s;

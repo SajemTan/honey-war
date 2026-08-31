@@ -183,11 +183,13 @@
 		<div id="gamediv" class="grid-container col">
 			<div id="boarddiv" class="inset">
 				<svg id="board" viewBox="0 0 500 500" class="movediv"
-				onmouseout="javascript:highlight_from(event)"><svg id="board_spaces"/><svg id="board_pieces"/></svg>
+				onmousemove="javascript:highlight_from(event)"
+				onclick="javascript:highlight_from(event)">
+				<svg id="board_spaces"/><svg id="board_pieces"/></svg>
 			</div>
 			<div id="move-display" class="inset grid-container row">
 				<div>
-					<h3>Possible Moves</h3>
+					<h3 id="movelist-title">Possible Moves</h3>
 				</div>
 				<div>
 					<button onclick="javascript:undo(true);">Undo</button>

@@ -248,6 +248,8 @@ function write_title() {
 function setup_turn() {
     draw_pieces(document.getElementById("board_pieces"), board);
     write_title();
+    document.getElementById("movelist-title").innerHTML = "Possible Moves";
+    highlight_spaces([]);
     moves = list_possible_moves(board, player, (phase==2));
     display_moves(board, moves, move_list);
     show_timeline();
@@ -300,12 +302,12 @@ function goto(position) {
     setup_turn();
 }
 
-function execute(move_number) {
-    apply_move(board, moves[move_number], false);
+function execute(move) {
+    apply_move(board, move, false);
     while (move_index < undo_list.length) {
         undo_list.pop();
     }
-    undo_list.push(moves[move_number]);
+    undo_list.push(move);
     move_index++;
     update();
 }
