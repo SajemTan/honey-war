@@ -126,15 +126,32 @@ function opt(option) {
 	}
 }
 
-function make_board() {
-	let board = new Map();
-    let spaces_el = document.getElementById("board_spaces");
-    spaces_el.innerHTML = '';
-	const colors = ["green", "purple", "orange"];
-	const dx_x = 2;
+function coords_for_pos(x, y) {
+    const dx_x = 2;
 	const dx_y = 1;
 	const dy_x = -2;
 	const dy_y = 1;
+    const c_x = (dx_x * x) + (dy_x * y);
+    const c_y = (dx_y * x) + (dy_y * y);
+    const cx = c_x * 17.5 + 250;
+    const cy = c_y * 20 + 250;
+    const sx = cx - 25;
+    const sy = cy - 22;
+    return {
+        cx: cx,
+        cy: cy,
+        sx: sx,
+        sy: sy
+    };
+}
+
+const colors = ["green", "purple", "orange"];
+function draw_board() {
+    let spaces_el = document.getElementById("board_spaces");
+    spaces_el.innerHTML = '';
+    let pieces_el = document.getElementById("board_pieces");
+    pieces_el.innerHTML = '';
+
     function make_dots(sx, sy,c_id, dist, rot) {
         const rots={
             tr: -60.35,
@@ -148,28 +165,16 @@ function make_board() {
             + ' transform="rotate('+rots[rot]+' '+ (sx+25) +' ' + (sy+22) + ')" />'
     }
 	for (const [x, y] of iterate_board()) {
-		const c_x = (dx_x * x) + (dy_x * y);
-		const c_y = (dx_y * x) + (dy_y * y);
         const c_id = x + "_" + y;
-		const space = {
-			q: y-Math.abs(x),
-			color: colors[(y+x+12)%3],
-            x: x,
-            y: y,
-			cx: c_x * 17.5 + 250,
-			cy: c_y * 20 + 250,
-			piece: {player: 0, piece: ""},
-			id: "space" + c_id
-		}
-        board[[x,y]] = space;
-		const sx = space.cx - 25;
-		const sy = space.cy - 22;
+        let coords = coords_for_pos(x,y);
+        const sx = coords.sx;
+		const sy = coords.sy;
         spaces_el.insertAdjacentHTML("beforeend", '<g id="g'+c_id
                                      + '" data-x="'+x+'" data-y="'+y+'">');
         let g_el = document.getElementById('g'+c_id);
 		g_el.insertAdjacentHTML("beforeend",
-            '<image x="' + sx + '" y="' + sy + '" href="imgs/' + space.color
-            + '.svg"' + ' class="space" width="50" id="' + space.id
+            '<image x="' + sx + '" y="' + sy + '" href="imgs/' + colors[(y+x+12)%3]
+            + '.svg"' + ' class="space" width="50" id="space' + c_id
             + '" data-x="' + x + '" data-y="' + y + '"/>');
         if (x > 0) {
             g_el.insertAdjacentHTML("beforeend",
@@ -185,9 +190,30 @@ function make_board() {
             g_el.insertAdjacentHTML("beforeend",
                                     make_dots(sx,sy,c_id,-y,'bl'));
         }
+    }
+}
 
-	}
+function make_board() {
+    draw_board();
+    let board = new Map();
+    let spaces_el = document.getElementById("board_spaces");
+    spaces_el.innerHTML = '';
 
+    for (const [x, y] of iterate_board()) {
+        const c_id = x + "_" + y;
+        let coords = coords_for_pos(x,y);
+		const space = {
+			q: y-Math.abs(x),
+			color: colors[(y+x+12)%3],
+            x: x,
+            y: y,
+			cx: coords.cx,
+			cy: coords.cy,
+			piece: {player: 0, piece: ""},
+			id: "space" + c_id
+		}
+        board[[x,y]] = space;
+    }
 	// no player
 	for (const pos of tower_arrangements[opts.towers]) {
 		board[pos].piece.piece = "tower";

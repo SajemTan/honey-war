@@ -258,6 +258,8 @@ function setup_turn() {
         move_list.innerHTML = "Game Over";
     }
     localStorage.setItem("state", game_state());
+    let log = document.getElementById("input_area");
+    log.value = game_state();
 }
 
 function undo(setup_after) {
@@ -403,6 +405,7 @@ function import_game(step, gamestate) {
         } else {
             undo_list = gamestate.moveslist;
         }
+        draw_board();
         setup_turn();
     }
 }
@@ -461,6 +464,7 @@ async function reset_game() {
     phase = 2;
     move_index = 0;
     undo_list = [];
+    draw_board();
     setup_turn();
 }
 
@@ -479,6 +483,7 @@ async function load_game(number) {
     reset_opts_ui(restore.s_options);
     set_opts();
 
+    draw_board();
     setup_turn();
 }
 

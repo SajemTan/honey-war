@@ -194,9 +194,6 @@
 				<div>
 					<button onclick="javascript:undo(true);">Undo</button>
 					<button onclick="javascript:redo(true);">Redo</button>
-					<a id="moves_export">
-						<button id="export" onclick="javascript:export_game()">Export</button>
-					</a>
 				</div>
 				<div id="moves" class="striped-list"></div>
 			</div>
@@ -468,18 +465,20 @@
 								<button id="btn_mp_connect">Load session by ID</button>
 							</div>
 						</fieldset>
-						<label for="fs_import"><h3>Import</h3></label>
+						<label for="fs_import"><h3>Import/Export</h3></label>
 						<fieldset id="fs_import">
 							<fieldset id="fs_game_import" class="inset">
 								<label for="input_area">Import a game log:</label>
-								<br>
 								<button id="import-begin" onclick="javascript:import_game_from_textbox(false)">
 									Import and start from beginning
 								</button>
-								<br>
 								<button id="import-end" onclick="javascript:import_game_from_textbox(true)">
 									Import and go to end
 								</button>
+								<a id="moves_export"><button id="export"
+									onclick="javascript:export_game()">
+									Export game log
+								</button></a>
 								<br>
 								<textarea id="input_area" class="json"></textarea>
 							</fieldset>
