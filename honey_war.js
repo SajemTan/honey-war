@@ -681,17 +681,23 @@ function highlight_spaces(ids) {
 		el.setAttribute("href", el.getAttribute("href").replace(/(?<!hl).svg/, "-hl.svg"));
 	}
 }
+
+var selected = undefined;
 function highlight_from(event) {
     let pos = get_pos_from_coords(event.x,event.y);
     if (event.type === "mousemove") {
-        if (board[pos]) {
-            highlight_spaces([board[pos].id]);
-        } else {
-            highlight_spaces([]);
+        if (!selected) {
+            if (board[pos]) {
+                highlight_spaces([board[pos].id]);
+            } else {
+                highlight_spaces([]);
+            }
         }
     } else if (event.type === "click") {
         //console.log(`event: ${event}, pos: ${pos}`);
+        selected = undefined;
         if (pos && board[pos].piece.player === player) {
+            selected = pos;
             let moves = list_moves_for_piece(board, player, (phase==2), pos);
             let spaces = [board[pos].id];
             for (const move of moves) {
