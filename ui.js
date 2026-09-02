@@ -18,7 +18,11 @@ const symbols = {
     chariot: "H",
     garrison: "G",
     tower_infantry: "TI",
-    tower_cavalry: "TC"
+    tower_cavalry: "TC",
+    hex: "hex",
+    hexG: "green",
+    hexO: "orange",
+    hexP: "purple",
 };
 const enemy_of = [0, 2, 1];
 var turn = 1;
@@ -115,6 +119,67 @@ function set_opts() {
     }
     update_rulestr();
     console.dir(opts);
+}
+
+function opt(option) {
+	switch (option) {
+	case 'mirrored':
+		document.getElementById('towers3t').disabled = true;
+		document.getElementById('towers3tc').disabled = true;
+
+		document.getElementById('towers2mr').disabled = false;
+		document.getElementById('towers2ml').disabled = false;
+		break;
+	case 'rotated':
+		document.getElementById('towers2mr').disabled = true;
+		document.getElementById('towers2ml').disabled = true;
+
+		document.getElementById('towers3t').disabled = false;
+		document.getElementById('towers3tc').disabled = false;
+		break;
+	case 'large':
+		//document.getElementById('towers3').disabled = false;
+		//document.getElementById('towers2w').disabled = false;
+		break;
+	case 'small':
+		//document.getElementById('towers3').disabled = true;
+		//document.getElementById('towers2w').disabled = true;
+		break;
+	case 't3':
+	case 't2':
+	case 't2w':
+	case 't1':
+		document.getElementById('configmirrored').disabled = false;
+		document.getElementById('configrotated').disabled = false;
+		break;
+	case 't3t':
+	case 't3tc':
+		document.getElementById('configmirrored').disabled = true;
+		document.getElementById('configrotated').disabled = false;
+		break;
+	case 't2mr':
+	case 't2ml':
+		document.getElementById('configrotated').disabled = true;
+		document.getElementById('configmirrored').disabled = false;
+		break;
+	case 'friendly-footsoldiers':
+	case 'stranded-footsoldiers':
+		break;
+	case 'buff-footsoldiers':
+	case 'upgrade-footsoldiers':
+		document.getElementById('stranded-footsoldiers').disabled
+				= (document.getElementById('buff-footsoldiers').checked ||
+					document.getElementById('upgrade-footsoldiers').checked);
+		break;
+	case 'garrisonshort':
+	case 'garrisonlong':
+	case 'garrisonboth':
+	case 'buff-trebuchet':
+	case 'buff-infantry':
+		break;
+	default:
+		console.log('Unknown option toggled: "' + option + '"');
+	}
 }
 
 function reset_opts_ui(options) {

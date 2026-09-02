@@ -301,7 +301,8 @@
 							</label>
 							<fieldset id="fs_game_configuration">
 								<label for="fs_game_configuration">
-									<h4>Configuration:</h4>
+									<h4><span class="icon">1K</span>
+										Piece configuration:</h4>
 								</label>
 								<input type="radio" name="boardconfig" id="configmirrored"
 									value="mirrored" onchange="javascript:opt('mirrored')" checked>
@@ -311,7 +312,10 @@
 								<label for="configrotated">Rotated</label>
 							</fieldset>
 							<fieldset id="fs_boardsize">
-								<label for="fs_boardsize"><h4>Board diameter:</h4></label>
+								<label for="fs_boardsize">
+									<h4><span class="icon">hex</span>
+									Board diameter:</h4>
+								</label>
 								<input type="radio" name="boardsize" id="boardlarge"
 									value="large" onchange="javascript:opt('large')" checked>
 								<label for="boardlarge">11 (Standard)</label>
@@ -341,6 +345,13 @@
 									value="1" onchange="javascript:opt('t1')">
 								<label for="towers1">1</label>
 								<br/>
+								<input type="radio" name="towerconfig" id="towers2mr"
+									value="2mr" onchange="javascript:opt('t2mr')">
+								<label for="towers2mr">2, right biased</label>
+								<input type="radio" name="towerconfig" id="towers2ml"
+									value="2ml" onchange="javascript:opt('t2ml')">
+								<label for="towers2ml">2, left biased</label>
+								<br/>
 								<input type="radio" name="towerconfig" id="towers3t"
 									value="3t" onchange="javascript:opt('t3t')">
 								<label for="towers3t">3, rotated</label>
@@ -348,12 +359,9 @@
 									value="3tc" onchange="javascript:opt('t3tc')">
 								<label for="towers3tc">3, counter-rotated</label>
 								<br/>
-								<input type="radio" name="towerconfig" id="towers2mr"
-									value="2mr" onchange="javascript:opt('t2mr')">
-								<label for="towers2mr">2, right biased</label>
-								<input type="radio" name="towerconfig" id="towers2ml"
-									value="2ml" onchange="javascript:opt('t2ml')">
-								<label for="towers2ml">2, left biased</label>
+								<label for="fs_boardtowers">
+									Asymmetric towers require matching piece configs.
+								</label>
 							</fieldset>
 						</fieldset>
 					</div>
@@ -399,7 +407,7 @@
 						</fieldset>
 						<fieldset id="fs_garrison" class="inset">
 							<div>
-								<span class="icon">1G</span>
+								<span class="icon">2G</span>
 								<label for="fs_garrison">
 									<span class="piece">Garrison</span> range:
 								</label>
@@ -438,7 +446,7 @@
 								<input type="checkbox" id="buff-trebuchet"
 									onchange="javascript:opt('buff-trebuchet')">
 								<label for="buff-trebuchet">
-									Trebuchets can move as a normal action.
+									Trebuchets can move as a phase 1 action.
 								</label>
 							</div>
 							<div>
