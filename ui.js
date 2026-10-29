@@ -1,4 +1,5 @@
 "use strict";
+
 const board_el = document.getElementById('board');
 const header_el = document.getElementById('turn');
 const move_list = document.getElementById('moves');
@@ -25,16 +26,16 @@ const symbols = {
     hexP: "purple",
 };
 const enemy_of = [0, 2, 1];
-var turn = 1;
-var player = 1;
-var phase = 2;
-var moves = [];
-var undo_list = [];
-var move_index = 0;
-var saves = JSON.parse(localStorage.getItem("saves")) || [];
-var should_replay = false;
+let turn = 1;
+let player = 1;
+let phase = 2;
+let moves = [];
+let undo_list = [];
+let move_index = 0;
+let saves = JSON.parse(localStorage.getItem("saves")) || [];
+let should_replay = false;
 
-var opts = {
+let opts = {
     board_size: 5,
     towers: "3",
     configuration: "rotated",
@@ -268,9 +269,9 @@ function reset_opts_ui(options) {
     console.dir(opts);
 }
 
-var board = make_board();
+let board = make_board();
 
-var players = {1: "Player 1", 2: "Player 2"};
+let players = {1: "Player 1", 2: "Player 2"};
 
 function encode(s) {
     return s.replace(/./g, function(c) {
@@ -295,15 +296,6 @@ function draw_icons() {
     }
 }
 
-set_opts();
-if (localStorage.getItem("state")) {
-    import_game(true, JSON.parse(localStorage.getItem("state")));
-    // the game import function creates an extra checkpoint
-    delete_game(saves.length - 1);
-}
-reset_opts_ui(opts);
-draw_icons();
-
 function write_title() {
     header_el.innerHTML = "Turn " + turn
                         + ", " + format_player(player)
@@ -315,13 +307,18 @@ function setup_turn() {
     write_title();
     document.getElementById("movelist-title").innerHTML = "Possible Moves";
     highlight_spaces([]);
-    moves = list_possible_moves(board, player, (phase==2));
-    display_moves(board, moves, move_list);
-    show_timeline();
-    show_saves();
     if (move_index != 0 && undo_list[move_index-1].verb == "win") {
-        move_list.innerHTML = "Game Over";
+        //move_list.innerHTML = "Game Over";
+        move_list.hidden = true;
+        document.getElementById("gameover").hidden = false;
+    } else {
+        move_list.hidden = false;
+        document.getElementById("gameover").hidden = true;
+        moves = list_possible_moves(board, player, (phase==2));
+        display_moves(board, moves, move_list);
     }
+    display_timeline();
+    display_saves();
     localStorage.setItem("state", game_state());
     let log = document.getElementById("input_area");
     log.value = game_state();
@@ -407,8 +404,6 @@ function update() {
     update_turninfo();
     setup_turn();
 }
-update_players();
-setup_turn();
 
 function download(text, name, type) {
     let a = document.getElementById("moves_export");
@@ -517,7 +512,7 @@ function save_game() {
 
         s_options: {...opts}
     });
-    show_saves();
+    display_saves();
 }
 
 async function reset_game() {
@@ -564,26 +559,58 @@ function import_rules() {
 
 function delete_game(index) {
     saves.splice(index, 1);
-    show_saves();
+    display_saves();
 }
 
-function show_timeline() {
+function a_html(idx, copy, text) {
+    let a = "<a class='move-item";
+    console.log(move_index + ' ' + (idx+1));
+    if (move_index === idx + 1) {
+        a += " selected'";
+    } else {
+        a += "' onclick='goto(" + (idx+1) + ")'";
+    }
+    a += ">" + text + "</a>";
+    return a;
+}
+
+function display_moves(board, moves, list) {
+	let s = "";
+	let i = 0;
+	for (const mv of moves) {
+		let locs = [];
+		for (const k in mv) {
+			if (k !== "verb") {
+				locs.push(board[mv[k].loc].id);
+			}
+		}
+        let tr = format_move(mv)
+        let a_html = "<a class='move-item' onmouseover='highlight_spaces("
+            + JSON.stringify(locs) + ");' onclick='execute("
+            + JSON.stringify(mv) + ");'>";
+		s += "<tr><td class='fill'>" + a_html + tr[0]
+           + "</a></td><td class='move-notation'>" + a_html + tr[1] + "</a></td></tr>";
+	}
+	list.innerHTML = s;
+}
+
+function display_timeline() {
     let l_turn = 1;
     let l_player = 1;
     let l_phase = 2;
-    let s = "<ol><li><a class='move-item "
-          + (move_index === 0 ? "selected" : "")
-          + "' onclick='goto(0)'>Game begin</a></li>";
+    let s = "<tr><td class='move-idx'>1/1/-:</td>"
+          + "<td>" + a_html(-1, false, "<strong>&nbsp;Game begin</strong>")
+          + "</td><td class='move-notation'></td></tr>";
 
     for (const [idx, mv] of undo_list.entries()) {
-        s += "<li><a class='move-item "
-           + (move_index === idx + 1 ? "selected" : "")
-           + "' onclick='goto(" + (idx+1) + ")'>"
-           + l_turn + "/" + l_player + "/" + l_phase + ":"
-           + format_player(l_player) + " " + format_move(mv, "past")
-           + "</a>";
+        let tr = format_move(mv, "past");
+        let turn = l_turn + "/" + l_player + "/" + l_phase + ":";
+        let long = format_player(l_player) + " " + tr[0];
+        s += "<tr><td class='move-idx'>" + a_html(idx, false, turn) + "</td>"
+           + "<td class='fill'>" + a_html(idx, false, long) + "</td>"
+           + "<td class='move-notation'>" + a_html(idx, true, tr[1]) + "</td>";
 
-        s += "</li>";
+        s += "</tr></td>";
 
         l_phase++;
         if (l_phase == 3) {
@@ -596,11 +623,10 @@ function show_timeline() {
             }
         }
     }
-    s += "</ol>";
     timeline_el.innerHTML = s;
 }
 
-function show_saves() {
+function display_saves() {
     localStorage.setItem("saves", JSON.stringify(saves));
     let s = "<ol>";
 
@@ -615,6 +641,7 @@ function show_saves() {
 
     saves_el.innerHTML = s;
 }
+
 function isJSON(str) {
     try {
         return (JSON.parse(str) && !!str);
@@ -630,3 +657,15 @@ function validate_JSON_field(Field) {
         Field.setCustomValidity("");
     }
 }
+
+set_opts();
+if (localStorage.getItem("state")) {
+    import_game(true, JSON.parse(localStorage.getItem("state")));
+    // the game import function creates an extra checkpoint
+    delete_game(saves.length - 1);
+}
+reset_opts_ui(opts);
+draw_icons();
+
+update_players();
+setup_turn();

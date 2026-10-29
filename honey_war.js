@@ -561,6 +561,7 @@ function list_moves_for_piece(board, player, is_phase_2, pos) {
           switch (opts.rules.Gr) {
           case 'both':
               dist.push([x+dx,y+dy]);
+              // fallthrough
           case 'long':
               dist.push([x+2*dx,y+2*dy]);
               break;
@@ -585,7 +586,19 @@ function list_possible_moves(board, player, is_phase_2) {
 		let piece_moves = list_moves_for_piece(board, player, is_phase_2, pos);
         moves.push(...piece_moves);
 	}
-	return moves;
+    return moves.sort(function(a,b){
+        if (a.verb === "win") {
+            if (b.verb === "win") {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else if (b.verb === "win") {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
 }
 
 function dist(x1,y1,x2,y2) {
@@ -621,7 +634,7 @@ function highlight_spaces(ids) {
 	}
 }
 
-var selected = undefined;
+let selected = undefined;
 function highlight_from(event) {
     let pos = get_pos_from_coords(event.x,event.y);
     if (event.type === "mousemove") {
@@ -657,7 +670,7 @@ function highlight_from(event) {
 }
 
 function format_verb(verb, style, player) {
-	var str;
+	let str;
 	if (!style || style === "imperative") {
 		str = verb;
 	} else {
@@ -673,7 +686,7 @@ function format_verb(verb, style, player) {
 function icon_for(piece, player) {
 	let s = "";
 	if (player || piece === "tower") {
-		var lab = "";
+		let lab = "";
 		if (player) {
 			lab += player;
 		}
@@ -689,57 +702,79 @@ function format_piece(piece) {
 	       + "<span class='piece'>" + piece.piece + "</span>";
 }
 
-function display_moves(board, moves, list) {
-	var s = "<ol onmouseout='highlight_spaces([]);'>";
-	let i = 0;
-	for (const mv of moves) {
-		var locs = [];
-		for (const k in mv) {
-			if (k !== "verb") {
-				locs.push(board[mv[k].loc].id);
-			}
-		}
-		s += "<li><a class='move-item' onmouseover='highlight_spaces("
-			+ JSON.stringify(locs) + ");' onclick='execute("
-            + JSON.stringify(mv) + ");'>" + format_move(mv) + '</a></li>';
-	}
-	s += '</ol>';
-	list.innerHTML = s;
+function notate_coords(piece) {
+    const letters = {
+        '-5': 'v',
+        '-4': 'w',
+        '-3': 'x',
+        '-2': 'y',
+        '-1': 'z',
+        '0':  '-',
+        '1':  'a',
+        '2':  'b',
+        '3':  'c',
+        '4':  'd',
+        '5':  'e',
+    }
+    return letters[piece.loc[0]] + letters[piece.loc[1]];
+    return piece.loc.join('');
+}
+
+function notate_piece(space) {
+    return {
+        is: symbols[space.is.piece] + notate_coords(space),
+        was: symbols[space.was.piece] + notate_coords(space),
+    };
 }
 
 function format_move(mv, style) {
-	var s = "";
+    let n = notate_piece(mv.source).was;
+	let s = "";
 	let player = mv.source.was.player;
 	if (mv.verb === "move") {
-		s += format_verb(mv.verb, style, player) + format_piece(mv.source.was)
-			+ " from " + mv.source.loc + " to " + mv.dest.loc;
-	} else if (mv.verb === "attack" || mv.verb === "destroy") {
+        n += notate_coords(mv.dest);
 		s += format_verb(mv.verb, style, player)
+            + format_piece(mv.source.was) + " from " + mv.source.loc
+            + " to " + mv.dest.loc;
+	} else if (mv.verb === "attack" || mv.verb === "destroy") {
+        if (mv.source.is.piece !== mv.source.was.piece) {
+            n += '>';
+        } else {
+            n += '*';
+        }
+        n += notate_piece(mv.attack).was;
+        s += format_verb(mv.verb, style, player)
 			+ format_piece(mv.attack.was) + " at " + mv.attack.loc
 			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc;
 		if (mv.hasOwnProperty("dest")) {
-			s += " landing at " + mv.dest.loc;
+            s += " landing at " + mv.dest.loc;
 			if (mv.source.was.piece !== mv.dest.is.piece &&
 					mv.dest.is.piece !== "") {
 				s += " as " + format_piece(mv.dest.is);
+                n += symbols[mv.dest.is.piece];
 			}
+            n += notate_coords(mv.dest);
 		} else if (mv.source.was.piece === "cavalry"
 					&& mv.attack.was.piece !== "castle"
-						&& mv.attack.was.piece !== "garrison") {
+					&& mv.attack.was.piece !== "garrison") {
 			s += " and retreat";
 		}
 	} else if (mv.verb === "garrison") {
+        n += '#' + notate_coords(mv.dest);
 		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
 		s += format_verb(mv.verb, style, player)
 			+ format_piece(mv.dest.was) + " at " + mv.dest.loc
 			+ " with" + format_piece(mv.source.was) + " at " + mv.source.loc
 	} else if (mv.verb === "win") {
-		s += format_verb(mv.verb, style, player) + " with" + format_piece(mv.source.was)
+        n += '!' + notate_coords(mv.attack);
+		s += format_verb(mv.verb, style, player)
+            + " with" + format_piece(mv.source.was)
 			+ " at " + mv.source.loc;
 	} else {
+        n += '?' + mv.verb;
 		s += format_verb(mv.verb, style, player);
 	}
-	return s;
+	return [s, n];
 }
 
 function apply_move(board, move, undo) {

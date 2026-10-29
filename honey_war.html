@@ -37,15 +37,67 @@
 			}
 			.striped-list {
 				display: contents;
+				& li:nth-child(odd), & tr:nth-child(odd) {
+					background-color: #eee;
+				}
+				& li:nth-child(even), & tr:nth-child(even) {
+					background-color: #ddd;
+				}
+				& ::marker {
+					background-color: #eee
+				}
+				& > ol {
+					overflow-y: scroll;
+				}
+				& > table {
+					overflow-y: scroll;
+					border-collapse: collapse;
+				}
+				& td {
+					padding: 0px;
+				}
 			}
-			.striped-list > ol {
-				overflow-y: scroll;
+			td {
+				vertical-align: baseline;
 			}
-			.striped-list > ol > li:nth-child(odd) {
-				background-color: #eee;
+			.numbered {
+			  counter-reset: rowNumber;
+			  width: 100%;
+			  display: block;
+			  overflow-y: scroll;
 			}
-			.striped-list > ol > li:nth-child(even) {
-				background-color: #ddd;
+			.numbered tbody > tr::before {
+			  display: table-cell;
+			  counter-increment: rowNumber;
+			  content: counter(rowNumber) ".";
+			  padding-right: 0.3em;
+			  text-align: right;
+			}
+			.move-desc {
+				display: table-cell;
+			}
+			.num-col {
+				display: table-cell;
+				width: 0;
+				white-space: nowrap;
+			}
+			.move-notation {
+				display: table-cell;
+				width: 0;
+				white-space: nowrap;
+				padding-left: 4px !important;
+				border-left: 1px solid black;
+			}
+			.move-idx {
+				text-align: right;
+				white-space: nowrap;
+			}
+			.fill {
+				width: 99%;
+			}
+			.list-header {
+				margin-top: 8px;
+				margin-bottom: 0px;
 			}
 			#saves ol li div {
 				display: flex;
@@ -109,7 +161,10 @@
 				color: purple;
 			}
 			#current-game {
-				max-height: 500px;
+				max-height: 600px;
+			}
+			#stored-games {
+				max-width: 350px;
 			}
 			button {
 				padding: 0;
@@ -126,6 +181,7 @@
 			}
 			.win {
 				text-transform: capitalize;
+				font-weight: bold;
 				font-style: italic;
 			}
 			.inline-icon {
@@ -195,7 +251,17 @@
 					<button onclick="javascript:undo(true);">Undo</button>
 					<button onclick="javascript:redo(true);">Redo</button>
 				</div>
-				<div id="moves" class="striped-list"></div>
+				<div class="striped-list">
+				<table class='numbered' onmouseout='highlight_spaces([]);'>
+					<colgroup>
+						<col class='num-col' />
+						<col class='move-desc' />
+						<col class='move-notation' />
+					</colgroup><tbody id="moves">
+					</tbody>
+				</table>
+				</div>
+				<div id="gameover" hidden>Game Over</div>
 			</div>
 		</div>
 		<div id="timelinediv" class="grid-container col">
@@ -213,18 +279,25 @@
 					<input id="replay-delay" type="number" value="1500">
 				</div>
 				<div>
-					<p>
+					<p class="list-header">
 						Click on an entry to travel to that point. History is not deleted until
 						you make a move from a point in the past.
 					</p>
 				</div>
-				<div id="timeline" class="striped-list"></div>
+				<div class="striped-list"><table class="numbered">
+					<colgroup>
+						<col class='num-col' />
+						<col class='num-col' />
+						<col class='move-desc' />
+						<col class='move-notation' />
+					</colgroup>
+					<tbody id="timeline"></tbody>
+				</table></div>
 			</div>
-			<div class="inset row">
+			<div id="stored-games" class="inset row">
 				<h3>Stored Games</h3>
 				<button id="save-game" onclick="javascript:save_game()">Save current state</button>
-				<br>
-				<p>
+				<p class="list-header">
 					Click on one of the entries below to load that gamestate.
 				</p>
 				<div id="saves" class="striped-list"></div>
@@ -463,7 +536,7 @@
 					</fieldset>
 					<fieldset class="inset">
 						<label for="fs_mp"><h3>Multiplayer</h3></label>
-						<fieldset id="fs_mp" class="inset">
+						<fieldset id="fs_mp" class="inset" disabled>
 							<div>
 								<label for="sessionID">Session ID:</label>
 								<input type="text" id="sessionID">
