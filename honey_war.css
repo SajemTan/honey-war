@@ -18,6 +18,7 @@ body {
 .col {
 	grid-auto-flow: column;
 	grid-template-columns: minmax(auto, max-content);
+	flex-direction: column;
 }
 .row {
 	grid-auto-flow: row;
@@ -26,6 +27,7 @@ body {
 }
 .striped-list {
 	display: contents;
+	overflow-y: scroll;
 	& li:nth-child(odd), & tr:nth-child(odd) {
 		background-color: #eee;
 	}
@@ -35,11 +37,9 @@ body {
 	& ::marker {
 		background-color: #eee
 	}
-	& > ol {
-		overflow-y: scroll;
+	& ol {
 	}
-	& > table {
-		overflow-y: scroll;
+	& table {
 		border-collapse: collapse;
 	}
 	& td {
@@ -49,18 +49,21 @@ body {
 td {
 	vertical-align: baseline;
 }
+.vcentered td {
+	vertical-align: revert;
+}
 .numbered {
-  counter-reset: rowNumber;
-  width: 100%;
-  display: block;
-  overflow-y: scroll;
+	counter-reset: rowNumber;
+	width: 100%;
+	display: block;
+	overflow-y: scroll;
 }
 .numbered tbody > tr::before {
-  display: table-cell;
-  counter-increment: rowNumber;
-  content: counter(rowNumber) ".";
-  padding-right: 0.3em;
-  text-align: right;
+	display: table-cell;
+	counter-increment: rowNumber;
+	content: counter(rowNumber) ".";
+	padding-right: 0.3em;
+	text-align: right;
 }
 .move-desc {
 	display: table-cell;
@@ -151,6 +154,7 @@ textarea:invalid {
 }
 #current-game {
 	max-height: 600px;
+	flex-wrap: nowrap;
 }
 #stored-games {
 	max-width: 350px;
@@ -182,9 +186,7 @@ button {
 }
 @media screen and (min-width: 850px) {
 	#gamediv {
-		grid-template-columns:
-			minmax(400px, 500px)
-		minmax(50%, auto);
+		grid-template-columns: minmax(400px, 500px) minmax(50%, auto);
 	}
 	#board {
 		max-height: 500px;
@@ -219,5 +221,16 @@ button {
 	}
 	.flex-container > .movediv {
 		width: 100%;
+	}
+}
+@media screen and (max-width: 999px) {
+	#timelinediv {
+		flex-direction: column;
+	}
+	#stored-games {
+		max-width: unset;
+	}
+	#saves > * {
+		max-width: 350px;
 	}
 }

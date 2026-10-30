@@ -2,13 +2,18 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<meta name="description" content="An Online Simulator for the Honey War Board Game">
-		<meta name="keywords" content="Honey War, Sajem Tan, Board Game, Strategy Game">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Honey War simulator</title>
 		<script src="honey_war.js"></script>
 		<script src="ui.js" defer></script>
-		<link rel="stylesheet" href="honey_war.css"></style>
+		<meta name="description" content="An Online Simulator for the Honey War
+		Board Game">
+		<meta name="keywords" content="Honey War, Sajem Tan, Board Game, Strategy
+		Game">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="honey_war.css">
+		<link rel="canonical" href="honey_war.html">
+		<link rel="help" href="https://sajemtan.miraheze.org/wiki/Honey_War">
+		<link rel="licence" href="LICENSE.txt">
 	</head>
 	<body>
 		<h1 id="turn" class="inset"></h1>
@@ -35,34 +40,32 @@
 						<col class='move-notation' />
 					</colgroup><tbody id="moves">
 					</tbody>
-				</table>
-				</div>
+				</table></div>
 				<div id="gameover" hidden>Game Over</div>
 			</div>
 		</div>
-		<div id="timelinediv" class="grid-container col">
-			<div id="current-game" class="inset grid-container row">
-				<div><h3>Current Game</h3></div>
+		<div id="timelinediv" class="flex-container">
+			<div id="current-game" class="inset flex-container col">
+				<h3>Current Game</h3>
 				<div>
 					<button id="game-replay" onclick="javascript:replay_game();">
 						Replay from point
 					</button>
-					<button id="replay-pause" onclick="javascript:should_replay = false;" disabled>
+					<button id="replay-pause"
+					   onclick="javascript:should_replay=false;" disabled>
 						Pause replay
 					</button>
 					<br>
 					<label for="replay-delay">Delay (ms):</label>
 					<input id="replay-delay" type="number" value="1500">
 				</div>
-				<div>
-					<p class="list-header">
-						Click on an entry to travel to that point. History is not deleted until
-						you make a move from a point in the past.
-					</p>
-				</div>
+				<p class="list-header">
+				   Click on an entry to travel to that point. History is not deleted
+					until you make a move from a point in the past.
+				</p>
 				<div class="striped-list"><table class="numbered">
-					<colgroup>
-						<col class='num-col' />
+				   <colgroup>
+					   <col class='num-col' />
 						<col class='num-col' />
 						<col class='move-desc' />
 						<col class='move-notation' />
@@ -71,280 +74,315 @@
 				</table></div>
 			</div>
 			<div id="stored-games" class="inset row">
-				<h3>Stored Games</h3>
+			   <h3>Stored Games</h3>
 				<button id="save-game" onclick="javascript:save_game()">Save current state</button>
 				<p class="list-header">
-					Click on one of the entries below to load that gamestate.
+				   Click on one of the entries below to load that gamestate.
 				</p>
 				<div id="saves" class="striped-list"></div>
 			</div>
 		</div>
 		<div class="flex-container">
-			<div id="legend-display" class="movediv inset">
-				<h3>Legend of Pieces</h3>
-				<table id="legend">
-					<tr>
-						<td><img src="imgs/1F.svg"></td>
+		   <div id="legend-display" class="movediv inset">
+			   <h4>Legend of Pieces</h3>
+				<table id="legend" class="vcentered">
+				   <tr>
+					   <td><img src="imgs/1F.svg"></td>
 						<td><img src="imgs/2F.svg"></td>
 						<td>Footsoldier</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1I.svg"></td>
+					   <td><img src="imgs/1I.svg"></td>
 						<td><img src="imgs/2I.svg"></td>
 						<td>Infantry</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1K.svg"></td>
+					   <td><img src="imgs/1K.svg"></td>
 						<td><img src="imgs/2K.svg"></td>
 						<td>Cavalry</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1H.svg"></td>
+					   <td><img src="imgs/1H.svg"></td>
 						<td><img src="imgs/2H.svg"></td>
 						<td>Chariot</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1B.svg"></td>
+					   <td><img src="imgs/1B.svg"></td>
 						<td><img src="imgs/2B.svg"></td>
 						<td>Trebuchet</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1C.svg"></td>
+					   <td><img src="imgs/1C.svg"></td>
 						<td><img src="imgs/2C.svg"></td>
 						<td>Castle</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1D.svg"></td>
+					   <td><img src="imgs/1D.svg"></td>
 						<td><img src="imgs/2D.svg"></td>
 						<td>Damaged Castle</td>
 					</tr>
 					<tr>
-						<td><img src="imgs/1G.svg"></td>
+					   <td><img src="imgs/1G.svg"></td>
 						<td><img src="imgs/2G.svg"></td>
 						<td>Tower/Garrison</td>
 					</tr>
 				</table>
+				<h4>Information</h4>
 				<p>
-					For rules and other information, please see <a href="https://sajemtan.miraheze.org/wiki/Honey_War">this page</a>.
-				</p>
-			</div>
-			<div id="mp-display" class="movediv inset"> <!--style="max-width: 550px;">-->
-				<h3>Settings</h3>
+				   For rules and other general information, please see
+					<a rel="help"
+					href="https://sajemtan.miraheze.org/wiki/Honey_War">
+					this page</a>.
+				</p><p>
+					The board contains coordinate indicators on each hex, in the
+					form of a row of small dots on either side of each hex. The
+					left is x, the right is y. Dots on the upper side of the hex
+					are positive, and the lower side is negative. No dots
+					represents 0.
+				</p><p>
+				   The right column of the move and history lists contains
+					move notation of the following form. Coordinates are
+					expressed as pairs of letters mapped as
+					[-5..5]=>[vwxyz-abcde] (that is, a literal hyphen is used
+					for zero). a coordinate is prefixed with its semantic role:
+					no prefix represents a non-attack destination, '>'
+					represents an attack destination, '*' represents a
+					non-moving attack target (including cavalry attack and
+					retreat), '#' represents garrisoning, and '!' represents
+					winning (destroying a castle). '>' and '*' are also
+					followed by the symbol of the attacked piece.
+			</p></div>
+			<div id="mp-display" class="movediv inset">
+			   <h3>Settings</h3>
 				<div id="mp-settings" class="flex-container">
-					<div id="col1">
-						<fieldset class="inset" id="fs_player_names">
-							<label for="fs_player_names">
-								<h3>Player Names</h3>
+				   <div id="col1">
+					   <fieldset class="inset" id="fs_player_names">
+						   <label for="fs_player_names">
+							   <h3>Player Names</h3>
 							</label>
 							<span class="icon">1C</span>
 							<input type="text" class="inline-input"
-								id="P1-name" value="Player 1" onchange="javascript:update_players()">
+							   id="P1-name" value="Player 1"
+								onchange="javascript:update_players()">
 							<br>
 							<span class="icon">2C</span>
 							<input type="text" class="inline-input"
-								id="P2-name" value="Player 2" onchange="javascript:update_players()">
+							   id="P2-name" value="Player 2"
+								onchange="javascript:update_players()">
 						</fieldset>
 						<fieldset class="inset" id="fs_game_settings">
-							<label for="fs_game_settings">
-								<h3>Game Settings</h3>
+						   <label for="fs_game_settings">
+							   <h3>Game Settings</h3>
 							</label>
 							<fieldset id="fs_game_configuration">
-								<label for="fs_game_configuration">
-									<h4><span class="icon">1K</span>
-										Piece configuration:</h4>
+							   <label for="fs_game_configuration">
+								   <h4><span class="icon">1K</span>
+									   Piece configuration:</h4>
 								</label>
-								<input type="radio" name="boardconfig" id="configmirrored"
-									value="mirrored" onchange="javascript:opt('mirrored')" checked>
+								<input type="radio" name="boardconfig"
+								   id="configmirrored" value="mirrored"
+									onchange="javascript:opt('mirrored')" checked>
 								<label for="configmirrored">Mirrored</label>
-								<input type="radio" name="boardconfig" id="configrotated"
-									value="rotated" onchange="javascript:opt('rotated')">
+								<input type="radio" name="boardconfig"
+								   id="configrotated" value="rotated"
+									onchange="javascript:opt('rotated')">
 								<label for="configrotated">Rotated</label>
 							</fieldset>
 							<fieldset id="fs_boardsize">
-								<label for="fs_boardsize">
-									<h4><span class="icon">hex</span>
+							   <label for="fs_boardsize">
+								   <h4><span class="icon">hex</span>
 									Board diameter:</h4>
 								</label>
 								<input type="radio" name="boardsize" id="boardlarge"
-									value="large" onchange="javascript:opt('large')" checked>
+								   value="large" onchange="javascript:opt('large')"
+									checked>
 								<label for="boardlarge">11 (Standard)</label>
 								<input type="radio" name="boardsize" id="boardsmall"
-									value="small" onchange="javascript:opt('small')">
+								   value="small" onchange="javascript:opt('small')">
 								<label for="boardsmall">
-									9 (Small, 1-2 towers recommended)
+								   9 (Small, 1-2 towers recommended)
 								</label>
 							</fieldset>
 							<fieldset id="fs_boardtowers" class="inset">
-								<h4>
-									<span class="icon">T</span>
+							   <h4>
+								   <span class="icon">T</span>
 									<label for="fs_boardtowers">
-										<span class="piece">Tower</span> configuration:
+									   <span class="piece">Tower</span> configuration:
 									</label>
 								</h4>
 								<input type="radio" name="towerconfig" id="towers3"
-									value="3" onchange="javascript:opt('t3')" checked>
+								   value="3" onchange="javascript:opt('t3')" checked>
 								<label for="towers3">3</label>
 								<input type="radio" name="towerconfig" id="towers2"
-									value="2" onchange="javascript:opt('t2')">
+								   value="2" onchange="javascript:opt('t2')">
 								<label for="towers2">2</label>
 								<input type="radio" name="towerconfig" id="towers2w"
-									value="2w" onchange="javascript:opt('t2w')">
+								   value="2w" onchange="javascript:opt('t2w')">
 								<label for="towers2w">2, widely spaced</label>
 								<input type="radio" name="towerconfig" id="towers1"
-									value="1" onchange="javascript:opt('t1')">
+								   value="1" onchange="javascript:opt('t1')">
 								<label for="towers1">1</label>
 								<br/>
 								<input type="radio" name="towerconfig" id="towers2mr"
-									value="2mr" onchange="javascript:opt('t2mr')">
+								   value="2mr" onchange="javascript:opt('t2mr')">
 								<label for="towers2mr">2, right biased</label>
 								<input type="radio" name="towerconfig" id="towers2ml"
-									value="2ml" onchange="javascript:opt('t2ml')">
+								   value="2ml" onchange="javascript:opt('t2ml')">
 								<label for="towers2ml">2, left biased</label>
 								<br/>
 								<input type="radio" name="towerconfig" id="towers3t"
-									value="3t" onchange="javascript:opt('t3t')">
+								   value="3t" onchange="javascript:opt('t3t')">
 								<label for="towers3t">3, rotated</label>
 								<input type="radio" name="towerconfig" id="towers3tc"
-									value="3tc" onchange="javascript:opt('t3tc')">
+								   value="3tc" onchange="javascript:opt('t3tc')">
 								<label for="towers3tc">3, counter-rotated</label>
 								<br/>
 								<label for="fs_boardtowers">
-									Asymmetric towers require matching piece configs.
+								   Asymmetric towers require matching piece configs.
 								</label>
 							</fieldset>
 						</fieldset>
 					</div>
 					<fieldset id="col2" class="inset">
-						<label for="col2"><h3>Rule variations</h3></label>
+					   <label for="col2"><h3>Rule variations</h3></label>
 						<fieldset id="fs_footsoldier" class="inset">
-							<div>
-								<span class="icon">1F</span>
+						   <div>
+							   <span class="icon">1F</span>
 								<label for="fs_footsoldier">
-									<span class="piece">Footsoldier</span> mobility:
+								   <span class="piece">Footsoldier</span> mobility:
 								</label>
 							</div>
 							<div>
-								<input type="checkbox" id="friendly-footsoldiers"
-									onchange="javascript:opt('friendly-footsoldiers')" checked>
-								<label for="friendly-footsoldiers">Footsoldiers move through
-									friendlies in phase 2.
+							   <input type="checkbox" id="friendly-footsoldiers"
+								   onchange="javascript:opt('friendly-footsoldiers')"
+									checked>
+								<label for="friendly-footsoldiers">
+								   Footsoldiers move through friendlies in phase 2.
 								</label>
 							</div>
 							<div>
-								<input type="checkbox" id="buff-footsoldiers"
-									onchange="javascript:opt('buff-footsoldiers')" checked>
+							   <input type="checkbox" id="buff-footsoldiers"
+								   onchange="javascript:opt('buff-footsoldiers')"
+									checked>
 								<label for="buff-footsoldiers">
-									Footsoldiers can move backward.
+								   Footsoldiers can move backward.
 								</label>
 							</div>
 							<div>
-								<input type="checkbox" id="upgrade-footsoldiers"
-									 onchange="javascript:opt('upgrade-footsoldiers')">
+							   <input type="checkbox" id="upgrade-footsoldiers"
+								    onchange="javascript:opt('upgrade-footsoldiers')">
 								<label for="upgrade-footsoldiers">
-									Footsoldiers become infantry on reaching the end of the
-									board.
+								   Footsoldiers become infantry on reaching the end of
+									the board.
 								</label>
 							</div>
 							<div>
-								<input type="checkbox" id="stranded-footsoldiers"
-									onchange="javascript:opt('stranded-footsoldiers')" disabled>
+							   <input type="checkbox" id="stranded-footsoldiers"
+								   onchange="javascript:opt('stranded-footsoldiers')"
+									disabled>
 								<label for="stranded-footsoldiers">
-									Footsoldiers can attack the castle backward as a special
-									case.
+								   Footsoldiers can attack the castle backward as a
+									special case.
 								</label>
 							</div>
 						</fieldset>
 						<fieldset id="fs_garrison" class="inset">
-							<div>
-								<span class="icon">2G</span>
+						   <div>
+							   <span class="icon">2G</span>
 								<label for="fs_garrison">
-									<span class="piece">Garrison</span> range:
+								   <span class="piece">Garrison</span> range:
 								</label>
 							</div>
 							<div>
-								<input type="radio" name="garrisonrange" id="garrisonshort"
-									value="garrisonshort" onchange="javascript:opt('garrisonshort')"
+							   <input type="radio" name="garrisonrange"
+								   id="garrisonshort" value="garrisonshort"
+									onchange="javascript:opt('garrisonshort')"
 									checked>
 								<label for="friendly-footsoldiers">
-									Garrisons attack adjacent hexes. (Standard)
+								   Garrisons attack adjacent hexes. (Standard)
 								</label>
 							</div>
 							<div>
-								<input type="radio" name="garrisonrange" id="garrisonlong"
-									value="garrisonlong" onchange="javascript:opt('garrisonlong')">
+							   <input type="radio" name="garrisonrange"
+								   id="garrisonlong" value="garrisonlong"
+									onchange="javascript:opt('garrisonlong')">
 								<label for="garrisonlong">
-									Garrisons attack at double range.
+								   Garrisons attack at double range.
 								</label>
 							</div>
 							<div>
-								<input type="radio" name="garrisonrange" id="garrisonboth"
-									value="garrisonboth" onchange="javascript:opt('garrisonboth')">
+							   <input type="radio" name="garrisonrange"
+								   id="garrisonboth" value="garrisonboth"
+									onchange="javascript:opt('garrisonboth')">
 								<label for="friendly-footsoldiers">
-									Garrisons attack at standard and double range.
+								   Garrisons attack at standard and double range.
 								</label>
 							</div>
 						</fieldset>
 						<fieldset id="fs_trebuchet" class="inset">
-							<div>
-								<span class="icon">1B</span>
+						   <div>
+							   <span class="icon">1B</span>
 								<label for="fs_trebuchet">
-									<span class="piece">Trebuchets</span>:
+								   <span class="piece">Trebuchets</span>:
 								</label>
 							</div>
 							<div>
-								<input type="checkbox" id="buff-trebuchet"
-									onchange="javascript:opt('buff-trebuchet')">
+							   <input type="checkbox" id="buff-trebuchet"
+								   onchange="javascript:opt('buff-trebuchet')">
 								<label for="buff-trebuchet">
-									Trebuchets can move as a phase 1 action.
+								   Trebuchets can move as a phase 1 action.
 								</label>
 							</div>
 							<div>
-								<input type="checkbox" id="buff-infantry"
-									onchange="javascript:opt('buff-infantry')">
+							   <input type="checkbox" id="buff-infantry"
+								   onchange="javascript:opt('buff-infantry')">
 								<label for="buff-infantry">
-									Infantry survive bombardment as footsoldiers.
+								   Infantry survive bombardment as footsoldiers.
 								</label>
 							</div>
 						</fieldset>
-						<button id="reset" class="button" onclick="javascript:reset_game()">
+						<button id="reset" class="button"
+						   onclick="javascript:reset_game()">
 							Apply and reset game
 						</button>
 					</fieldset>
 					<fieldset class="inset">
 						<label for="fs_mp"><h3>Multiplayer</h3></label>
 						<fieldset id="fs_mp" class="inset" disabled>
-							<div>
-								<label for="sessionID">Session ID:</label>
+						   <div>
+							   <label for="sessionID">Session ID:</label>
 								<input type="text" id="sessionID">
-							</div>
-							<div>
-								<button id="btn_new_session">New Session ID</button>
+							</div><div>
+							   <button id="btn_new_session">New Session ID</button>
 								<button id="btn_mp_connect">Load session by ID</button>
 							</div>
 						</fieldset>
 						<label for="fs_import"><h3>Import/Export</h3></label>
 						<fieldset id="fs_import">
-							<fieldset id="fs_game_import" class="inset">
-								<label for="input_area">Import a game log:</label>
-								<button id="import-begin" onclick="javascript:import_game_from_textbox(false)">
+						   <fieldset id="fs_game_import" class="inset">
+							   <label for="input_area">Import a game log:</label>
+								<button id="import-begin"
+								   onclick="javascript:import_game_from_textbox(false)">
 									Import and start from beginning
 								</button>
-								<button id="import-end" onclick="javascript:import_game_from_textbox(true)">
+								<button id="import-end"
+								   onclick="javascript:import_game_from_textbox(true)">
 									Import and go to end
 								</button>
 								<a id="moves_export"><button id="export"
-									onclick="javascript:export_game()">
+								   onclick="javascript:export_game()">
 									Export game log
 								</button></a>
 								<br>
 								<textarea id="input_area" class="json"></textarea>
 							</fieldset>
 							<fieldset id="fs_rules_import" class="inset">
-								<label for="rules-share">Rule string:</label>
+							   <label for="rules-share">Rule string:</label>
 								<br>
 								<textarea id="rules-share" class="json"></textarea>
 								<br>
-								<button id="import-rules" onclick="javascript:import_rules()">
+								<button id="import-rules"
+								   onclick="javascript:import_rules()">
 									Import rules from string
 								</button>
 							</fieldset>
