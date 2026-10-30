@@ -115,20 +115,29 @@ const tower_arrangements = {
 	]
 };
 
+let origin_x;
+let origin_y;
+
+function scale_board() {
+	const scale_factor = (2*opts.board_size+1)/(11);
+	let viewbox = document.getElementById("board").viewBox.baseVal;
+	viewbox.height = Math.round(500*scale_factor/2)*2;
+	viewbox.width = Math.round(475*scale_factor/2)*2;
+	origin_y = viewbox.height/2;
+	origin_x = viewbox.width/2;
+}
+
 function coords_for_pos(x, y) {
-	const dx_x = 2;
-	const dx_y = 1;
-	const dy_x = -2;
-	const dy_y = 1;
-	const c_x = (dx_x * x) + (dy_x * y);
-	const c_y = (dx_y * x) + (dy_y * y);
-	const cx = c_x * 17.5 + 250;
-	const cy = c_y * 20 + 250;
-	const sx = cx - 25;
-	const sy = cy - 22;
+	const dx_x = 35;
+	const dx_y = -dx_x;
+	const dy = 20;
+	const hex_w = 50;
+	const hex_h = 40;
+	const cx = (dx_x * x) + (dx_y * y) + origin_x;
+	const cy = (dy * x) + (dy * y) + origin_y;
+	const sx = cx - hex_w/2;
+	const sy = cy - hex_h/2;
 	return {
-		cx: cx,
-		cy: cy,
 		sx: sx,
 		sy: sy
 	};
@@ -137,6 +146,7 @@ function coords_for_pos(x, y) {
 const colors = ["green", "purple", "orange"];
 
 function draw_board() {
+	scale_board();
 	let spaces_el = document.getElementById("board_spaces");
 	spaces_el.innerHTML = '';
 	let pieces_el = document.getElementById("board_pieces");
@@ -201,8 +211,8 @@ function make_board() {
 			color: colors[(y + x + 12) % 3],
 			x: x,
 			y: y,
-			cx: coords.cx,
-			cy: coords.cy,
+			sx: coords.sx,
+			sy: coords.sy,
 			piece: {
 				player: 0,
 				piece: ""
@@ -252,10 +262,11 @@ function make_board() {
 
 function draw_pieces(svg, board) {
 	svg.innerHTML = "";
-	for (const k of iterate_board()) {
-		const space = board[k];
-		const sx = space.cx - 25;
-		const sy = space.cy - 22;
+	for (const [x,y] of iterate_board()) {
+		const space = board[[x,y]];
+		let coords = coords_for_pos(x, y);
+		const sx = coords.sx;
+		const sy = coords.sy;
 		if (space.piece.player !== 0 || space.piece.piece === "tower") {
 			let lab = "";
 			if (space.piece.player) {

@@ -35,7 +35,7 @@ let move_index = 0;
 let saves = JSON.parse(localStorage.getItem("saves")) || [];
 let should_replay = false;
 
-let opts = {
+const default_opts = {
 	board_size: 5,
 	towers: "3",
 	configuration: "rotated",
@@ -56,6 +56,7 @@ let opts = {
 		bB: false
 	}
 };
+let opts = window.structuredClone(default_opts);
 
 function apply_listeners() {
 	for (let e of document.getElementsByTagName('textarea')) {
@@ -67,6 +68,7 @@ function apply_listeners() {
 apply_listeners();
 
 function set_opts() {
+	opts = {rules: {}};
 	if (document.getElementById('configrotated').checked) {
 		opts.configuration = 'rotated';
 	} else {
@@ -277,7 +279,7 @@ let players = {
 };
 
 function encode(s) {
-	return s.replace(/./g, function(c) {
+	return s.replace(/[^A-Za-z0-9 _.-]/g, function(c) {
 		return "&#" + c.charCodeAt(0) + ";"
 	});
 }
@@ -324,8 +326,9 @@ function setup_turn() {
 	display_timeline();
 	display_saves();
 	localStorage.setItem("state", game_state());
-	let log = document.getElementById("input_area");
+	let log = document.getElementById("json_log_input");
 	log.value = game_state();
+	document.getElementById("note_log_area").value = notation_str();
 }
 
 function undo(setup_after) {
@@ -427,6 +430,10 @@ function export_game() {
 	download(game_state(), 'Honey-War-Log.json', 'application/json');
 }
 
+function export_notation() {
+	download(notation_str(), 'Honey-War-Log.txt', 'text/plain');
+}
+
 function import_game(step, gamestate) {
 	if (gamestate) {
 		reset_game();
@@ -444,45 +451,33 @@ function import_game(step, gamestate) {
 			}
 			if (gamestate.options) {
 				reset_opts_ui(gamestate.options);
-				/*opts = gamestate.options;
-				update_rulestr();*/
 			}
 			/* else {
-			                opts = {
-			                board_size: 5,
-			                towers: "3",
-			                configuration: "rotated",
-			                rules: {
-			                fF: true,
-			                bF: true,
-			                uF: false,
-			                sF: false,
-			                Gr: "short",
-			                IB: false,
-			                bB: false
-			                }
-			                }
-			                }*/
+				opts = {
+					board_size: 5,
+					towers: "3",
+					configuration: "rotated",
+					rules: {
+						fF: true,
+						bF: true,
+						uF: false,
+						sF: false,
+						Gr: "short",
+						IB: false,
+						bB: false
+					}
+				}
+			}*/
 		}
+		undo_list = gamestate.moveslist;
 		if (step) {
-			for (const move of moveslist) {
-				/* if (slowmode) {
-				   } */
-				apply_move(board, move, false);
-				undo_list.push(move);
-				move_index++;
-				update_turninfo();
-			}
-		} else {
-			undo_list = gamestate.moveslist;
+			replay_game();
 		}
-		draw_board();
-		setup_turn();
 	}
 }
 
 function import_game_from_textbox(step) {
-	const gamestate = JSON.parse(document.getElementById("input_area").value);
+	const gamestate = JSON.parse(document.getElementById("json_log_input").value);
 	import_game(step, gamestate);
 }
 
@@ -502,8 +497,8 @@ async function replay_game() {
 		highlight_spaces(locs);
 		await sleep(delay_el.valueAsNumber);
 		apply_move(board, move, false);
-		update();
 		move_index++;
+		update();
 	}
 
 	replay_btn_el.disabled = false;
@@ -512,7 +507,7 @@ async function replay_game() {
 }
 
 function save_game() {
-	saves.push({
+	saves.push(window.structuredClone({
 		s_board: JSON.stringify(board),
 		s_moves: undo_list,
 		s_moves_avail: moves,
@@ -525,7 +520,7 @@ function save_game() {
 		s_options: {
 			...opts
 		}
-	});
+	}));
 	display_saves();
 }
 
@@ -570,6 +565,55 @@ function import_rules() {
 	reset_game();
 }
 
+function notation_str() {
+	const style = String(opts.board_size*2+1) + opts.configuration.at(0)
+		 + opts.towers;
+	let rules = "";
+	for (const rule in opts.rules) {
+		if (opts.rules[rule] !== default_opts.rules[rule]) {
+			if (opts.rules[rule] === true) {
+				rules += rule + " ";
+			} else if (opts.rules[rule] === false) {
+				rules += "-" + rule + " ";
+			} else {
+				rules += rule + "=" + opts.rules[rule] + " ";
+			}
+		}
+	}
+	let n = "version=0\n"
+		 + "players=" + players[1] + ", " + players[2] + "\n"
+		 + "style=" + style + "\n"
+		 + "rules=" + rules + "\n\n"
+		 + "1. -----";
+	let l_turn = 1;
+	let l_player = 1;
+	let l_phase = 2;
+
+	for (const [idx, mv] of undo_list.entries()) {
+		if (l_player === 1 && l_phase === 1) {
+			n += "\n" + l_turn + ". ";
+		} else {
+			n += " ";
+		}
+
+		let tr = format_move(mv, "past");
+
+		n += tr[1];
+
+		l_phase++;
+		if (l_phase == 3) {
+			l_phase = 1;
+			l_player++;
+
+			if (l_player == 3) {
+				l_player = 1;
+				l_turn++;
+			}
+		}
+	}
+	return n;
+}
+
 function delete_game(index) {
 	saves.splice(index, 1);
 	display_saves();
@@ -577,7 +621,7 @@ function delete_game(index) {
 
 function a_html(idx, copy, text) {
 	let a = "<a class='move-item";
-	console.log(move_index + ' ' + (idx + 1));
+	// console.log(move_index + ' ' + (idx + 1));
 	if (move_index === idx + 1) {
 		a += " selected'";
 	} else {
@@ -614,7 +658,7 @@ function display_timeline() {
 	let l_phase = 2;
 	let s = "<tr><td class='move-idx'>1/1/-:</td>" +
 		"<td>" + a_html(-1, false, "<strong>&nbsp;Game begin</strong>") +
-		"</td><td class='move-notation'></td></tr>";
+		"</td><td class='move-notation'>-----</td></tr>";
 
 	for (const [idx, mv] of undo_list.entries()) {
 		let tr = format_move(mv, "past");

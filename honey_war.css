@@ -27,7 +27,9 @@ body {
 }
 .striped-list {
 	display: contents;
-	overflow-y: scroll;
+	& > * {
+		overflow-y: scroll;
+	}
 	& li:nth-child(odd), & tr:nth-child(odd) {
 		background-color: #eee;
 	}
@@ -122,12 +124,21 @@ a {
 h1 {
 	margin: 0;
 }
+#turn {
+	padding-bottom: .25em;
+	padding-top: .125em;
+}
 h3 {
 	margin-top: .5em;
 	margin-bottom: .4em;
 }
 h4 {
 	margin: 0;
+}
+#gameover {
+	font-size: larger;
+	font-weight: bold;
+	color: red;
 }
 input[disabled] {
 	filter: invert(25%);
@@ -158,6 +169,8 @@ textarea:invalid {
 }
 #stored-games {
 	max-width: 350px;
+	max-height: 600px;
+	grid-template-rows: min-content min-content min-content auto;
 }
 button {
 	padding: 0;
@@ -184,22 +197,25 @@ button {
 .hidden-space {
 	display: inline-block;
 }
+#boarddiv {
+	padding-bottom: 0;
+}
 @media screen and (min-width: 850px) {
+	#timelinediv {
+	  grid-template-columns: 100fr auto;
+	}
 	#gamediv {
 		grid-template-columns: minmax(400px, 500px) minmax(50%, auto);
 	}
 	#board {
 		max-height: 500px;
 	}
-	#boarddiv {
-
-	}
 	#move-display {
 		height: 500px;
 		grid-column: 2;
 	}
 	#legend-display {
-		flex: 0 0 min-content;
+		flex: 0 0 275px;
 	}
 	#mp-display {
 		flex: 1 1 min-content;
@@ -210,8 +226,15 @@ button {
 		display: flex;
 		flex-direction: column;
 	}
+	#boarddiv {
+		display: flex;
+		justify-content: center;
+	}
 	#board {
-		max-height: 400px;
+		max-height: 500px;
+	}
+	#move-display {
+		max-height: 500px;
 	}
 	#mp-display {
 		order: 1;
@@ -222,13 +245,13 @@ button {
 	.flex-container > .movediv {
 		width: 100%;
 	}
+	#stored-games {
+		max-width: unset;
+	}
 }
 @media screen and (max-width: 999px) {
 	#timelinediv {
 		flex-direction: column;
-	}
-	#stored-games {
-		max-width: unset;
 	}
 	#saves > * {
 		max-width: 350px;

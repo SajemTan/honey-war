@@ -19,7 +19,7 @@
 		<h1 id="turn" class="inset"></h1>
 		<div id="gamediv" class="grid-container col">
 			<div id="boarddiv" class="inset">
-				<svg id="board" viewBox="0 0 500 500" class="movediv"
+				<svg id="board" viewBox="0 0 475 500" class="movediv"
 				onmousemove="javascript:highlight_from(event)"
 				onclick="javascript:highlight_from(event)">
 				<svg id="board_spaces"/><svg id="board_pieces"/></svg>
@@ -44,8 +44,8 @@
 				<div id="gameover" hidden>Game Over</div>
 			</div>
 		</div>
-		<div id="timelinediv" class="flex-container">
-			<div id="current-game" class="inset flex-container col">
+		<div id="timelinediv" class="grid-container">
+			<div id="current-game" class="inset grid-container row">
 				<h3>Current Game</h3>
 				<div>
 					<button id="game-replay" onclick="javascript:replay_game();">
@@ -75,7 +75,8 @@
 			</div>
 			<div id="stored-games" class="inset row">
 			   <h3>Stored Games</h3>
-				<button id="save-game" onclick="javascript:save_game()">Save current state</button>
+				<button id="save-game" onclick="javascript:save_game()">
+					Save current state</button>
 				<p class="list-header">
 				   Click on one of the entries below to load that gamestate.
 				</p>
@@ -359,8 +360,21 @@
 						</fieldset>
 						<label for="fs_import"><h3>Import/Export</h3></label>
 						<fieldset id="fs_import">
-						   <fieldset id="fs_game_import" class="inset">
-							   <label for="input_area">Import a game log:</label>
+							<fieldset id="fs_rules_import" class="inset">
+								<label for="rules-share">Rule string:</label>
+								<button id="import-rules"
+									onclick="javascript:import_rules()">
+									Import rules from string
+								</button>
+								<br>
+								<textarea id="rules-share" class="json"
+									cols="60" rows="5"></textarea>
+								<br>
+								<label for="rules-share">Copy the current rules or paste
+									rules from another game.</label>
+							</fieldset><fieldset id="fs_game_import" class="inset">
+							   <label for="json_log_input">Import/export a JSON
+									log:</label>
 								<button id="import-begin"
 								   onclick="javascript:import_game_from_textbox(false)">
 									Import and start from beginning
@@ -369,22 +383,28 @@
 								   onclick="javascript:import_game_from_textbox(true)">
 									Import and go to end
 								</button>
-								<a id="moves_export"><button id="export"
-								   onclick="javascript:export_game()">
-									Export game log
+								<br>
+								<textarea id="json_log_input" class="json"
+									cols="60" rows="5"></textarea>
+								<br>
+								<a id="moves_export"><button
+									onclick="javascript:export_game()">
+									Download JSON log
 								</button></a>
 								<br>
-								<textarea id="input_area" class="json"></textarea>
-							</fieldset>
-							<fieldset id="fs_rules_import" class="inset">
-							   <label for="rules-share">Rule string:</label>
+								<label for="json_log_input">This text box automatically
+									populates with the current game's JSON log, or you
+									can paste a JSON log here for importing.</label>
+							</fieldset><fieldset class="inset">
+								<label for="note_log_area">Current game log:</label>
 								<br>
-								<textarea id="rules-share" class="json"></textarea>
+								<textarea id="note_log_area" cols="60" rows="13"
+									readonly></textarea>
 								<br>
-								<button id="import-rules"
-								   onclick="javascript:import_rules()">
-									Import rules from string
-								</button>
+								<a id="note_export"><button
+									onclick="javascript:export_notation()">
+									Download game notation
+								</button></a>
 							</fieldset>
 						</fieldset>
 					</fieldset>
