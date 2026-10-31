@@ -120,26 +120,28 @@ let origin_y;
 
 function scale_board() {
 	const scale_factor = (2*opts.board_size+1)/(11);
-	let viewbox = document.getElementById("board").viewBox.baseVal;
+	let viewbox = board_el.viewBox.baseVal;
 	viewbox.height = Math.round(500*scale_factor/2)*2;
-	viewbox.width = Math.round(475*scale_factor/2)*2;
+	viewbox.width = Math.round(485*scale_factor/2)*2;
 	origin_y = viewbox.height/2;
 	origin_x = viewbox.width/2;
 }
 
+const hex_w = 50;
+const hex_h = 44;
 function coords_for_pos(x, y) {
 	const dx_x = 35;
 	const dx_y = -dx_x;
 	const dy = 20;
-	const hex_w = 50;
-	const hex_h = 40;
 	const cx = (dx_x * x) + (dx_y * y) + origin_x;
 	const cy = (dy * x) + (dy * y) + origin_y;
 	const sx = cx - hex_w/2;
 	const sy = cy - hex_h/2;
 	return {
 		sx: sx,
-		sy: sy
+		sy: sy,
+		cx: cx,
+		cy: cy,
 	};
 }
 
@@ -147,12 +149,10 @@ const colors = ["green", "purple", "orange"];
 
 function draw_board() {
 	scale_board();
-	let spaces_el = document.getElementById("board_spaces");
-	spaces_el.innerHTML = '';
-	let pieces_el = document.getElementById("board_pieces");
-	pieces_el.innerHTML = '';
+	spaces_el.replaceChildren();
+	pieces_el.replaceChildren();
 
-	function make_dots(sx, sy, c_id, dist, rot) {
+	function make_dots(sx, sy, cx, cy, c_id, dist, rot) {
 		const rots = {
 			tr: -60.35,
 			tl: -119.65,
@@ -160,39 +160,51 @@ function draw_board() {
 			br: 60.35
 		};
 		//const rots = [60.35,119.65,-119.65,-60.35];
-		return '<image x="' + sx + '" y="' + sy + '" href="imgs/dots' + dist +
-			'.svg" class="space" id="xdots' + c_id + '" width="50"' +
-			' transform="rotate(' + rots[rot] + ' ' + (sx + 25) + ' ' + (sy +
-				22) +
-			')" />';
+//		return '<image x="' + sx + '" y="' + sy + '" href="imgs/dots' + dist +
+//			'.svg" class="space" id="xdots' + c_id + '" width="50"' +
+//			' transform="rotate(' + rots[rot] + ' ' + (sx + 25) + ' ' + (sy +
+//				22) +
+//			')" />';
+		return create_element("image", "xdots" + c_id + rot, ["space"],
+			{x: sx, y: sy, width: 50, href: `imgs/dots${dist}.svg`,
+			transform: `rotate(${rots[rot]} ${cx} ${cy})`},
+			svg_ns);
 	}
 	for (const [x, y] of iterate_board()) {
 		const c_id = x + "_" + y;
 		let coords = coords_for_pos(x, y);
 		const sx = coords.sx;
 		const sy = coords.sy;
-		spaces_el.insertAdjacentHTML("beforeend", '<g id="g' + c_id +
-			'" data-x="' + x + '" data-y="' + y + '">');
-		let g_el = document.getElementById('g' + c_id);
-		g_el.insertAdjacentHTML("beforeend",
-			'<image x="' + sx + '" y="' + sy + '" href="imgs/' + colors[(y +
-				x +
-				12) % 3] +
-			'.svg"' + ' class="space" width="50" id="space' + c_id +
-			'" data-x="' + x + '" data-y="' + y + '"/>');
+		const cx = coords.cx;
+		const cy = coords.cy;
+//		spaces_el.insertAdjacentHTML("beforeend", '<g id="g' + c_id +
+//			'" data-x="' + x + '" data-y="' + y + '">');
+//		let g_el = document.getElementById('g' + c_id);
+		let g_el = spaces_el.insertAdjacentElement("beforeend",
+			create_element('g', 'g' + c_id, [], {'data-x': x, 'data-y': y}, svg_ns));
+//		g_el.insertAdjacentHTML("beforeend",
+//			'<image x="' + sx + '" y="' + sy + '" href="imgs/' + colors[(y +
+//				x +
+//				12) % 3] +
+//			'.svg"' + ' class="space" width="50" id="space' + c_id +
+//			'" data-x="' + x + '" data-y="' + y + '"/>');
+		g_el.insertAdjacentElement("beforeend",
+			create_element("image", 'space' + c_id, ["space"],
+				{x: sx, y: sy, width: 50,
+				href: `imgs/${colors[(y + x + 12) % 3]}.svg`}, svg_ns));
 		if (x > 0) {
-			g_el.insertAdjacentHTML("beforeend",
-				make_dots(sx, sy, c_id, x, 'tr'));
+			g_el.insertAdjacentElement("beforeend",
+				make_dots(sx, sy, cx, cy, c_id, x, 'tr'));
 		} else if (x < 0) {
-			g_el.insertAdjacentHTML("beforeend",
-				make_dots(sx, sy, c_id, x, 'br'));
+			g_el.insertAdjacentElement("beforeend",
+				make_dots(sx, sy, cx, cy, c_id, x, 'br'));
 		}
 		if (y > 0) {
-			g_el.insertAdjacentHTML("beforeend",
-				make_dots(sx, sy, c_id, -y, 'tl'));
+			g_el.insertAdjacentElement("beforeend",
+				make_dots(sx, sy, cx, cy, c_id, -y, 'tl'));
 		} else if (y < 0) {
-			g_el.insertAdjacentHTML("beforeend",
-				make_dots(sx, sy, c_id, -y, 'bl'));
+			g_el.insertAdjacentElement("beforeend",
+				make_dots(sx, sy, cx, cy, c_id, -y, 'bl'));
 		}
 	}
 }
@@ -200,8 +212,7 @@ function draw_board() {
 function make_board() {
 	draw_board();
 	let board = new Map();
-	let spaces_el = document.getElementById("board_spaces");
-	spaces_el.innerHTML = '';
+	spaces_el.replaceChildren();
 
 	for (const [x, y] of iterate_board()) {
 		const c_id = x + "_" + y;
@@ -260,8 +271,24 @@ function make_board() {
 	return board;
 }
 
+const html_ns = "http://www.w3.org/1999/xhtml";
+const svg_ns = "http://www.w3.org/2000/svg"
+function create_element(tag, id="", classes=[], attrs={}, namespace=html_ns) {
+	const el = document.createElementNS(namespace, tag);
+	if (id) {
+		el.id = id;
+	}
+	for (const cl of classes) {
+		el.classList.add(cl);
+	}
+	for (const [attr, val] of Object.entries(attrs)) {
+		el.setAttribute(attr, val);
+	}
+	return el;
+}
+
 function draw_pieces(svg, board) {
-	svg.innerHTML = "";
+	svg.replaceChildren();
 	for (const [x,y] of iterate_board()) {
 		const space = board[[x,y]];
 		let coords = coords_for_pos(x, y);
@@ -278,11 +305,15 @@ function draw_pieces(svg, board) {
 				lab += symbols[space.piece.piece];
 			}
 			let id = space.id + '-' + space.piece.piece;
-			svg.insertAdjacentHTML("beforeend",
-				'<image class="piece" id="' + id + '" x="' + sx + '" y="' +
-				sy +
-				'" href="imgs/' + lab + '.svg" width="50" />');
-			let piece_image = document.getElementById(id);
+			//svg.insertAdjacentHTML("beforeend",
+			//	'<image class="piece" id="' + id + '" x="' + sx + '" y="' +
+			//	sy +
+			//	'" href="imgs/' + lab + '.svg" width="50" />');
+			//let piece_image = document.getElementById(id);
+			let piece_image = svg.insertAdjacentElement("beforeend",
+				create_element("image", id, ["piece"],
+									{x: sx, y: sy, width: 50, href: `imgs/${lab}.svg`},
+									svg_ns));
 			piece_image.addEventListener("mousemove", highlight_from);
 			piece_image.addEventListener("click", highlight_from);
 		}
@@ -787,126 +818,16 @@ function highlight_from(event) {
 				}
 			}
 			highlight_spaces(spaces);
-			document.getElementById("movelist-title").innerHTML =
-				"Selected Piece Moves";
-			display_moves(board, moves, move_list);
+			movelist_title.innerText = "Selected Piece Moves";
+			display_moves(board, moves, moves_el);
 		} else {
 			highlight_spaces([]);
-			document.getElementById("movelist-title").innerHTML =
-				"Possible Moves";
+			movelist_title.innerText = "Possible Moves";
 			display_moves(board, list_possible_moves(board, player, (phase ==
 					2)),
-				move_list);
+				moves_el);
 		}
 	}
-}
-
-function format_verb(verb, style, player) {
-	let str;
-	if (!style || style === "imperative") {
-		str = verb;
-	} else {
-		str = verbs[verb][style];
-	}
-
-	if (str === "win") {
-		return icon_for("castle", player) + "<span class='win'>Win</span>"
-	}
-	return "<span class='verb'>" + str + "</span>";
-}
-
-function icon_for(piece, player) {
-	let s = "";
-	if (player || piece === "tower") {
-		let lab = "";
-		if (player) {
-			lab += player;
-		}
-		lab += symbols[piece];
-		s += '<span class="hidden-space"> </span>';
-		s += '<img class="inline-icon" src="imgs/' + lab + '.svg" />';
-	}
-	return s;
-}
-
-function format_piece(piece) {
-	return icon_for(piece.piece, piece.player) +
-		"<span class='piece'>" + piece.piece + "</span>";
-}
-
-function notate_coords(piece) {
-	const letters = {
-		'-5': 'v',
-		'-4': 'w',
-		'-3': 'x',
-		'-2': 'y',
-		'-1': 'z',
-		'0': '-',
-		'1': 'a',
-		'2': 'b',
-		'3': 'c',
-		'4': 'd',
-		'5': 'e',
-	}
-	return letters[piece.loc[0]] + letters[piece.loc[1]];
-	return piece.loc.join('');
-}
-
-function notate_piece(space) {
-	return {
-		is: symbols[space.is.piece] + notate_coords(space),
-		was: symbols[space.was.piece] + notate_coords(space),
-	};
-}
-
-function format_move(mv, style) {
-	let n = notate_piece(mv.source).was;
-	let s = "";
-	let player = mv.source.was.player;
-	if (mv.verb === "move") {
-		n += notate_coords(mv.dest);
-		s += format_verb(mv.verb, style, player) +
-			format_piece(mv.source.was) + " from " + mv.source.loc +
-			" to " + mv.dest.loc;
-	} else if (mv.verb === "attack" || mv.verb === "destroy") {
-		if (mv.source.is.piece !== mv.source.was.piece) {
-			n += '>';
-		} else {
-			n += '*';
-		}
-		n += notate_piece(mv.attack).was;
-		s += format_verb(mv.verb, style, player) +
-			format_piece(mv.attack.was) + " at " + mv.attack.loc +
-			" with" + format_piece(mv.source.was) + " at " + mv.source.loc;
-		if (mv.hasOwnProperty("dest")) {
-			s += " landing at " + mv.dest.loc;
-			if (mv.source.was.piece !== mv.dest.is.piece &&
-				mv.dest.is.piece !== "") {
-				s += " as " + format_piece(mv.dest.is);
-				n += symbols[mv.dest.is.piece];
-			}
-			n += notate_coords(mv.dest);
-		} else if (mv.source.was.piece === "cavalry" &&
-			mv.attack.was.piece !== "castle" &&
-			mv.attack.was.piece !== "garrison") {
-			s += " and retreat";
-		}
-	} else if (mv.verb === "garrison") {
-		n += '#' + notate_coords(mv.dest);
-		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
-		s += format_verb(mv.verb, style, player) +
-			format_piece(mv.dest.was) + " at " + mv.dest.loc +
-			" with" + format_piece(mv.source.was) + " at " + mv.source.loc
-	} else if (mv.verb === "win") {
-		n += '!' + notate_coords(mv.attack);
-		s += format_verb(mv.verb, style, player) +
-			" with" + format_piece(mv.source.was) +
-			" at " + mv.source.loc;
-	} else {
-		n += '?' + mv.verb;
-		s += format_verb(mv.verb, style, player);
-	}
-	return [s, n];
 }
 
 function apply_move(board, move, undo) {

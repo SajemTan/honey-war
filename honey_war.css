@@ -192,7 +192,7 @@ button {
 }
 .inline-icon {
 	height: 1.2em;
-	vertical-align: top;
+	vertical-align: center;
 }
 .hidden-space {
 	display: inline-block;

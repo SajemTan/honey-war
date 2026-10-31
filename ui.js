@@ -1,13 +1,20 @@
 "use strict";
 
 const board_el = document.getElementById('board');
+const spaces_el = document.getElementById("board_spaces");
+const pieces_el = document.getElementById("board_pieces");
 const header_el = document.getElementById('turn');
-const move_list = document.getElementById('moves');
+const movelist_title = document.getElementById('movelist-title');
+const moves_el = document.getElementById('moves');
+const gameover_el = document.getElementById('gameover');
 const timeline_el = document.getElementById('timeline');
 const saves_el = document.getElementById('saves');
 const replay_btn_el = document.getElementById('game-replay');
 const pause_btn_el = document.getElementById('replay-pause');
 const delay_el = document.getElementById('replay-delay');
+const P1name_el = document.getElementById('P1-name');
+const P2name_el = document.getElementById('P2-name');
+
 const symbols = {
 	tower: "T",
 	footsoldier: "F",
@@ -120,6 +127,10 @@ function set_opts() {
 	for (const [id, rule] of checkboxes) {
 		opts.rules[rule] = document.getElementById(id).checked;
 	}
+	if (opts.rules['bF'] || opts.rules['uF']) {
+		opts.rules['sF'] = false;
+	}
+
 	update_rulestr();
 	console.dir(opts);
 }
@@ -261,6 +272,9 @@ function reset_opts_ui(options) {
 	];
 
 	for (const [id, rule] of checkboxes) {
+		if (document.getElementById(id).disabled) {
+			continue;
+		}
 		document.getElementById(id).checked = opts.rules[rule];
 		if (opts.rules[rule]) {
 			opt(id);
@@ -285,8 +299,8 @@ function encode(s) {
 }
 
 function update_players() {
-	players[1] = encode(document.getElementById("P1-name").value);
-	players[2] = encode(document.getElementById("P2-name").value);
+	players[1] = encode(P1name_el.value);
+	players[2] = encode(P2name_el.value);
 	write_title();
 }
 
@@ -295,10 +309,12 @@ function format_player(player) {
 }
 
 function draw_icons() {
-	for (let el of document.getElementsByClassName("icon")) {
+	for (let el of document.querySelectorAll(".icon")) {
 		const name = el.innerHTML;
-		el.innerHTML = '<img class="inline-icon" src="imgs/' + name +
-			'.svg" />';
+		el.replaceWith(create_element("img", "", ["inline-icon"],
+			{src: `imgs/${name}.svg`, name: name}));
+//		el.innerHTML = '<img class="inline-icon" src="imgs/' + name +
+//			'.svg" name="' + name + '"/>';
 	}
 }
 
@@ -308,20 +324,127 @@ function write_title() {
 		", Phase " + phase;
 }
 
+function format_verb(verb, style, player) {
+	let str;
+	if (!style || style === "imperative") {
+		str = verb;
+	} else {
+		str = verbs[verb][style];
+	}
+
+	if (str === "win") {
+		return icon_for("castle", player) + "<span class='win'>Win</span>"
+	}
+	return "<span class='verb'>" + str + "</span>";
+}
+
+function icon_for(piece, player) {
+	let s = "";
+	if (player || piece === "tower") {
+		let lab = "";
+		if (player) {
+			lab += player;
+		}
+		lab += symbols[piece];
+		s += '<span class="hidden-space"> </span>';
+		s += '<img class="inline-icon" src="imgs/' + lab + '.svg" />';
+	}
+	return s;
+}
+
+function format_piece(piece) {
+	return icon_for(piece.piece, piece.player) +
+		"<span class='piece'>" + piece.piece + "</span>";
+}
+
+function notate_coords(piece) {
+	const letters = {
+		'-5': 'v',
+		'-4': 'w',
+		'-3': 'x',
+		'-2': 'y',
+		'-1': 'z',
+		'0': '-',
+		'1': 'a',
+		'2': 'b',
+		'3': 'c',
+		'4': 'd',
+		'5': 'e',
+	}
+	return letters[piece.loc[0]] + letters[piece.loc[1]];
+}
+
+function notate_piece(space) {
+	return {
+		is: symbols[space.is.piece] + notate_coords(space),
+		was: symbols[space.was.piece] + notate_coords(space),
+	};
+}
+
+function format_move(mv, style) {
+	let n = notate_piece(mv.source).was;
+	let s = "";
+	let player = mv.source.was.player;
+	if (mv.verb === "move") {
+		n += notate_coords(mv.dest);
+		s += format_verb(mv.verb, style, player) +
+			format_piece(mv.source.was) + " from " + mv.source.loc +
+			" to " + mv.dest.loc;
+	} else if (mv.verb === "attack" || mv.verb === "destroy") {
+		if (mv.source.is.piece !== mv.source.was.piece) {
+			n += '>';
+		} else {
+			n += '*';
+		}
+		n += notate_piece(mv.attack).was;
+		s += format_verb(mv.verb, style, player) +
+			format_piece(mv.attack.was) + " at " + mv.attack.loc +
+			" with" + format_piece(mv.source.was) + " at " + mv.source.loc;
+		if (mv.hasOwnProperty("dest")) {
+			s += " landing at " + mv.dest.loc;
+			if (mv.source.was.piece !== mv.dest.is.piece &&
+				mv.dest.is.piece !== "") {
+				s += " as " + format_piece(mv.dest.is);
+				n += symbols[mv.dest.is.piece];
+			}
+			n += notate_coords(mv.dest);
+		} else if (mv.source.was.piece === "cavalry" &&
+			mv.attack.was.piece !== "castle" &&
+			mv.attack.was.piece !== "garrison") {
+			s += " and retreat";
+		}
+	} else if (mv.verb === "garrison") {
+		n += '#' + notate_coords(mv.dest);
+		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
+		s += format_verb(mv.verb, style, player) +
+			format_piece(mv.dest.was) + " at " + mv.dest.loc +
+			" with" + format_piece(mv.source.was) + " at " + mv.source.loc
+	} else if (mv.verb === "win") {
+		n += '!' + notate_coords(mv.attack);
+		s += format_verb(mv.verb, style, player) +
+			" with" + format_piece(mv.source.was) +
+			" at " + mv.source.loc;
+	} else {
+		n += '?' + mv.verb;
+		s += format_verb(mv.verb, style, player);
+	}
+	return [s, n];
+}
+
 function setup_turn() {
-	draw_pieces(document.getElementById("board_pieces"), board);
+	draw_pieces(pieces_el, board);
 	write_title();
-	document.getElementById("movelist-title").innerHTML = "Possible Moves";
+	movelist_title.innerText = "Possible Moves";
 	highlight_spaces([]);
 	if (move_index != 0 && undo_list[move_index - 1].verb == "win") {
-		//move_list.innerHTML = "Game Over";
-		move_list.hidden = true;
-		document.getElementById("gameover").hidden = false;
+		//moves_el.innerHTML = "Game Over";
+		moves_el.hidden = true;
+		gameover_el.hidden = false;
 	} else {
-		move_list.hidden = false;
-		document.getElementById("gameover").hidden = true;
+		moves_el.hidden = false;
+		gameover_el.hidden = true;
 		moves = list_possible_moves(board, player, (phase == 2));
-		display_moves(board, moves, move_list);
+		display_moves(board, moves, moves_el);
 	}
 	display_timeline();
 	display_saves();
@@ -386,8 +509,8 @@ function execute(move) {
 function game_state() {
 	return JSON.stringify({
 		playernames: {
-			1: document.getElementById("P1-name").value,
-			2: document.getElementById("P2-name").value
+			1: P1name_el.value,
+			2: P2name_el.value
 		},
 		session: "",
 		moveslist: undo_list,
@@ -413,28 +536,11 @@ function update() {
 	setup_turn();
 }
 
-function download(text, name, type) {
-	let a = document.getElementById("moves_export");
-	let file = new Blob([text], {
-		type: type
-	});
-	a.href = URL.createObjectURL(file);
-	a.download = name;
-}
-
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function export_game() {
-	download(game_state(), 'Honey-War-Log.json', 'application/json');
-}
-
-function export_notation() {
-	download(notation_str(), 'Honey-War-Log.txt', 'text/plain');
-}
-
-function import_game(step, gamestate) {
+function import_game(end, gamestate) {
 	if (gamestate) {
 		reset_game();
 		let moveslist;
@@ -443,9 +549,9 @@ function import_game(step, gamestate) {
 		} else {
 			moveslist = gamestate.moveslist;
 			if (gamestate.playernames) {
-				document.getElementById("P1-name").value = gamestate
+				P1name_el.value = gamestate
 					.playernames[1];
-				document.getElementById("P2-name").value = gamestate
+				P2name_el.value = gamestate
 					.playernames[2];
 				update_players();
 			}
@@ -470,7 +576,9 @@ function import_game(step, gamestate) {
 			}*/
 		}
 		undo_list = gamestate.moveslist;
-		if (step) {
+		if (end) {
+			goto(undo_list.length);
+		} else {
 			replay_game();
 		}
 	}
@@ -618,6 +726,57 @@ function delete_game(index) {
 	saves.splice(index, 1);
 	display_saves();
 }
+function zip(a, b) {
+	return Array.from(
+				Array(Math.max(b.length, a.length)),
+				(_, i) => [a[i], b[i]]);
+}
+
+function populate_move_row(table, classes, contents, transform) {
+	let row = table.insertRow();
+	for (const [cl, val] of zip(classes, contents)) {
+		const c = row.insertCell();
+		c.classList.add(cl);
+		let a = c.appendChild(document.createElement("a"));
+		a.classList.add("move-item");
+		a.innerHTML = val;
+		transform(a);
+	}
+}
+
+function display_moves(board, moves, list) {
+	//let s = "";
+	list.replaceChildren();
+	for (const mv of moves) {
+		let locs = [];
+		for (const k in mv) {
+			if (k !== "verb") {
+				locs.push(board[mv[k].loc].id);
+			}
+		}
+		let tr = format_move(mv);
+		const classes = ["fill", "move-notation"];
+
+		populate_move_row(list, classes, tr, a => {
+									a.addEventListener("mouseover", () => {
+																 highlight_spaces(locs);
+															 });
+									a.addEventListener("click", () => {
+																 execute(mv);
+															 });
+								});
+
+		//let a_html = "<a class='move-item'"
+		//	 + " onmouseover='highlight_spaces(" + JSON.stringify(locs) + ");'" +
+		//	 "onclick='execute(" + JSON.stringify(mv) + ");'"
+		//	 + ">";
+		//s += "<tr><td class='fill'>" + a_html + tr[0] +
+		//	"</a></td><td class='move-notation'>" + a_html + tr[1] +
+		//	"</a></td></tr>";
+	}
+	//list.innerHTML = s;
+
+}
 
 function a_html(idx, copy, text) {
 	let a = "<a class='move-item";
@@ -631,44 +790,42 @@ function a_html(idx, copy, text) {
 	return a;
 }
 
-function display_moves(board, moves, list) {
-	let s = "";
-	let i = 0;
-	for (const mv of moves) {
-		let locs = [];
-		for (const k in mv) {
-			if (k !== "verb") {
-				locs.push(board[mv[k].loc].id);
-			}
-		}
-		let tr = format_move(mv)
-		let a_html = "<a class='move-item' onmouseover='highlight_spaces(" +
-			JSON.stringify(locs) + ");' onclick='execute(" +
-			JSON.stringify(mv) + ");'>";
-		s += "<tr><td class='fill'>" + a_html + tr[0] +
-			"</a></td><td class='move-notation'>" + a_html + tr[1] +
-			"</a></td></tr>";
-	}
-	list.innerHTML = s;
-}
-
 function display_timeline() {
+	const classes = ["move-idx", "fill", "move-notation"];
+	function ch_sel(idx) {
+		return a => {
+			if (move_index == idx + 1) {
+				a.classList.add("selected");
+			} else {
+				a.addEventListener("click", () => goto(idx + 1));
+			}
+		};
+	}
+
 	let l_turn = 1;
 	let l_player = 1;
 	let l_phase = 2;
-	let s = "<tr><td class='move-idx'>1/1/-:</td>" +
-		"<td>" + a_html(-1, false, "<strong>&nbsp;Game begin</strong>") +
-		"</td><td class='move-notation'>-----</td></tr>";
+	timeline_el.replaceChildren();
+	populate_move_row(timeline_el, classes,
+							["1/1/-:", "<strong>&nbsp;Game begin</strong>", "-----"],
+							ch_sel(-1));
+
+	//let s = "<tr><td class='move-idx'>1/1/-:</td>" +
+	//	"<td>" + a_html(-1, false, "<strong>&nbsp;Game begin</strong>") +
+	//	"</td><td class='move-notation'>-----</td></tr>";
 
 	for (const [idx, mv] of undo_list.entries()) {
 		let tr = format_move(mv, "past");
 		let turn = l_turn + "/" + l_player + "/" + l_phase + ":";
 		let long = format_player(l_player) + " " + tr[0];
-		s += "<tr><td class='move-idx'>" + a_html(idx, false, turn) + "</td>" +
-			"<td class='fill'>" + a_html(idx, false, long) + "</td>" +
-			"<td class='move-notation'>" + a_html(idx, true, tr[1]) + "</td>";
 
-		s += "</tr></td>";
+		populate_move_row(timeline_el, classes, [turn, long, tr[1]], ch_sel(idx));
+
+		//s += "<tr><td class='move-idx'>" + a_html(idx, false, turn) + "</td>" +
+		//	"<td class='fill'>" + a_html(idx, false, long) + "</td>" +
+		//	"<td class='move-notation'>" + a_html(idx, true, tr[1]) + "</td>";
+
+		//s += "</tr></td>";
 
 		l_phase++;
 		if (l_phase == 3) {
@@ -681,7 +838,7 @@ function display_timeline() {
 			}
 		}
 	}
-	timeline_el.innerHTML = s;
+	//timeline_el.innerHTML = s;
 }
 
 function display_saves() {
@@ -719,14 +876,119 @@ function validate_JSON_field(Field) {
 	}
 }
 
-set_opts();
-if (localStorage.getItem("state")) {
-	import_game(true, JSON.parse(localStorage.getItem("state")));
-	// the game import function creates an extra checkpoint
-	delete_game(saves.length - 1);
+function download(id, text, name, type) {
+	let a = document.getElementById(id);
+	let file = new Blob([text], {
+		type: type
+	});
+	a.href = URL.createObjectURL(file);
+	a.download = name;
 }
-reset_opts_ui(opts);
-draw_icons();
 
-update_players();
-setup_turn();
+function export_game() {
+	download("moves_export", game_state(), 'Honey-War-Log.json',
+		'application/json');
+}
+
+function export_notation() {
+	download("note_export", notation_str(), 'Honey-War-Log.txt', 'text/plain');
+}
+
+function global_init() {
+	board_el.addEventListener("click",
+		(event) => highlight_from(event));
+	board_el.addEventListener("mousemove",
+		(event) => highlight_from(event));
+
+	document.getElementById("undo-btn").addEventListener("click",
+		() => undo(true));
+	document.getElementById("redo-btn").addEventListener("click",
+		() => redo(true));
+	document.getElementById("moves-table").addEventListener("mouseout",
+		() => highlight_spaces([]));
+	document.getElementById("game-replay").addEventListener("click",
+		() => replay_game());
+	document.getElementById("replay-pause").addEventListener("click",
+		() => { should_replay = false; });
+	document.getElementById("save-game").addEventListener("click",
+	   () => save_game());
+	document.getElementById("reset").addEventListener("click",
+	   () => reset_game());
+
+	document.getElementById("P1-name").addEventListener("change",
+	   () => update_players());
+	document.getElementById("P2-name").addEventListener("change",
+	   () => update_players());
+	document.getElementById("configmirrored").addEventListener("change",
+	   () => opt('mirrored'));
+	document.getElementById("configrotated").addEventListener("change",
+	   () => opt('rotated'));
+	document.getElementById("boardlarge").addEventListener("change",
+	   () => opt('large'));
+	document.getElementById("boardsmall").addEventListener("change",
+	   () => opt('small'));
+
+	document.getElementById("towers3").addEventListener("change",
+	   () => opt('t3'));
+	document.getElementById("towers2").addEventListener("change",
+	   () => opt('t2'));
+	document.getElementById("towers2w").addEventListener("change",
+	   () => opt('t2w'));
+	document.getElementById("towers1").addEventListener("change",
+	   () => opt('t1'));
+	document.getElementById("towers2mr").addEventListener("change",
+	   () => opt('t2mr'));
+	document.getElementById("towers2ml").addEventListener("change",
+	   () => opt('t2ml'));
+	document.getElementById("towers3t").addEventListener("change",
+	   () => opt('t3t'));
+	document.getElementById("towers3tc").addEventListener("change",
+	   () => opt('t3tc'));
+
+	document.getElementById("friendly-footsoldiers").addEventListener("change",
+	   () => opt('friendly-footsoldiers'));
+	document.getElementById("buff-footsoldiers").addEventListener("change",
+	   () => opt('buff-footsoldiers'));
+	document.getElementById("upgrade-footsoldiers").addEventListener("change",
+	   () => opt('upgrade-footsoldiers'));
+	document.getElementById("stranded-footsoldiers").addEventListener("change",
+	   () => opt('stranded-footsoldiers'));
+
+	document.getElementById("garrisonshort").addEventListener("change",
+	   () => opt('garrisonshort'));
+	document.getElementById("garrisonlong").addEventListener("change",
+	   () => opt('garrisonlong'));
+	document.getElementById("garrisonboth").addEventListener("change",
+	   () => opt('garrisonboth'));
+
+	document.getElementById("buff-trebuchet").addEventListener("change",
+	   () => opt('buff-trebuchet'));
+	document.getElementById("buff-infantry").addEventListener("change",
+	   () => opt('buff-infantry'));
+
+	document.getElementById("import-rules").addEventListener("click",
+	   () => import_rules());
+	document.getElementById("import-begin").addEventListener("click",
+		() => import_game_from_textbox(false));
+	document.getElementById("import-end").addEventListener("click",
+		() => import_game_from_textbox(true));
+	document.getElementById("moves-export").children[0].addEventListener("click",
+		() => download("moves-export", game_state(), 'Honey-War-Log.json',
+			'application/json'));
+	document.getElementById("note-export").children[0].addEventListener("click",
+		() => download("note-export", notation_str(), 'Honey-War-Log.txt',
+			'text/plain'));
+
+	set_opts();
+	if (localStorage.getItem("state")) {
+		import_game(true, JSON.parse(localStorage.getItem("state")));
+		// the game import function creates an extra checkpoint
+		delete_game(saves.length - 1);
+	}
+	reset_opts_ui(opts);
+	draw_icons();
+
+	update_players();
+	setup_turn();
+}
+global_init();

@@ -14,14 +14,30 @@
 		<link rel="canonical" href="honey_war.html">
 		<link rel="help" href="https://sajemtan.miraheze.org/wiki/Honey_War">
 		<link rel="licence" href="LICENSE.txt">
+		<script>
+			window.addEventListener("load", (event) => {
+				const ovr = document.getElementById("overflow-parent");
+				const ee = document.getElementById("mp-settings");
+				const ids = ["rules-share", "json_log_input", "note_log_area"];
+				// this is hacky and horrible but doing it "the right way" would be
+				// dramatically worse, believe it or not
+				while (ovr.getBoundingClientRect().width
+					> ee.getBoundingClientRect().width) {
+					for (id of ids) {
+						console.log(id);
+						let e = document.getElementById(id);
+						e.cols = e.cols - 1;
+						console.log(id + " " + e.cols);
+					}
+				}
+			});
+		</script>
 	</head>
 	<body>
 		<h1 id="turn" class="inset"></h1>
 		<div id="gamediv" class="grid-container col">
 			<div id="boarddiv" class="inset">
-				<svg id="board" viewBox="0 0 475 500" class="movediv"
-				onmousemove="javascript:highlight_from(event)"
-				onclick="javascript:highlight_from(event)">
+				<svg id="board" viewBox="0 0 475 500" class="movediv">
 				<svg id="board_spaces"/><svg id="board_pieces"/></svg>
 			</div>
 			<div id="move-display" class="inset grid-container row">
@@ -29,11 +45,11 @@
 					<h3 id="movelist-title">Possible Moves</h3>
 				</div>
 				<div>
-					<button onclick="javascript:undo(true);">Undo</button>
-					<button onclick="javascript:redo(true);">Redo</button>
+					<button id="undo-btn">Undo</button>
+					<button id="redo-btn">Redo</button>
 				</div>
 				<div class="striped-list">
-				<table class='numbered' onmouseout='highlight_spaces([]);'>
+				<table class='numbered' id='moves-table'>
 					<colgroup>
 						<col class='num-col' />
 						<col class='move-desc' />
@@ -48,11 +64,10 @@
 			<div id="current-game" class="inset grid-container row">
 				<h3>Current Game</h3>
 				<div>
-					<button id="game-replay" onclick="javascript:replay_game();">
+					<button id="game-replay">
 						Replay from point
 					</button>
-					<button id="replay-pause"
-					   onclick="javascript:should_replay=false;" disabled>
+					<button id="replay-pause" disabled>
 						Pause replay
 					</button>
 					<br>
@@ -75,7 +90,7 @@
 			</div>
 			<div id="stored-games" class="inset row">
 			   <h3>Stored Games</h3>
-				<button id="save-game" onclick="javascript:save_game()">
+				<button id="save-game">
 					Save current state</button>
 				<p class="list-header">
 				   Click on one of the entries below to load that gamestate.
@@ -163,13 +178,11 @@
 							</label>
 							<span class="icon">1C</span>
 							<input type="text" class="inline-input"
-							   id="P1-name" value="Player 1"
-								onchange="javascript:update_players()">
+							   id="P1-name" value="Player 1">
 							<br>
 							<span class="icon">2C</span>
 							<input type="text" class="inline-input"
-							   id="P2-name" value="Player 2"
-								onchange="javascript:update_players()">
+							   id="P2-name" value="Player 2">
 						</fieldset>
 						<fieldset class="inset" id="fs_game_settings">
 						   <label for="fs_game_settings">
@@ -181,12 +194,10 @@
 									   Piece configuration:</h4>
 								</label>
 								<input type="radio" name="boardconfig"
-								   id="configmirrored" value="mirrored"
-									onchange="javascript:opt('mirrored')" checked>
+								   id="configmirrored" value="mirrored" checked>
 								<label for="configmirrored">Mirrored</label>
 								<input type="radio" name="boardconfig"
-								   id="configrotated" value="rotated"
-									onchange="javascript:opt('rotated')">
+								   id="configrotated" value="rotated">
 								<label for="configrotated">Rotated</label>
 							</fieldset>
 							<fieldset id="fs_boardsize">
@@ -195,11 +206,10 @@
 									Board diameter:</h4>
 								</label>
 								<input type="radio" name="boardsize" id="boardlarge"
-								   value="large" onchange="javascript:opt('large')"
-									checked>
+								   value="large" checked>
 								<label for="boardlarge">11 (Standard)</label>
 								<input type="radio" name="boardsize" id="boardsmall"
-								   value="small" onchange="javascript:opt('small')">
+								   value="small">
 								<label for="boardsmall">
 								   9 (Small, 1-2 towers recommended)
 								</label>
@@ -212,30 +222,30 @@
 									</label>
 								</h4>
 								<input type="radio" name="towerconfig" id="towers3"
-								   value="3" onchange="javascript:opt('t3')" checked>
+								   value="3" checked>
 								<label for="towers3">3</label>
 								<input type="radio" name="towerconfig" id="towers2"
-								   value="2" onchange="javascript:opt('t2')">
+								   value="2">
 								<label for="towers2">2</label>
 								<input type="radio" name="towerconfig" id="towers2w"
-								   value="2w" onchange="javascript:opt('t2w')">
+								   value="2w">
 								<label for="towers2w">2, widely spaced</label>
 								<input type="radio" name="towerconfig" id="towers1"
-								   value="1" onchange="javascript:opt('t1')">
+								   value="1">
 								<label for="towers1">1</label>
 								<br/>
 								<input type="radio" name="towerconfig" id="towers2mr"
-								   value="2mr" onchange="javascript:opt('t2mr')">
+								   value="2mr">
 								<label for="towers2mr">2, right biased</label>
 								<input type="radio" name="towerconfig" id="towers2ml"
-								   value="2ml" onchange="javascript:opt('t2ml')">
+								   value="2ml">
 								<label for="towers2ml">2, left biased</label>
 								<br/>
 								<input type="radio" name="towerconfig" id="towers3t"
-								   value="3t" onchange="javascript:opt('t3t')">
+								   value="3t">
 								<label for="towers3t">3, rotated</label>
 								<input type="radio" name="towerconfig" id="towers3tc"
-								   value="3tc" onchange="javascript:opt('t3tc')">
+								   value="3tc">
 								<label for="towers3tc">3, counter-rotated</label>
 								<br/>
 								<label for="fs_boardtowers">
@@ -255,7 +265,6 @@
 							</div>
 							<div>
 							   <input type="checkbox" id="friendly-footsoldiers"
-								   onchange="javascript:opt('friendly-footsoldiers')"
 									checked>
 								<label for="friendly-footsoldiers">
 								   Footsoldiers move through friendlies in phase 2.
@@ -263,15 +272,13 @@
 							</div>
 							<div>
 							   <input type="checkbox" id="buff-footsoldiers"
-								   onchange="javascript:opt('buff-footsoldiers')"
 									checked>
 								<label for="buff-footsoldiers">
 								   Footsoldiers can move backward.
 								</label>
 							</div>
 							<div>
-							   <input type="checkbox" id="upgrade-footsoldiers"
-								    onchange="javascript:opt('upgrade-footsoldiers')">
+							   <input type="checkbox" id="upgrade-footsoldiers">
 								<label for="upgrade-footsoldiers">
 								   Footsoldiers become infantry on reaching the end of
 									the board.
@@ -279,7 +286,6 @@
 							</div>
 							<div>
 							   <input type="checkbox" id="stranded-footsoldiers"
-								   onchange="javascript:opt('stranded-footsoldiers')"
 									disabled>
 								<label for="stranded-footsoldiers">
 								   Footsoldiers can attack the castle backward as a
@@ -297,24 +303,21 @@
 							<div>
 							   <input type="radio" name="garrisonrange"
 								   id="garrisonshort" value="garrisonshort"
-									onchange="javascript:opt('garrisonshort')"
 									checked>
-								<label for="friendly-footsoldiers">
+								<label for="garrisonshort">
 								   Garrisons attack adjacent hexes. (Standard)
 								</label>
 							</div>
 							<div>
 							   <input type="radio" name="garrisonrange"
-								   id="garrisonlong" value="garrisonlong"
-									onchange="javascript:opt('garrisonlong')">
+								   id="garrisonlong" value="garrisonlong">
 								<label for="garrisonlong">
 								   Garrisons attack at double range.
 								</label>
 							</div>
 							<div>
 							   <input type="radio" name="garrisonrange"
-								   id="garrisonboth" value="garrisonboth"
-									onchange="javascript:opt('garrisonboth')">
+								   id="garrisonboth" value="garrisonboth">
 								<label for="friendly-footsoldiers">
 								   Garrisons attack at standard and double range.
 								</label>
@@ -328,26 +331,23 @@
 								</label>
 							</div>
 							<div>
-							   <input type="checkbox" id="buff-trebuchet"
-								   onchange="javascript:opt('buff-trebuchet')">
+							   <input type="checkbox" id="buff-trebuchet">
 								<label for="buff-trebuchet">
 								   Trebuchets can move as a phase 1 action.
 								</label>
 							</div>
 							<div>
-							   <input type="checkbox" id="buff-infantry"
-								   onchange="javascript:opt('buff-infantry')">
+							   <input type="checkbox" id="buff-infantry">
 								<label for="buff-infantry">
 								   Infantry survive bombardment as footsoldiers.
 								</label>
 							</div>
 						</fieldset>
-						<button id="reset" class="button"
-						   onclick="javascript:reset_game()">
+						<button id="reset" class="button">
 							Apply and reset game
 						</button>
 					</fieldset>
-					<fieldset class="inset">
+					<fieldset id="overflow-parent" class="inset">
 						<label for="fs_mp"><h3>Multiplayer</h3></label>
 						<fieldset id="fs_mp" class="inset" disabled>
 						   <div>
@@ -362,8 +362,7 @@
 						<fieldset id="fs_import">
 							<fieldset id="fs_rules_import" class="inset">
 								<label for="rules-share">Rule string:</label>
-								<button id="import-rules"
-									onclick="javascript:import_rules()">
+								<button id="import-rules">
 									Import rules from string
 								</button>
 								<br>
@@ -375,20 +374,17 @@
 							</fieldset><fieldset id="fs_game_import" class="inset">
 							   <label for="json_log_input">Import/export a JSON
 									log:</label>
-								<button id="import-begin"
-								   onclick="javascript:import_game_from_textbox(false)">
+								<button id="import-begin">
 									Import and start from beginning
 								</button>
-								<button id="import-end"
-								   onclick="javascript:import_game_from_textbox(true)">
+								<button id="import-end">
 									Import and go to end
 								</button>
 								<br>
 								<textarea id="json_log_input" class="json"
 									cols="60" rows="5"></textarea>
 								<br>
-								<a id="moves_export"><button
-									onclick="javascript:export_game()">
+								<a id="moves-export"><button>
 									Download JSON log
 								</button></a>
 								<br>
@@ -401,8 +397,7 @@
 								<textarea id="note_log_area" cols="60" rows="13"
 									readonly></textarea>
 								<br>
-								<a id="note_export"><button
-									onclick="javascript:export_notation()">
+								<a id="note-export"><button>
 									Download game notation
 								</button></a>
 							</fieldset>
