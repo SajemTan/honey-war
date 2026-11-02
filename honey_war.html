@@ -26,7 +26,7 @@
 					for (id of ids) {
 						console.log(id);
 						let e = document.getElementById(id);
-						e.cols = e.cols - 1;
+						e.cols = e.cols - 2;
 						console.log(id + " " + e.cols);
 					}
 				}
@@ -78,7 +78,7 @@
 				   Click on an entry to travel to that point. History is not deleted
 					until you make a move from a point in the past.
 				</p>
-				<div class="striped-list"><table class="numbered">
+				<div class="striped-list"><table class="normal">
 				   <colgroup>
 					   <col class='num-col' />
 						<col class='num-col' />
@@ -88,9 +88,9 @@
 					<tbody id="timeline"></tbody>
 				</table></div>
 			</div>
-			<div id="stored-games" class="inset row">
+			<div id="stored-games" class="inset grid-container row">
 			   <h3>Stored Games</h3>
-				<button id="save-game">
+				<button id="save-game" class="fit">
 					Save current state</button>
 				<p class="list-header">
 				   Click on one of the entries below to load that gamestate.
@@ -194,10 +194,12 @@
 									   Piece configuration:</h4>
 								</label>
 								<input type="radio" name="boardconfig"
-								   id="configmirrored" value="mirrored" checked>
+								   id="configmirrored" value="mirrored" checked
+									x-exclude="excl-mirrored">
 								<label for="configmirrored">Mirrored</label>
 								<input type="radio" name="boardconfig"
-								   id="configrotated" value="rotated">
+								   id="configrotated" value="rotated"
+									x-exclude="excl-rotated">
 								<label for="configrotated">Rotated</label>
 							</fieldset>
 							<fieldset id="fs_boardsize">
@@ -221,33 +223,42 @@
 									   <span class="piece">Tower</span> configuration:
 									</label>
 								</h4>
-								<input type="radio" name="towerconfig" id="towers3"
-								   value="3" checked>
-								<label for="towers3">3</label>
-								<input type="radio" name="towerconfig" id="towers2"
-								   value="2">
-								<label for="towers2">2</label>
-								<input type="radio" name="towerconfig" id="towers2w"
-								   value="2w">
-								<label for="towers2w">2, widely spaced</label>
-								<input type="radio" name="towerconfig" id="towers1"
-								   value="1">
-								<label for="towers1">1</label>
+								<fieldset class="nolayout"
+									x-allow="configmirrored configrotated">
+									<input type="radio" name="towerconfig" id="towers3"
+										value="3" checked>
+									<label for="towers3">3</label>
+									<input type="radio" name="towerconfig" id="towers2"
+										value="2">
+									<label for="towers2">2</label>
+									<input type="radio" name="towerconfig" id="towers2w"
+										value="2w">
+									<label for="towers2w">2, widely spaced</label>
+									<input type="radio" name="towerconfig" id="towers1"
+										value="1">
+									<label for="towers1">1</label>
+								</fieldset>
 								<br/>
-								<input type="radio" name="towerconfig" id="towers2mr"
-								   value="2mr">
-								<label for="towers2mr">2, right biased</label>
-								<input type="radio" name="towerconfig" id="towers2ml"
-								   value="2ml">
-								<label for="towers2ml">2, left biased</label>
+								<fieldset class="nolayout"
+									id="excl-rotated" x-exclude="configrotated">
+									<input type="radio" name="towerconfig" id="towers2mr"
+										value="2mr">
+									<label for="towers2mr">2, right biased</label>
+									<input type="radio" name="towerconfig" id="towers2ml"
+										value="2ml">
+									<label for="towers2ml">2, left biased</label>
+								</fieldset>
 								<br/>
-								<input type="radio" name="towerconfig" id="towers3t"
-								   value="3t">
-								<label for="towers3t">3, rotated</label>
-								<input type="radio" name="towerconfig" id="towers3tc"
-								   value="3tc">
-								<label for="towers3tc">3, counter-rotated</label>
-								<br/>
+								<fieldset class="nolayout"
+									id="excl-mirrored" x-exclude="configmirrored">
+									<input type="radio" name="towerconfig" id="towers3t"
+										value="3t">
+									<label for="towers3t">3, rotated</label>
+									<input type="radio" name="towerconfig" id="towers3tc"
+										value="3tc">
+									<label for="towers3tc">3, counter-rotated</label>
+									<br/>
+								</fieldset>
 								<label for="fs_boardtowers">
 								   Asymmetric towers require matching piece configs.
 								</label>
@@ -257,96 +268,95 @@
 					<fieldset id="col2" class="inset">
 					   <label for="col2"><h3>Rule variations</h3></label>
 						<fieldset id="fs_footsoldier" class="inset">
-						   <div>
-							   <span class="icon">1F</span>
-								<label for="fs_footsoldier">
-								   <span class="piece">Footsoldier</span> mobility:
-								</label>
-							</div>
-							<div>
-							   <input type="checkbox" id="friendly-footsoldiers"
-									checked>
-								<label for="friendly-footsoldiers">
-								   Footsoldiers move through friendlies in phase 2.
-								</label>
-							</div>
-							<div>
+							<span class="icon">1F</span>
+							<label for="fs_footsoldier">
+								<span class="piece">Footsoldier</span> mobility:
+							</label>
+							<br/>
+							<input type="checkbox" id="friendly-footsoldiers"
+								checked>
+							<label for="friendly-footsoldiers">
+								Footsoldiers move through friendlies in phase 2.
+							</label>
+							<br/>
+							<!-- this doesn't need an id because the exclusion is one-way -->
+							<fieldset class="nolayout"
+								x-exclude="stranded-footsoldiers">
 							   <input type="checkbox" id="buff-footsoldiers"
 									checked>
 								<label for="buff-footsoldiers">
 								   Footsoldiers can move backward.
 								</label>
-							</div>
-							<div>
+								<br/>
 							   <input type="checkbox" id="upgrade-footsoldiers">
 								<label for="upgrade-footsoldiers">
 								   Footsoldiers become infantry on reaching the end of
 									the board.
 								</label>
-							</div>
-							<div>
-							   <input type="checkbox" id="stranded-footsoldiers"
-									disabled>
-								<label for="stranded-footsoldiers">
-								   Footsoldiers can attack the castle backward as a
-									special case.
-								</label>
-							</div>
+								<br/>
+							</fieldset>
+							<input type="checkbox" id="stranded-footsoldiers"
+								disabled>
+							<label for="stranded-footsoldiers">
+								Footsoldiers can attack the castle backward as a
+								special case.
+							</label>
 						</fieldset>
 						<fieldset id="fs_garrison" class="inset">
-						   <div>
-							   <span class="icon">2G</span>
-								<label for="fs_garrison">
-								   <span class="piece">Garrison</span> range:
-								</label>
-							</div>
-							<div>
-							   <input type="radio" name="garrisonrange"
-								   id="garrisonshort" value="garrisonshort"
-									checked>
-								<label for="garrisonshort">
-								   Garrisons attack adjacent hexes. (Standard)
-								</label>
-							</div>
-							<div>
-							   <input type="radio" name="garrisonrange"
-								   id="garrisonlong" value="garrisonlong">
-								<label for="garrisonlong">
-								   Garrisons attack at double range.
-								</label>
-							</div>
-							<div>
-							   <input type="radio" name="garrisonrange"
-								   id="garrisonboth" value="garrisonboth">
-								<label for="friendly-footsoldiers">
-								   Garrisons attack at standard and double range.
-								</label>
-							</div>
+							<span class="icon">2G</span>
+							<label for="fs_garrison">
+								<span class="piece">Garrison</span> range:
+							</label>
+							<br/>
+							<input type="radio" name="garrisonrange"
+								id="garrisonshort" value="garrisonshort"
+								checked>
+							<label for="garrisonshort">
+								Garrisons attack adjacent hexes. (Standard)
+							</label>
+							<br/>
+							<input type="radio" name="garrisonrange"
+								id="garrisonlong" value="garrisonlong">
+							<label for="garrisonlong">
+								Garrisons attack at double range.
+							</label>
+							<br/>
+							<input type="radio" name="garrisonrange"
+								id="garrisonboth" value="garrisonboth">
+							<label for="friendly-footsoldiers">
+								Garrisons attack at standard and double range.
+							</label>
+							<br/>
 						</fieldset>
 						<fieldset id="fs_trebuchet" class="inset">
-						   <div>
-							   <span class="icon">1B</span>
-								<label for="fs_trebuchet">
-								   <span class="piece">Trebuchets</span>:
-								</label>
-							</div>
-							<div>
-							   <input type="checkbox" id="buff-trebuchet">
-								<label for="buff-trebuchet">
-								   Trebuchets can move as a phase 1 action.
-								</label>
-							</div>
-							<div>
-							   <input type="checkbox" id="buff-infantry">
-								<label for="buff-infantry">
-								   Infantry survive bombardment as footsoldiers.
-								</label>
-							</div>
+							<span class="icon">1B</span>
+							<label for="fs_trebuchet">
+								<span class="piece">Trebuchets</span>:
+							</label>
+							<br/>
+							<input type="checkbox" id="buff-trebuchet">
+							<label for="buff-trebuchet">
+								Trebuchets can move as a phase 1 action.
+							</label>
+							<br/>
+							<input type="checkbox" id="buff-infantry">
+							<label for="buff-infantry">
+								Infantry survive bombardment as footsoldiers.
+							</label>
 						</fieldset>
-						<button id="reset" class="button">
-							Apply and reset game
-						</button>
 					</fieldset>
+					<!-- the div avoids the buttons stretching -->
+					<div>
+						<button id="reset" class="button">
+							Apply and start new game
+						</button>
+						<button id="defaults" class="button">
+							Reset to defaults
+						</button>
+						<button id="rules-current" class="button">
+							Reset to current
+						</button>
+					</div>
 					<fieldset id="overflow-parent" class="inset">
 						<label for="fs_mp"><h3>Multiplayer</h3></label>
 						<fieldset id="fs_mp" class="inset" disabled>
@@ -367,7 +377,8 @@
 								</button>
 								<br>
 								<textarea id="rules-share" class="json"
-									cols="60" rows="5"></textarea>
+									cols="100" rows="5"
+									data-buttons="import-rules"></textarea>
 								<br>
 								<label for="rules-share">Copy the current rules or paste
 									rules from another game.</label>
@@ -382,9 +393,10 @@
 								</button>
 								<br>
 								<textarea id="json_log_input" class="json"
-									cols="60" rows="5"></textarea>
+									cols="100" rows="5"
+									data-buttons="import-begin import-end"></textarea>
 								<br>
-								<a id="moves-export"><button>
+								<a id="moves-export"><button id="moves-export-btn">
 									Download JSON log
 								</button></a>
 								<br>
@@ -394,10 +406,10 @@
 							</fieldset><fieldset class="inset">
 								<label for="note_log_area">Current game log:</label>
 								<br>
-								<textarea id="note_log_area" cols="60" rows="13"
+								<textarea id="note_log_area" cols="100" rows="13"
 									readonly></textarea>
 								<br>
-								<a id="note-export"><button>
+								<a id="note-export"><button id="note-export-btn">
 									Download game notation
 								</button></a>
 							</fieldset>

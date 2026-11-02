@@ -25,6 +25,15 @@ body {
 	grid-template-rows: minmax(auto, max-content);
 	align-content: start;
 }
+.nolayout {
+	display: contents;
+}
+.normal {
+	display: initial;
+}
+.fit {
+	width: fit-content;
+}
 .striped-list {
 	display: contents;
 	& > * {
@@ -147,7 +156,8 @@ input[disabled] * {
 	color: grey;
 }
 textarea:invalid {
-
+	background: #F033;
+	mix-blend-mode: multiply;
 }
 .move-item.selected {
 	text-decoration: underline;
@@ -168,7 +178,7 @@ textarea:invalid {
 	flex-wrap: nowrap;
 }
 #stored-games {
-	max-width: 350px;
+	max-width: 400px;
 	max-height: 600px;
 	grid-template-rows: min-content min-content min-content auto;
 }
@@ -200,7 +210,7 @@ button {
 #boarddiv {
 	padding-bottom: 0;
 }
-@media screen and (min-width: 850px) {
+@media screen and (min-width: 900px) {
 	#timelinediv {
 	  grid-template-columns: 100fr auto;
 	}
@@ -221,7 +231,7 @@ button {
 		flex: 1 1 min-content;
 	}
 }
-@media screen and (max-width: 849px) {
+@media screen and (max-width: 899px) {
 	#gamediv {
 		display: flex;
 		flex-direction: column;

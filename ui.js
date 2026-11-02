@@ -45,7 +45,7 @@ let should_replay = false;
 const default_opts = {
 	board_size: 5,
 	towers: "3",
-	configuration: "rotated",
+	configuration: "mirrored",
 	rules: {
 		// friendly-footsoldiers
 		fF: true,
@@ -53,7 +53,7 @@ const default_opts = {
 		bF: true,
 		// upgrade-footsoldiers
 		uF: false,
-		// stranded
+		// stranded-footsoldiers
 		sF: false,
 		// short, long, both = short&long
 		Gr: "short",
@@ -64,15 +64,33 @@ const default_opts = {
 	}
 };
 let opts = window.structuredClone(default_opts);
+let opt_uis = [
+	["configmirrored", 'mirrored'],
+	["configrotated", 'rotated'],
+	["boardlarge", 'large'],
+	["boardsmall", 'small'],
 
-function apply_listeners() {
-	for (let e of document.getElementsByTagName('textarea')) {
-		if (e.classList.contains('json')) {
-			e.addEventListener('change', () => validate_JSON_field(e));
-		}
-	}
-}
-apply_listeners();
+	["towers3", 't3'],
+	["towers2", 't2'],
+	["towers2w", 't2w'],
+	["towers1", 't1'],
+	["towers2mr", 't2mr'],
+	["towers2ml", 't2ml'],
+	["towers3t", 't3t'],
+	["towers3tc", 't3tc'],
+
+	"friendly-footsoldiers",
+	"buff-footsoldiers",
+	"upgrade-footsoldiers",
+	"stranded-footsoldiers",
+
+	"garrisonshort",
+	"garrisonlong",
+	"garrisonboth",
+
+	"buff-trebuchet",
+	"buff-infantry",
+];
 
 function set_opts() {
 	opts = {rules: {}};
@@ -135,132 +153,111 @@ function set_opts() {
 	console.dir(opts);
 }
 
-function opt(option) {
-	switch (option) {
-		case 'mirrored':
-			document.getElementById('towers3t').disabled = true;
-			document.getElementById('towers3tc').disabled = true;
-
-			document.getElementById('towers2mr').disabled = false;
-			document.getElementById('towers2ml').disabled = false;
-			break;
-		case 'rotated':
-			document.getElementById('towers2mr').disabled = true;
-			document.getElementById('towers2ml').disabled = true;
-
-			document.getElementById('towers3t').disabled = false;
-			document.getElementById('towers3tc').disabled = false;
-			break;
-		case 'large':
-			//document.getElementById('towers3').disabled = false;
-			//document.getElementById('towers2w').disabled = false;
-			break;
-		case 'small':
-			//document.getElementById('towers3').disabled = true;
-			//document.getElementById('towers2w').disabled = true;
-			break;
-		case 't3':
-		case 't2':
-		case 't2w':
-		case 't1':
-			document.getElementById('configmirrored').disabled = false;
-			document.getElementById('configrotated').disabled = false;
-			break;
-		case 't3t':
-		case 't3tc':
-			document.getElementById('configmirrored').disabled = true;
-			document.getElementById('configrotated').disabled = false;
-			break;
-		case 't2mr':
-		case 't2ml':
-			document.getElementById('configrotated').disabled = true;
-			document.getElementById('configmirrored').disabled = false;
-			break;
-		case 'friendly-footsoldiers':
-		case 'stranded-footsoldiers':
-			break;
-		case 'buff-footsoldiers':
-		case 'upgrade-footsoldiers':
-			document.getElementById('stranded-footsoldiers').disabled = (
-				document.getElementById('buff-footsoldiers').checked ||
-				document.getElementById('upgrade-footsoldiers').checked);
-			break;
-		case 'garrisonshort':
-		case 'garrisonlong':
-		case 'garrisonboth':
-		case 'buff-trebuchet':
-		case 'buff-infantry':
-			break;
-		default:
-			console.log('Unknown option toggled: "' + option + '"');
+function disable(id, val) {
+	const el = typeof id == "string" ? document.getElementById(id) : id;
+	if (el.tagName == "FIELDSET") {
+		Array.from(el.querySelectorAll("input")).forEach(e=>e.disabled = val);
+	} else if (el.tagName == "INPUT" || el.tagName == "BUTTON") {
+		el.disabled = val;
+	} else {
+		console.dir("Attempted to disable unknown tag", el);
 	}
 }
 
-function reset_opts_ui(options) {
-	if (options.configuration === 'rotated') {
-		document.getElementById('configrotated').checked = true;
-		document.getElementById('configmirrored').checked = false;
-		opts.configuration = 'rotated';
-		opt('rotated');
-	} else {
-		document.getElementById('configmirrored').checked = true;
-		document.getElementById('configrotated').checked = false;
-		opts.configuration = 'mirrored';
-		opt('mirrored');
-	}
-	if (options.board_size === 4) {
-		document.getElementById('boardsmall').checked = true;
-		document.getElementById('boardlarge').checked = false;
-		opts.board_size = 4;
-		opt('small');
-	} else {
-		document.getElementById('boardlarge').checked = true;
-		document.getElementById('boardsmall').checked = false;
-		opts.board_size = 5;
-		opt('large');
-	}
-	const tower_settings = [
-		'3', '2', '2w', '1',
-		'3t', '3tc',
-		'2mr', '2ml'
-	];
-	let set = false;
-	for (const code of tower_settings) {
-		if (options.towers === code) {
-			document.getElementById('towers' + code).checked = true;
-			opts.towers = code;
-			set = true;
-			opt('t' + code);
-			break;
-		} else {
-			document.getElementById('towers' + code).checked = false;
+function opt(option) {
+	for (const o of opt_uis) {
+		if (o instanceof Array && o[1] === option) {
+			option = o[0];
 		}
 	}
-	if (!set) {
-		document.getElementById('towers3').checked = true;
-		opts.towers = '3';
-		opt('t3');
+
+	const el = document.getElementById(option);
+	const pe = el.parentNode;
+	if (pe.attributes["x-allow"]) {
+		const d = Array.from(pe.querySelectorAll("input")).some(e=>e.checked);
+		for (const id of pe.attributes["x-allow"].value.split(' ')) {
+			disable(id, !d);
+		}
+	}
+	if (el.attributes["x-exclude"]) {
+		// for all inputs in this fieldset, if they are not checked, clear
+		// the disabled flag for all of their exclusions
+		for (const other of pe.querySelectorAll("input[x-exclude]")) {
+			if (!other.checked && other.attributes["x-exclude"]) {
+				other.attributes["x-exclude"].value.split(' ').forEach((id) =>
+					disable(id, false));
+			}
+		}
+		// for all inputs in this fieldset, if they are checked, apply the
+		// disabled flag tor all of their exclusions
+		for (const other of pe.querySelectorAll("input[x-exclude]")) {
+			if (other.checked && other.attributes["x-exclude"]) {
+				other.attributes["x-exclude"].value.split(' ').forEach((id) =>
+					disable(id, true));
+			}
+		}
+		// strictly speaking this only works if the exclusions of each fieldset
+		// are all disjoint but that is the case here
+
+	}
+	if (pe.attributes["x-exclude"]) {
+		const d = Array.from(pe.querySelectorAll("input")).some(e=>e.checked);
+		for (const id of pe.attributes["x-exclude"].value.split(' ')) {
+			disable(id, d);
+		}
+	}
+}
+
+function radio_set(id) {
+	const el = document.getElementById(id);
+	for (const node of document.getElementsByName(el.name)) {
+		node.checked = false;
+	}
+	el.checked = true;
+}
+
+function valid_of(option, settings) {
+	for (const s of settings) {
+		if (option === s) {
+			return s;
+		}
+	}
+	return settings[0];
+}
+
+function normalize_opts(options) {
+	let ret = {rules: {}};
+	ret.configuration = valid_of(options.configuration,
+		['mirrored', 'rotated']);
+	ret.board_size = (options.board_size === 4 ? 4 : 5);
+	ret.towers = valid_of(options.towers,
+		['3', '2', '2w', '1', '3t', '3tc', '2mr', '2ml']);
+	const rules = ['fF', 'bF', 'uF', 'sF', 'IB', 'bB'];
+	for (const rule of rules) {
+		ret.rules[rule] = options.rules[rule];
+	}
+	ret.rules.Gr = valid_of(options.rules.Gr, ['short', 'long', 'both']);
+	return ret;
+}
+
+function reset_opts_ui(in_options, effective = true) {
+	const options = normalize_opts(in_options);
+	if (effective !== false) {
+		opts = window.structuredClone(options);
 	}
 
-	if (options.rules.Gr === 'long') {
-		document.getElementById('garrisonlong').checked = true;
-		document.getElementById('garrisonshort').checked = false;
-		document.getElementById('garrisonboth').checked = false;
-		opts.rules.Gr = 'long';
-		opt('garrisonlong');
-	} else if (options.rules.Gr === 'both') {
-		document.getElementById('garrisonboth').checked = true;
-		document.getElementById('garrisonlong').checked = false;
-		document.getElementById('garrisonshort').checked = false;
-		opts.rules.Gr = 'both';
-		opt('garrisonboth');
-	} else {
-		document.getElementById('garrisonshort').checked = true;
-		document.getElementById('garrisonlong').checked = false;
-		document.getElementById('garrisonboth').checked = false;
-		opts.rules.Gr = 'short';
-		opt('garrisonshort');
-	}
+	radio_set('config' + options.configuration);
+	opt(options.configuration);
+
+	const size = (options.board_size === 4 ? 'small' : 'large');
+	radio_set('board' + size);
+	opt(size);
+
+	radio_set('towers' + opts.towers);
+	opt('t' + opts.towers);
+
+	radio_set('garrison'+opts.rules.Gr);
+	opt('garrison'+opts.rules.Gr);
 
 	const checkboxes = [
 		['friendly-footsoldiers', 'fF'],
@@ -301,7 +298,7 @@ function encode(s) {
 function update_players() {
 	players[1] = encode(P1name_el.value);
 	players[2] = encode(P2name_el.value);
-	write_title();
+	setup_turn();
 }
 
 function format_player(player) {
@@ -313,8 +310,6 @@ function draw_icons() {
 		const name = el.innerHTML;
 		el.replaceWith(create_element("img", "", ["inline-icon"],
 			{src: `imgs/${name}.svg`, name: name}));
-//		el.innerHTML = '<img class="inline-icon" src="imgs/' + name +
-//			'.svg" name="' + name + '"/>';
 	}
 }
 
@@ -357,7 +352,7 @@ function format_piece(piece) {
 		"<span class='piece'>" + piece.piece + "</span>";
 }
 
-function notate_coords(piece) {
+function notate_coords(space) {
 	const letters = {
 		'-5': 'v',
 		'-4': 'w',
@@ -371,7 +366,7 @@ function notate_coords(piece) {
 		'4': 'd',
 		'5': 'e',
 	}
-	return letters[piece.loc[0]] + letters[piece.loc[1]];
+	return letters[space.loc[0]] + letters[space.loc[1]];
 }
 
 function notate_piece(space) {
@@ -415,7 +410,6 @@ function format_move(mv, style) {
 		}
 	} else if (mv.verb === "garrison") {
 		n += '#' + notate_coords(mv.dest);
-		//s += format_piece({piece: mv.verb, player: mv.source.was.player})
 		s += format_verb(mv.verb, style, player) +
 			format_piece(mv.dest.was) + " at " + mv.dest.loc +
 			" with" + format_piece(mv.source.was) + " at " + mv.source.loc
@@ -432,12 +426,11 @@ function format_move(mv, style) {
 }
 
 function setup_turn() {
-	draw_pieces(pieces_el, board);
+	draw_pieces();
 	write_title();
 	movelist_title.innerText = "Possible Moves";
 	highlight_spaces([]);
 	if (move_index != 0 && undo_list[move_index - 1].verb == "win") {
-		//moves_el.innerHTML = "Game Over";
 		moves_el.hidden = true;
 		gameover_el.hidden = false;
 	} else {
@@ -446,6 +439,8 @@ function setup_turn() {
 		moves = list_possible_moves(board, player, (phase == 2));
 		display_moves(board, moves, moves_el);
 	}
+	disable("undo-btn", move_index === 0);
+	disable("redo-btn", move_index === undo_list.length);
 	display_timeline();
 	display_saves();
 	localStorage.setItem("state", game_state());
@@ -558,22 +553,6 @@ function import_game(end, gamestate) {
 			if (gamestate.options) {
 				reset_opts_ui(gamestate.options);
 			}
-			/* else {
-				opts = {
-					board_size: 5,
-					towers: "3",
-					configuration: "rotated",
-					rules: {
-						fF: true,
-						bF: true,
-						uF: false,
-						sF: false,
-						Gr: "short",
-						IB: false,
-						bB: false
-					}
-				}
-			}*/
 		}
 		undo_list = gamestate.moveslist;
 		if (end) {
@@ -590,8 +569,8 @@ function import_game_from_textbox(step) {
 }
 
 async function replay_game() {
-	replay_btn_el.disabled = true;
-	pause_btn_el.disabled = false;
+	disable(replay_btn_el, true);
+	disable(pause_btn_el, false);
 	should_replay = true;
 
 	while (move_index !== undo_list.length && should_replay) {
@@ -609,8 +588,8 @@ async function replay_game() {
 		update();
 	}
 
-	replay_btn_el.disabled = false;
-	pause_btn_el.disabled = true;
+	disable(replay_btn_el, false);
+	disable(pause_btn_el, true);
 	should_replay = false;
 }
 
@@ -620,6 +599,10 @@ function save_game() {
 		s_moves: undo_list,
 		s_moves_avail: moves,
 		s_move: move_index,
+		s_playernames: {
+			1: P1name_el.value,
+			2: P2name_el.value
+		},
 
 		s_player: player,
 		s_turn: turn,
@@ -653,6 +636,12 @@ async function load_game(number) {
 	moves = restore.s_moves_avail;
 	move_index = restore.s_move;
 
+	if (restore.s_playernames) {
+		P1name_el.value = restore.s_playernames[1];
+		P2name_el.value = restore.s_playernames[2];
+		update_players();
+	}
+
 	player = restore.s_player;
 	turn = restore.s_turn;
 	phase = restore.s_phase;
@@ -673,9 +662,9 @@ function import_rules() {
 	reset_game();
 }
 
+const style = (o)=>`${o.board_size*2+1}${o.configuration.at(0)}${o.towers}`;
+
 function notation_str() {
-	const style = String(opts.board_size*2+1) + opts.configuration.at(0)
-		 + opts.towers;
 	let rules = "";
 	for (const rule in opts.rules) {
 		if (opts.rules[rule] !== default_opts.rules[rule]) {
@@ -690,7 +679,7 @@ function notation_str() {
 	}
 	let n = "version=0\n"
 		 + "players=" + players[1] + ", " + players[2] + "\n"
-		 + "style=" + style + "\n"
+		 + "style=" + style(opts) + "\n"
 		 + "rules=" + rules + "\n\n"
 		 + "1. -----";
 	let l_turn = 1;
@@ -745,7 +734,6 @@ function populate_move_row(table, classes, contents, transform) {
 }
 
 function display_moves(board, moves, list) {
-	//let s = "";
 	list.replaceChildren();
 	for (const mv of moves) {
 		let locs = [];
@@ -758,23 +746,10 @@ function display_moves(board, moves, list) {
 		const classes = ["fill", "move-notation"];
 
 		populate_move_row(list, classes, tr, a => {
-									a.addEventListener("mouseover", () => {
-																 highlight_spaces(locs);
-															 });
-									a.addEventListener("click", () => {
-																 execute(mv);
-															 });
-								});
-
-		//let a_html = "<a class='move-item'"
-		//	 + " onmouseover='highlight_spaces(" + JSON.stringify(locs) + ");'" +
-		//	 "onclick='execute(" + JSON.stringify(mv) + ");'"
-		//	 + ">";
-		//s += "<tr><td class='fill'>" + a_html + tr[0] +
-		//	"</a></td><td class='move-notation'>" + a_html + tr[1] +
-		//	"</a></td></tr>";
+			event_el(a, "mouseover", () => highlight_spaces(locs));
+			event_el(a, "click", () => execute(mv));
+		});
 	}
-	//list.innerHTML = s;
 
 }
 
@@ -797,7 +772,7 @@ function display_timeline() {
 			if (move_index == idx + 1) {
 				a.classList.add("selected");
 			} else {
-				a.addEventListener("click", () => goto(idx + 1));
+				event_el(a, "click", () => goto(idx + 1));
 			}
 		};
 	}
@@ -807,25 +782,14 @@ function display_timeline() {
 	let l_phase = 2;
 	timeline_el.replaceChildren();
 	populate_move_row(timeline_el, classes,
-							["1/1/-:", "<strong>&nbsp;Game begin</strong>", "-----"],
+							["1/1/1:", "<strong>&nbsp;Game begin</strong>", "-----"],
 							ch_sel(-1));
-
-	//let s = "<tr><td class='move-idx'>1/1/-:</td>" +
-	//	"<td>" + a_html(-1, false, "<strong>&nbsp;Game begin</strong>") +
-	//	"</td><td class='move-notation'>-----</td></tr>";
 
 	for (const [idx, mv] of undo_list.entries()) {
 		let tr = format_move(mv, "past");
 		let turn = l_turn + "/" + l_player + "/" + l_phase + ":";
 		let long = format_player(l_player) + " " + tr[0];
-
 		populate_move_row(timeline_el, classes, [turn, long, tr[1]], ch_sel(idx));
-
-		//s += "<tr><td class='move-idx'>" + a_html(idx, false, turn) + "</td>" +
-		//	"<td class='fill'>" + a_html(idx, false, long) + "</td>" +
-		//	"<td class='move-notation'>" + a_html(idx, true, tr[1]) + "</td>";
-
-		//s += "</tr></td>";
 
 		l_phase++;
 		if (l_phase == 3) {
@@ -838,7 +802,6 @@ function display_timeline() {
 			}
 		}
 	}
-	//timeline_el.innerHTML = s;
 }
 
 function display_saves() {
@@ -846,12 +809,22 @@ function display_saves() {
 	let s = "<ol>";
 
 	for (const [idx, g] of saves.entries()) {
-		s += "<li><div><a class='move-item' onclick='load_game(" + idx +
-			")'>Turn " +
-			g.s_turn + "," + format_player(g.s_player) + ", Phase " + g
-			.s_phase +
-			"</a><a class='move-item delete' onclick='delete_game(" +
-			idx + ")'>(delete)</a></div></li>";
+		if (g.s_playernames) {
+			s += "<li><div><a class='move-item' onclick='load_game(" + idx +
+				")'>" + icon_for("castle", 1) + encode(g.s_playernames[1]) + " vs. "
+				+ icon_for("castle", 2) + encode(g.s_playernames[2]) + ": " +
+				g.s_turn + "/" + g.s_player + "/" + g.s_phase + " (" + style(g.s_options) + ")" +
+				"</a><a class='move-item delete' onclick='delete_game(" +
+				idx + ")'>(delete)</a></div></li>";
+		} else {
+			s += "<li><div><a class='move-item' onclick='load_game(" + idx +
+				")'>" + icon_for("castle", 1) + players[1] + " vs. "
+				+ icon_for("castle", 2) + players[2] + ": " +
+				g.s_turn + "/" + g.s_player + "/" + g.s_phase + " (" + style(g.s_options) + ")" +
+				"</a><a class='move-item delete' onclick='delete_game(" +
+				idx + ")'>(delete)</a></div></li>";
+		}
+
 	}
 
 	s += "</ol>";
@@ -867,12 +840,18 @@ function isJSON(str) {
 	}
 }
 
-function validate_JSON_field(Field) {
+function validate_JSON_field(Field, btn) {
 	const valid = isJSON(Field.value);
 	if (!valid) {
 		Field.setCustomValidity("Invalid JSON");
+		for (const btn of Field.attributes['data-buttons'].value.split(' ')) {
+			disable(btn, true);
+		}
 	} else {
 		Field.setCustomValidity("");
+		for (const btn of Field.attributes['data-buttons'].value.split(' ')) {
+			disable(btn, false);
+		}
 	}
 }
 
@@ -894,90 +873,51 @@ function export_notation() {
 	download("note_export", notation_str(), 'Honey-War-Log.txt', 'text/plain');
 }
 
+let event_id = (id, event, action) =>
+	 document.getElementById(id).addEventListener(event, action);
+let event_el = (el, event, action) =>
+	 el.addEventListener(event, action);
 function global_init() {
-	board_el.addEventListener("click",
+	for (let e of document.getElementsByTagName('textarea')) {
+		if (e.classList.contains('json')) {
+			event_el(e, 'change', () => validate_JSON_field(e));
+		}
+	}
+
+	event_el(board_el, "click",
 		(event) => highlight_from(event));
-	board_el.addEventListener("mousemove",
+	event_el(board_el, "mousemove",
 		(event) => highlight_from(event));
 
-	document.getElementById("undo-btn").addEventListener("click",
-		() => undo(true));
-	document.getElementById("redo-btn").addEventListener("click",
-		() => redo(true));
-	document.getElementById("moves-table").addEventListener("mouseout",
-		() => highlight_spaces([]));
-	document.getElementById("game-replay").addEventListener("click",
-		() => replay_game());
-	document.getElementById("replay-pause").addEventListener("click",
-		() => { should_replay = false; });
-	document.getElementById("save-game").addEventListener("click",
-	   () => save_game());
-	document.getElementById("reset").addEventListener("click",
-	   () => reset_game());
+	event_id("undo-btn", "click", () => undo(true));
+	event_id("redo-btn", "click", () => redo(true));
+	event_id("moves-table", "mouseout", () => highlight_spaces([]));
+	event_id("game-replay", "click", () => replay_game());
+	event_id("replay-pause", "click", () => { should_replay = false; });
+	event_id("save-game", "click", () => save_game());
+	event_id("defaults", "click", () => reset_opts_ui(default_opts, false));
+	event_id("rules-current", "click", () => reset_opts_ui(opts, false));
+	event_id("reset", "click", () => reset_game());
 
-	document.getElementById("P1-name").addEventListener("change",
-	   () => update_players());
-	document.getElementById("P2-name").addEventListener("change",
-	   () => update_players());
-	document.getElementById("configmirrored").addEventListener("change",
-	   () => opt('mirrored'));
-	document.getElementById("configrotated").addEventListener("change",
-	   () => opt('rotated'));
-	document.getElementById("boardlarge").addEventListener("change",
-	   () => opt('large'));
-	document.getElementById("boardsmall").addEventListener("change",
-	   () => opt('small'));
-
-	document.getElementById("towers3").addEventListener("change",
-	   () => opt('t3'));
-	document.getElementById("towers2").addEventListener("change",
-	   () => opt('t2'));
-	document.getElementById("towers2w").addEventListener("change",
-	   () => opt('t2w'));
-	document.getElementById("towers1").addEventListener("change",
-	   () => opt('t1'));
-	document.getElementById("towers2mr").addEventListener("change",
-	   () => opt('t2mr'));
-	document.getElementById("towers2ml").addEventListener("change",
-	   () => opt('t2ml'));
-	document.getElementById("towers3t").addEventListener("change",
-	   () => opt('t3t'));
-	document.getElementById("towers3tc").addEventListener("change",
-	   () => opt('t3tc'));
-
-	document.getElementById("friendly-footsoldiers").addEventListener("change",
-	   () => opt('friendly-footsoldiers'));
-	document.getElementById("buff-footsoldiers").addEventListener("change",
-	   () => opt('buff-footsoldiers'));
-	document.getElementById("upgrade-footsoldiers").addEventListener("change",
-	   () => opt('upgrade-footsoldiers'));
-	document.getElementById("stranded-footsoldiers").addEventListener("change",
-	   () => opt('stranded-footsoldiers'));
-
-	document.getElementById("garrisonshort").addEventListener("change",
-	   () => opt('garrisonshort'));
-	document.getElementById("garrisonlong").addEventListener("change",
-	   () => opt('garrisonlong'));
-	document.getElementById("garrisonboth").addEventListener("change",
-	   () => opt('garrisonboth'));
-
-	document.getElementById("buff-trebuchet").addEventListener("change",
-	   () => opt('buff-trebuchet'));
-	document.getElementById("buff-infantry").addEventListener("change",
-	   () => opt('buff-infantry'));
-
-	document.getElementById("import-rules").addEventListener("click",
-	   () => import_rules());
-	document.getElementById("import-begin").addEventListener("click",
-		() => import_game_from_textbox(false));
-	document.getElementById("import-end").addEventListener("click",
-		() => import_game_from_textbox(true));
-	document.getElementById("moves-export").children[0].addEventListener("click",
+	event_id("P1-name", "change", () => update_players());
+	event_id("P2-name", "change",() => update_players());
+	event_id("import-rules", "click", () => import_rules());
+	event_id("import-begin", "click", () => import_game_from_textbox(false));
+	event_id("import-end", "click", () => import_game_from_textbox(true));
+	event_id("moves-export-btn", "click",
 		() => download("moves-export", game_state(), 'Honey-War-Log.json',
 			'application/json'));
-	document.getElementById("note-export").children[0].addEventListener("click",
+	event_id("note-export-btn", "click",
 		() => download("note-export", notation_str(), 'Honey-War-Log.txt',
 			'text/plain'));
+
+	for (const o of opt_uis) {
+		if (o instanceof Array) {
+			event_id(o[0], "change", () => opt(o[1]));
+		} else {
+			event_id(o, "change", () => opt(o));
+		}
+	}
 
 	set_opts();
 	if (localStorage.getItem("state")) {

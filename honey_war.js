@@ -80,39 +80,29 @@ function set_piece_symmetric(board, pos, piece, player = 1) {
 
 const tower_arrangements = {
 	"3": [
-		[2, -2],
-		[0, 0],
-		[-2, 2]
+		[2, -2], [0, 0], [-2, 2]
 	],
 	"2": [
-		[1, -1],
-		[-1, 1]
+		[1, -1], [-1, 1]
 	],
 	"2w": [
-		[2, -2],
-		[-2, 2]
+		[2, -2], [-2, 2]
 	],
 	"1": [
 		[0, 0]
 	],
 	"3t": [
-		[2, -1],
-		[0, 0],
-		[-2, 1]
+		[2, -1], [0, 0], [-2, 1]
 	],
 	"3tc": [
-		[1, -2],
-		[0, 0],
-		[-1, 2]
+		[1, -2], [0, 0], [-1, 2]
 	],
 	"2mr": [
-		[-1, 1],
-		[2, -2]
+		[-1, 1], [2, -2]
 	],
 	"2ml": [
-		[-2, 2],
-		[1, -1]
-	]
+		[-2, 2], [1, -1]
+	],
 };
 
 let origin_x;
@@ -152,20 +142,14 @@ function draw_board() {
 	spaces_el.replaceChildren();
 	pieces_el.replaceChildren();
 
-	function make_dots(sx, sy, cx, cy, c_id, dist, rot) {
+	function make_dots(sx, sy, cx, cy, coord, c_id, dist, rot) {
 		const rots = {
 			tr: -60.35,
 			tl: -119.65,
 			bl: 119.65,
 			br: 60.35
 		};
-		//const rots = [60.35,119.65,-119.65,-60.35];
-//		return '<image x="' + sx + '" y="' + sy + '" href="imgs/dots' + dist +
-//			'.svg" class="space" id="xdots' + c_id + '" width="50"' +
-//			' transform="rotate(' + rots[rot] + ' ' + (sx + 25) + ' ' + (sy +
-//				22) +
-//			')" />';
-		return create_element("image", "xdots" + c_id + rot, ["space"],
+		return create_element("image", `dots${coord}${c_id}`, ["space"],
 			{x: sx, y: sy, width: 50, href: `imgs/dots${dist}.svg`,
 			transform: `rotate(${rots[rot]} ${cx} ${cy})`},
 			svg_ns);
@@ -177,34 +161,26 @@ function draw_board() {
 		const sy = coords.sy;
 		const cx = coords.cx;
 		const cy = coords.cy;
-//		spaces_el.insertAdjacentHTML("beforeend", '<g id="g' + c_id +
-//			'" data-x="' + x + '" data-y="' + y + '">');
-//		let g_el = document.getElementById('g' + c_id);
 		let g_el = spaces_el.insertAdjacentElement("beforeend",
-			create_element('g', 'g' + c_id, [], {'data-x': x, 'data-y': y}, svg_ns));
-//		g_el.insertAdjacentHTML("beforeend",
-//			'<image x="' + sx + '" y="' + sy + '" href="imgs/' + colors[(y +
-//				x +
-//				12) % 3] +
-//			'.svg"' + ' class="space" width="50" id="space' + c_id +
-//			'" data-x="' + x + '" data-y="' + y + '"/>');
+			create_element('g', 'g' + c_id, [],
+				{'data-x': x, 'data-y': y}, svg_ns));
 		g_el.insertAdjacentElement("beforeend",
 			create_element("image", 'space' + c_id, ["space"],
 				{x: sx, y: sy, width: 50,
 				href: `imgs/${colors[(y + x + 12) % 3]}.svg`}, svg_ns));
 		if (x > 0) {
 			g_el.insertAdjacentElement("beforeend",
-				make_dots(sx, sy, cx, cy, c_id, x, 'tr'));
+				make_dots(sx, sy, cx, cy, 'x', c_id, x, 'tr'));
 		} else if (x < 0) {
 			g_el.insertAdjacentElement("beforeend",
-				make_dots(sx, sy, cx, cy, c_id, x, 'br'));
+				make_dots(sx, sy, cx, cy, 'x', c_id, x, 'br'));
 		}
 		if (y > 0) {
 			g_el.insertAdjacentElement("beforeend",
-				make_dots(sx, sy, cx, cy, c_id, -y, 'tl'));
+				make_dots(sx, sy, cx, cy, 'y', c_id, -y, 'tl'));
 		} else if (y < 0) {
 			g_el.insertAdjacentElement("beforeend",
-				make_dots(sx, sy, cx, cy, c_id, -y, 'bl'));
+				make_dots(sx, sy, cx, cy, 'y', c_id, -y, 'bl'));
 		}
 	}
 }
@@ -212,7 +188,6 @@ function draw_board() {
 function make_board() {
 	draw_board();
 	let board = new Map();
-	spaces_el.replaceChildren();
 
 	for (const [x, y] of iterate_board()) {
 		const c_id = x + "_" + y;
@@ -287,7 +262,8 @@ function create_element(tag, id="", classes=[], attrs={}, namespace=html_ns) {
 	return el;
 }
 
-function draw_pieces(svg, board) {
+function draw_pieces() {
+	const svg = pieces_el;
 	svg.replaceChildren();
 	for (const [x,y] of iterate_board()) {
 		const space = board[[x,y]];
@@ -305,17 +281,12 @@ function draw_pieces(svg, board) {
 				lab += symbols[space.piece.piece];
 			}
 			let id = space.id + '-' + space.piece.piece;
-			//svg.insertAdjacentHTML("beforeend",
-			//	'<image class="piece" id="' + id + '" x="' + sx + '" y="' +
-			//	sy +
-			//	'" href="imgs/' + lab + '.svg" width="50" />');
-			//let piece_image = document.getElementById(id);
 			let piece_image = svg.insertAdjacentElement("beforeend",
 				create_element("image", id, ["piece"],
 									{x: sx, y: sy, width: 50, href: `imgs/${lab}.svg`},
 									svg_ns));
-			piece_image.addEventListener("mousemove", highlight_from);
-			piece_image.addEventListener("click", highlight_from);
+			event_el(piece_image, "mousemove", highlight_from);
+			event_el(piece_image, "click", highlight_from);
 		}
 	}
 }
@@ -563,42 +534,40 @@ function list_moves_for_piece(board, player, is_phase_2, pos) {
 			if (empty(board, dist[1])) {
 				moves.push(make_move(board, pos, dist[1]));
 			}
-			if (is_phase_2 && opts.rules.fF && !are_same_coords([dx, dy],
-					back) &&
-				exists(board, dist[1]) && empty(board, dist[2]) &&
-				board[dist[1]].piece.player === player) {
+			if (is_phase_2 && opts.rules.fF &&
+					!are_same_coords([dx, dy], back) &&
+					exists(board, dist[1]) && empty(board, dist[2]) &&
+					board[dist[1]].piece.player === player) {
 				moves.push(make_move(board, pos, dist[2]));
 			} else if (is_phase_2 &&
-				enemy(board, dist[1], player) &&
-				(empty(board, dist[2]) ||
-					counterattack_damage(board, dist[1]))) {
+					enemy(board, dist[1], player) &&
+					(empty(board, dist[2]) ||
+						counterattack_damage(board, dist[1]))) {
 				moves.push(make_attack(board, pos, dist[2], dist[1]));
 			} else if (is_phase_2 && empty(board, dist[2]) &&
-				is_at(board, "tower", dist[1])) {
+					is_at(board, "tower", dist[1])) {
 				let mv = make_attack(board, pos, dist[2], dist[1]);
 				mv.dest.is.piece = "infantry";
 				moves.push(mv);
 			}
 		}
 		if (is_phase_2 && opts.rules.sF &&
-			(x == forward * opts.board_size || y == forward * opts.board_size)
-		) {
+				(x == forward * opts.board_size ||
+				 y == forward * opts.board_size)) {
 			for (const [dx, dy] of DF) {
 				const loc = [x - dx, y - dy];
 				if (exists(board, loc)) {
-					console.log("footsoldier at " + x + "," + y +
-						" looking for enemy castle at " + (x - dx) + "," + (
-							y - dy));
-					console.log("\te:" + enemy(board, loc, player) + "; c:" +
-						is_at(board, "castle", loc) + "; p:" +
-						JSON.stringify(board[loc].piece));
-					if (enemy(board, loc, player) && is_at(board, "castle",
-							loc)) {
-						console.log("Found a castle!");
-						moves.push(
-							make_attack(board, pos, pos, loc));
+//					console.log("footsoldier at " + x + "," + y +
+//						" looking for enemy castle at " + (x - dx) + "," + (
+//							y - dy));
+//					console.log("\te:" + enemy(board, loc, player) + "; c:" +
+//						is_at(board, "castle", loc) + "; p:" +
+//						JSON.stringify(board[loc].piece));
+					if (enemy(board, loc, player) && is_at(board, "castle", loc)) {
+//						console.log("Found a castle!");
+						moves.push(make_attack(board, pos, pos, loc));
 					} else {
-						console.log("Didn't find a castle.");
+//						console.log("Didn't find a castle.");
 					}
 				}
 			}
@@ -700,8 +669,8 @@ function list_moves_for_piece(board, player, is_phase_2, pos) {
 				moves.push(make_move(board, pos, dist[1]));
 			}
 			if (is_phase_2 &&
-				exists(board, dist[2]) && !empty(board, dist[2]) &&
-				board[dist[2]].piece.player !== player) {
+					exists(board, dist[2]) && !empty(board, dist[2]) &&
+					board[dist[2]].piece.player !== player) {
 				moves.push(make_attack(board, pos, pos, dist[2]));
 			}
 		}
@@ -714,18 +683,18 @@ function list_moves_for_piece(board, player, is_phase_2, pos) {
 	} else if (is_phase_2 && piece.piece === "garrison") {
 		for (const [dx, dy] of list_adjacent([0, 0], player)) {
 			let dist = [];
+			const short = [x + dx, y + dy];
+			const long = [x + 2 * dx, y + 2 * dy];
 			switch (opts.rules.Gr) {
-				case 'both':
-					dist.push([x + dx, y + dy]);
-					// fallthrough
-				case 'long':
-					dist.push([x + 2 * dx, y + 2 * dy]);
-					break;
 				case 'short':
 				default:
-					dist = [
-						[x + dx, y + dy]
-					];
+					dist = [short];
+					break;
+				case 'long':
+					dist = [long];
+					break;
+				case 'both':
+					dist = [short, long];
 					break;
 			}
 			for (const loc of dist) {
@@ -744,6 +713,7 @@ function list_possible_moves(board, player, is_phase_2) {
 		let piece_moves = list_moves_for_piece(board, player, is_phase_2, pos);
 		moves.push(...piece_moves);
 	}
+	// Show winning moves at the very top of the move list
 	return moves.sort(function(a, b) {
 		if (a.verb === "win") {
 			if (b.verb === "win") {
@@ -764,17 +734,20 @@ function dist(x1, y1, x2, y2) {
 }
 
 function get_pos_from_coords(x, y) {
-	const piece_radius = 18;
+	let min_dist = Number("Infinity");
+	let ret = undefined;
+	const piece_radius = document.getElementById(board[[0,0]].id
+		).getBoundingClientRect().width/2;
 	for (const pos of iterate_board()) {
 		const el = document.getElementById(board[pos].id);
 		let er = el.getBoundingClientRect();
 		let d = dist(x, y, er.x + er.width / 2, er.y + er.height / 2);
-		//console.log('['+pos+']: dist(['+x+','+y+'], ['+er.x+','+er.y+']) = ' + d);
-		if (d < piece_radius) {
-			return pos;
+		if (d < min_dist && d < piece_radius) {
+			min_dist = d;
+			ret = pos;
 		}
 	}
-	return undefined;
+	return ret;
 }
 
 function highlight_spaces(ids) {
