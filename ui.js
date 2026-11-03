@@ -40,6 +40,8 @@ let moves = [];
 let undo_list = [];
 let move_index = 0;
 let saves = JSON.parse(localStorage.getItem("saves")) || [];
+let undelete_tmp = null;
+let undelete_btn = document.getElementById("undelete-btn");
 let should_replay = false;
 
 const default_opts = {
@@ -173,26 +175,26 @@ function opt(option) {
 
 	const el = document.getElementById(option);
 	const pe = el.parentNode;
-	if (pe.attributes["x-allow"]) {
+	if (pe.dataset.allow) {
 		const d = Array.from(pe.querySelectorAll("input")).some(e=>e.checked);
-		for (const id of pe.attributes["x-allow"].value.split(' ')) {
+		for (const id of pe.dataset.allow.split(' ')) {
 			disable(id, !d);
 		}
 	}
-	if (el.attributes["x-exclude"]) {
+	if (el.dataset.exclude) {
 		// for all inputs in this fieldset, if they are not checked, clear
 		// the disabled flag for all of their exclusions
-		for (const other of pe.querySelectorAll("input[x-exclude]")) {
-			if (!other.checked && other.attributes["x-exclude"]) {
-				other.attributes["x-exclude"].value.split(' ').forEach((id) =>
+		for (const other of pe.querySelectorAll("input[data-exclude]")) {
+			if (!other.checked && other.dataset.exclude) {
+				other.dataset.exclude.split(' ').forEach((id) =>
 					disable(id, false));
 			}
 		}
 		// for all inputs in this fieldset, if they are checked, apply the
 		// disabled flag tor all of their exclusions
-		for (const other of pe.querySelectorAll("input[x-exclude]")) {
-			if (other.checked && other.attributes["x-exclude"]) {
-				other.attributes["x-exclude"].value.split(' ').forEach((id) =>
+		for (const other of pe.querySelectorAll("input[data-exclude]")) {
+			if (other.checked && other.dataset.exclude) {
+				other.dataset.exclude.split(' ').forEach((id) =>
 					disable(id, true));
 			}
 		}
@@ -200,9 +202,9 @@ function opt(option) {
 		// are all disjoint but that is the case here
 
 	}
-	if (pe.attributes["x-exclude"]) {
+	if (pe.dataset.exclude) {
 		const d = Array.from(pe.querySelectorAll("input")).some(e=>e.checked);
-		for (const id of pe.attributes["x-exclude"].value.split(' ')) {
+		for (const id of pe.dataset.exclude.split(' ')) {
 			disable(id, d);
 		}
 	}
@@ -242,8 +244,9 @@ function normalize_opts(options) {
 
 function reset_opts_ui(in_options, effective = true) {
 	const options = normalize_opts(in_options);
-	if (effective !== false) {
+	if (effective === true) {
 		opts = window.structuredClone(options);
+		console.dir(opts);
 	}
 
 	radio_set('config' + options.configuration);
@@ -279,7 +282,6 @@ function reset_opts_ui(in_options, effective = true) {
 	}
 
 	update_rulestr();
-	console.dir(opts);
 }
 
 let board = make_board();
@@ -535,39 +537,6 @@ function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function import_game(end, gamestate) {
-	if (gamestate) {
-		reset_game();
-		let moveslist;
-		if (gamestate instanceof Array) {
-			moveslist = gamestate;
-		} else {
-			moveslist = gamestate.moveslist;
-			if (gamestate.playernames) {
-				P1name_el.value = gamestate
-					.playernames[1];
-				P2name_el.value = gamestate
-					.playernames[2];
-				update_players();
-			}
-			if (gamestate.options) {
-				reset_opts_ui(gamestate.options);
-			}
-		}
-		undo_list = gamestate.moveslist;
-		if (end) {
-			goto(undo_list.length);
-		} else {
-			replay_game();
-		}
-	}
-}
-
-function import_game_from_textbox(step) {
-	const gamestate = JSON.parse(document.getElementById("json_log_input").value);
-	import_game(step, gamestate);
-}
-
 async function replay_game() {
 	disable(replay_btn_el, true);
 	disable(pause_btn_el, false);
@@ -577,7 +546,7 @@ async function replay_game() {
 		const move = undo_list[move_index];
 		let locs = [];
 		for (const k in move) {
-			if (k != "verb") {
+			if (k !== "verb") {
 				locs.push(board[move[k].loc].id);
 			}
 		}
@@ -615,21 +584,8 @@ function save_game() {
 	display_saves();
 }
 
-async function reset_game() {
-	save_game();
-	set_opts();
-	board = make_board();
-	player = 1;
-	turn = 1;
-	phase = 2;
-	move_index = 0;
-	undo_list = [];
-	draw_board();
-	setup_turn();
-}
-
 async function load_game(number) {
-	const restore = saves[number];
+	const restore = window.structuredClone(saves[number]);
 
 	board = JSON.parse(restore.s_board);
 	undo_list = restore.s_moves;
@@ -647,8 +603,51 @@ async function load_game(number) {
 	phase = restore.s_phase;
 
 	reset_opts_ui(restore.s_options);
-	set_opts();
 
+	draw_board();
+	setup_turn();
+}
+
+function import_game(end, gamestate) {
+	if (gamestate) {
+		reset_game();
+		let moveslist;
+		if (gamestate instanceof Array) {
+			moveslist = gamestate;
+		} else {
+			moveslist = gamestate.moveslist;
+			if (gamestate.playernames) {
+				P1name_el.value = gamestate.playernames[1];
+				P2name_el.value = gamestate.playernames[2];
+				update_players();
+			}
+			if (gamestate.options) {
+				reset_opts_ui(gamestate.options);
+			}
+		}
+		undo_list = gamestate.moveslist;
+		if (end) {
+			goto(undo_list.length);
+		} else {
+			replay_game();
+		}
+	}
+}
+
+function import_game_from_textbox(step) {
+	const gamestate = JSON.parse(document.getElementById("json_log_input").value);
+	import_game(step, gamestate);
+}
+
+async function reset_game() {
+	save_game();
+	set_opts();
+	board = make_board();
+	player = 1;
+	turn = 1;
+	phase = 2;
+	move_index = 0;
+	undo_list = [];
 	draw_board();
 	setup_turn();
 }
@@ -712,9 +711,17 @@ function notation_str() {
 }
 
 function delete_game(index) {
-	saves.splice(index, 1);
+	undelete_tmp = [index, saves.splice(index, 1)[0]];
+	disable(undelete_btn, false);
 	display_saves();
 }
+function undelete() {
+	saves.splice(undelete_tmp[0], 0, undelete_tmp[1]);
+	disable(undelete_btn, true);
+	undelete_tmp = null;
+	display_saves();
+}
+
 function zip(a, b) {
 	return Array.from(
 				Array(Math.max(b.length, a.length)),
@@ -723,19 +730,22 @@ function zip(a, b) {
 
 function populate_move_row(table, classes, contents, transform) {
 	let row = table.insertRow();
-	for (const [cl, val] of zip(classes, contents)) {
+	for (const [idx, [cls, val]] of zip(classes, contents).entries()) {
 		const c = row.insertCell();
-		c.classList.add(cl);
+		if (cls) {
+			cls.split(' ').forEach(cl=>c.classList.add(cl));
+		}
 		let a = c.appendChild(document.createElement("a"));
 		a.classList.add("move-item");
 		a.innerHTML = val;
-		transform(a);
+		transform(a, idx);
 	}
+	return row;
 }
 
-function display_moves(board, moves, list) {
+function display_moves(board, pmoves, list) {
 	list.replaceChildren();
-	for (const mv of moves) {
+	for (const mv of pmoves) {
 		let locs = [];
 		for (const k in mv) {
 			if (k !== "verb") {
@@ -806,30 +816,35 @@ function display_timeline() {
 
 function display_saves() {
 	localStorage.setItem("saves", JSON.stringify(saves));
-	let s = "<ol>";
+	saves_el.replaceChildren();
 
 	for (const [idx, g] of saves.entries()) {
-		if (g.s_playernames) {
-			s += "<li><div><a class='move-item' onclick='load_game(" + idx +
-				")'>" + icon_for("castle", 1) + encode(g.s_playernames[1]) + " vs. "
-				+ icon_for("castle", 2) + encode(g.s_playernames[2]) + ": " +
-				g.s_turn + "/" + g.s_player + "/" + g.s_phase + " (" + style(g.s_options) + ")" +
-				"</a><a class='move-item delete' onclick='delete_game(" +
-				idx + ")'>(delete)</a></div></li>";
-		} else {
-			s += "<li><div><a class='move-item' onclick='load_game(" + idx +
-				")'>" + icon_for("castle", 1) + players[1] + " vs. "
-				+ icon_for("castle", 2) + players[2] + ": " +
-				g.s_turn + "/" + g.s_player + "/" + g.s_phase + " (" + style(g.s_options) + ")" +
-				"</a><a class='move-item delete' onclick='delete_game(" +
-				idx + ")'>(delete)</a></div></li>";
-		}
+		const label_p = (p, n) => `${icon_for("castle", p)}${encode(n[p])}`;
+		const label_v = (ps) => `${label_p(1, ps)} vs. ${label_p(2, ps)}`;
 
+		populate_move_row(saves_el, ["save-name fill", "save-rules fill", "move-idx delete"],
+			[label_v(g.s_playernames	?? players),
+			`${g.s_turn}/${g.s_player}/${g.s_phase} (${style(g.s_options)})`,
+			`del`], (a, i) => {
+				switch (i) {
+				default:
+					event_el(a, "click", ()=>load_game(idx));
+					a.title = "Load saved game";
+					break;
+				case 2:
+					a.classList.add("delete");
+					event_el(a, "click", ()=>delete_game(idx));
+					event_el(a, ["mouseover", "focus"], e =>
+						event.target.parentElement.parentElement.classList.add("red")
+					);
+					event_el(a, ["mouseout", "blur"], e =>
+						event.target.parentElement.parentElement.classList.remove("red")
+					);
+					a.title = "Delete saved game";
+					break;
+				}
+			});
 	}
-
-	s += "</ol>";
-
-	saves_el.innerHTML = s;
 }
 
 function isJSON(str) {
@@ -840,7 +855,8 @@ function isJSON(str) {
 	}
 }
 
-function validate_JSON_field(Field, btn) {
+function validate_JSON_field(event) {
+	const Field = event.target;
 	const valid = isJSON(Field.value);
 	if (!valid) {
 		Field.setCustomValidity("Invalid JSON");
@@ -873,35 +889,39 @@ function export_notation() {
 	download("note_export", notation_str(), 'Honey-War-Log.txt', 'text/plain');
 }
 
-let event_id = (id, event, action) =>
-	 document.getElementById(id).addEventListener(event, action);
-let event_el = (el, event, action) =>
-	 el.addEventListener(event, action);
+function event_el (el, event, action) {
+	if (event instanceof Array) {
+		event.forEach(e=>el.addEventListener(e, action));
+	} else {
+		el.addEventListener(event, action);
+	}
+}
+const event_id = (id, event, action) =>
+	 event_el(document.getElementById(id), event, action);
+
 function global_init() {
 	for (let e of document.getElementsByTagName('textarea')) {
 		if (e.classList.contains('json')) {
-			event_el(e, 'change', () => validate_JSON_field(e));
+			event_el(e, 'change', validate_JSON_field);
 		}
 	}
 
-	event_el(board_el, "click",
-		(event) => highlight_from(event));
-	event_el(board_el, "mousemove",
-		(event) => highlight_from(event));
+	event_el(board_el, ["click", "mousemove"], highlight_from);
 
 	event_id("undo-btn", "click", () => undo(true));
 	event_id("redo-btn", "click", () => redo(true));
-	event_id("moves-table", "mouseout", () => highlight_spaces([]));
-	event_id("game-replay", "click", () => replay_game());
+	event_id("moves-table", "mouseout", () => highlight_piece_moves(selected));
+	event_id("game-replay", "click", replay_game);
 	event_id("replay-pause", "click", () => { should_replay = false; });
-	event_id("save-game", "click", () => save_game());
+	event_id("save-game", "click", save_game);
+	event_el(undelete_btn, "click", undelete);
 	event_id("defaults", "click", () => reset_opts_ui(default_opts, false));
 	event_id("rules-current", "click", () => reset_opts_ui(opts, false));
-	event_id("reset", "click", () => reset_game());
+	event_id("reset", "click", reset_game);
 
-	event_id("P1-name", "change", () => update_players());
-	event_id("P2-name", "change",() => update_players());
-	event_id("import-rules", "click", () => import_rules());
+	event_id("P1-name", "change", update_players);
+	event_id("P2-name", "change",update_players);
+	event_id("import-rules", "click", import_rules);
 	event_id("import-begin", "click", () => import_game_from_textbox(false));
 	event_id("import-end", "click", () => import_game_from_textbox(true));
 	event_id("moves-export-btn", "click",
@@ -919,13 +939,16 @@ function global_init() {
 		}
 	}
 
-	set_opts();
 	if (localStorage.getItem("state")) {
 		import_game(true, JSON.parse(localStorage.getItem("state")));
 		// the game import function creates an extra checkpoint
 		delete_game(saves.length - 1);
+		undelete_tmp = null;
+		disable(undelete_btn, true);
+	} else {
+		set_opts();
 	}
-	reset_opts_ui(opts);
+	reset_opts_ui(opts, false);
 	draw_icons();
 
 	update_players();

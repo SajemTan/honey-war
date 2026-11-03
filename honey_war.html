@@ -24,10 +24,10 @@
 				while (ovr.getBoundingClientRect().width
 					> ee.getBoundingClientRect().width) {
 					for (id of ids) {
-						console.log(id);
+						//console.log(id);
 						let e = document.getElementById(id);
 						e.cols = e.cols - 2;
-						console.log(id + " " + e.cols);
+						//console.log(id + " " + e.cols);
 					}
 				}
 			});
@@ -48,14 +48,13 @@
 					<button id="undo-btn">Undo</button>
 					<button id="redo-btn">Redo</button>
 				</div>
-				<div class="striped-list">
-				<table class='numbered' id='moves-table'>
+				<div class="striped-list"><table class='numbered' id='moves-table'>
 					<colgroup>
 						<col class='num-col' />
 						<col class='move-desc' />
 						<col class='move-notation' />
-					</colgroup><tbody id="moves">
-					</tbody>
+					</colgroup>
+					<tbody id="moves"></tbody>
 				</table></div>
 				<div id="gameover" hidden>Game Over</div>
 			</div>
@@ -80,7 +79,6 @@
 				</p>
 				<div class="striped-list"><table class="normal">
 				   <colgroup>
-					   <col class='num-col' />
 						<col class='num-col' />
 						<col class='move-desc' />
 						<col class='move-notation' />
@@ -89,13 +87,23 @@
 				</table></div>
 			</div>
 			<div id="stored-games" class="inset grid-container row">
-			   <h3>Stored Games</h3>
-				<button id="save-game" class="fit">
-					Save current state</button>
+			   <h3>Saved Games</h3>
+				<div><button id="save-game" class="fit">
+					Save game</button>
+				<button id="undelete-btn" class="fit" disabled>
+					Undelete save</button></div>
 				<p class="list-header">
 				   Click on one of the entries below to load that gamestate.
 				</p>
-				<div id="saves" class="striped-list"></div>
+				<div class="striped-list"><table class="numbered">
+				<colgroup>
+					<col class='num-col' />
+					<col class='move-desc' />
+					<col class='move-notation' />
+					<col class='move-idx delete' />
+				</colgroup>
+				<tbody id="saves"></tbody>
+				</table></div>
 			</div>
 		</div>
 		<div class="flex-container">
@@ -195,11 +203,11 @@
 								</label>
 								<input type="radio" name="boardconfig"
 								   id="configmirrored" value="mirrored" checked
-									x-exclude="excl-mirrored">
+									data-exclude="excl-mirrored">
 								<label for="configmirrored">Mirrored</label>
 								<input type="radio" name="boardconfig"
 								   id="configrotated" value="rotated"
-									x-exclude="excl-rotated">
+									data-exclude="excl-rotated">
 								<label for="configrotated">Rotated</label>
 							</fieldset>
 							<fieldset id="fs_boardsize">
@@ -224,7 +232,7 @@
 									</label>
 								</h4>
 								<fieldset class="nolayout"
-									x-allow="configmirrored configrotated">
+									data-allow="configmirrored configrotated">
 									<input type="radio" name="towerconfig" id="towers3"
 										value="3" checked>
 									<label for="towers3">3</label>
@@ -240,7 +248,7 @@
 								</fieldset>
 								<br/>
 								<fieldset class="nolayout"
-									id="excl-rotated" x-exclude="configrotated">
+									id="excl-rotated" data-exclude="configrotated">
 									<input type="radio" name="towerconfig" id="towers2mr"
 										value="2mr">
 									<label for="towers2mr">2, right biased</label>
@@ -250,7 +258,7 @@
 								</fieldset>
 								<br/>
 								<fieldset class="nolayout"
-									id="excl-mirrored" x-exclude="configmirrored">
+									id="excl-mirrored" data-exclude="configmirrored">
 									<input type="radio" name="towerconfig" id="towers3t"
 										value="3t">
 									<label for="towers3t">3, rotated</label>
@@ -281,7 +289,7 @@
 							<br/>
 							<!-- this doesn't need an id because the exclusion is one-way -->
 							<fieldset class="nolayout"
-								x-exclude="stranded-footsoldiers">
+								data-exclude="stranded-footsoldiers">
 							   <input type="checkbox" id="buff-footsoldiers"
 									checked>
 								<label for="buff-footsoldiers">

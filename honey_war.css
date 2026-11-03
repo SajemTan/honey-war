@@ -56,6 +56,10 @@ body {
 	& td {
 		padding: 0px;
 	}
+	& tr:hover, & li:hover {
+		background-color: #0002;
+		mix-blend-mode: multiply;
+	}
 }
 td {
 	vertical-align: baseline;
@@ -67,7 +71,6 @@ td {
 	counter-reset: rowNumber;
 	width: 100%;
 	display: block;
-	overflow-y: scroll;
 }
 .numbered tbody > tr::before {
 	display: table-cell;
@@ -77,15 +80,12 @@ td {
 	text-align: right;
 }
 .move-desc {
-	display: table-cell;
 }
 .num-col {
-	display: table-cell;
 	width: 0;
 	white-space: nowrap;
 }
 .move-notation {
-	display: table-cell;
 	width: 0;
 	white-space: nowrap;
 	padding-left: 4px !important;
@@ -95,8 +95,40 @@ td {
 	text-align: right;
 	white-space: nowrap;
 }
+.save-name {
+	display: table-cell;
+	padding-right: 4px !important;
+}
+.save-rules {
+	display: table-cell;
+	width: 0;
+	white-space: nowrap;
+	padding-left: 4px !important;
+	border-left: 1px solid black;
+}
+col.delete {
+	min-width: 3em;
+}
 .fill {
 	width: 99%;
+}
+.move-item.selected {
+	text-decoration: underline;
+}
+.move-item:hover, .move-item:active,
+tr:hover	.move-item, tr:active .move-item {
+	text-decoration: underline;
+	color: blue;
+}
+.move-item.delete {
+	color: red !important;
+	font-style: italic;
+}
+.move-item.delete:hover, .move-item.delete:active {
+	color: purple !important;
+}
+.red *, .red:hover * {
+	color: red !important;
 }
 .list-header {
 	margin-top: 8px;
@@ -159,20 +191,6 @@ textarea:invalid {
 	background: #F033;
 	mix-blend-mode: multiply;
 }
-.move-item.selected {
-	text-decoration: underline;
-}
-.move-item:hover, .move-item:active {
-	text-decoration: underline;
-	color: blue;
-}
-.move-item.delete {
-	color: red;
-	font-style: italic;
-}
-.move-item.delete:hover, .move-item.delete:active {
-	color: purple;
-}
 #current-game {
 	max-height: 600px;
 	flex-wrap: nowrap;
@@ -194,6 +212,8 @@ button {
 .piece {
 	text-transform: capitalize;
 	font-weight: bold;
+}
+.space {
 }
 .win {
 	text-transform: capitalize;
