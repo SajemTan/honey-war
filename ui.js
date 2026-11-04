@@ -592,11 +592,6 @@ async function load_game(number) {
 	moves = restore.s_moves_avail;
 	move_index = restore.s_move;
 
-	if (restore.s_playernames) {
-		P1name_el.value = restore.s_playernames[1];
-		P2name_el.value = restore.s_playernames[2];
-		update_players();
-	}
 
 	player = restore.s_player;
 	turn = restore.s_turn;
@@ -605,7 +600,11 @@ async function load_game(number) {
 	reset_opts_ui(restore.s_options);
 
 	draw_board();
-	setup_turn();
+	if (restore.s_playernames) {
+		P1name_el.value = restore.s_playernames[1];
+		P2name_el.value = restore.s_playernames[2];
+	}
+	update_players();
 }
 
 function import_game(end, gamestate) {
